@@ -1,0 +1,653 @@
+import groovy.io.FileType
+import groovy.sql.Sql
+
+// 初期化処理
+buildscript {
+    // リポジトリ設定
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath files('hsqldb/lib/hsqldb.jar')
+    }
+}
+
+subprojects {
+    // プラグイン読み込み
+    apply plugin: "java"
+    apply plugin: "war"
+    apply plugin: "jacoco"
+
+    // リポジトリ設定
+    repositories {
+        mavenCentral()
+    }
+
+    // 文字コード設定
+    def defaultEncoding = "UTF-8"
+    tasks.withType(AbstractCompile).each { it.options.encoding = defaultEncoding }
+
+    // Gradle7.x対応
+    processResources {
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    }
+    
+    processTestResources {
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    }
+
+    // Jakarta EE 10依存関係設定
+    dependencies {
+        // Jakarta EE 10 API（provided scope）
+        providedCompile "jakarta.platform:jakarta.jakartaee-api:10.0.0"
+        
+        // Jakarta Faces (JSF) API - JSFプロジェクト用
+        providedCompile "jakarta.faces:jakarta.faces-api:4.0.1"
+        
+        // Jakarta Servlet Pages (JSP) API
+        providedCompile "jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.1.1"
+        
+        // JSTL API & Implementation
+        implementation "org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1"
+        
+        // HSQLDB Database（ランタイム）
+        implementation files(rootProject.file('hsqldb/lib/hsqldb.jar'))
+        
+        // テスト依存関係
+        testImplementation "org.junit.jupiter:junit-jupiter:5.10.0"
+        testImplementation "org.mockito:mockito-core:5.5.0"
+        testImplementation "org.mockito:mockito-junit-jupiter:5.5.0"
+    }
+
+    // Javaプラグイン設定
+    java {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
+
+    // WAR設定
+    war {
+        archiveFileName = "${project.name}.war"
+        webAppDirectory = file("src/main/webapp")
+    }
+
+    // ソースフォルダの設定
+    sourceSets {
+        main {
+            java {
+                srcDir "src/main/java"
+            }
+            resources {
+                srcDir "src/main/resources"
+            }
+        }
+        test {
+            java {
+                srcDir "src/test/java"
+            }
+            resources {
+                srcDir "src/test/resources"
+            }
+        }
+    }
+
+    // アプリケーションをデプロイ
+    task deploy {
+        group = "payara"
+        description = "Deploy the application to Payara Server"
+        dependsOn "war"
+        doLast {
+            def asadmin = rootProject.file(conf.payaraServer.asadminCmd)
+            def warFile = file("${buildDir}/libs/${project.name}.war")
+            
+            if (!asadmin.exists()) {
+                throw new GradleException("asadmin command not found: ${asadmin}")
+            }
+            if (!warFile.exists()) {
+                throw new GradleException("WAR file not found: ${warFile}")
+            }
+            
+            println "Deploying ${project.name} to Payara Server..."
+            
+            exec {
+                commandLine asadmin.absolutePath, "deploy",
+                    "--force=true",
+                    "--contextroot", "/${project.name}",
+                    warFile.absolutePath
+                ignoreExitValue = true
+            }
+            
+            println "Application deployed: http://localhost:${conf.payaraServer.httpPort}/${project.name}"
+        }
+    }
+
+    // アプリケーションをアンデプロイ
+    task undeploy {
+        group = "payara"
+        description = "Undeploy the application from Payara Server"
+        doLast {
+            def asadmin = rootProject.file(conf.payaraServer.asadminCmd)
+            
+            if (!asadmin.exists()) {
+                throw new GradleException("asadmin command not found: ${asadmin}")
+            }
+            
+            println "Undeploying ${project.name} from Payara Server..."
+            
+            exec {
+                commandLine asadmin.absolutePath, "undeploy", project.name
+                ignoreExitValue = true
+            }
+        }
+    }
+    // 初期データをセットアップする（HSQLDB）
+    task setupHsqldb doLast {
+        execSqlDir("$projectDir/sql/hsqldb", conf.hsqldb.general.url,
+                conf.hsqldb.general.user, conf.hsqldb.general.password,
+                conf.hsqldb.driverClass)
+    }
+
+    // テスト設定
+    test {
+        useJUnitPlatform()
+    }
+
+    // タスクをグループ化する
+    [setupHsqldb]*.group = "setup-init-data"
+}
+
+// 設定情報の読み込み
+def conf = {
+    def slurper = new ConfigSlurper()
+    slurper.binding = project.properties
+    def confLocation = System.properties["user.home"]
+    
+    // env-conf.gradleを読み込み
+    // 1. ユーザーホームディレクトリ
+    def file = new File(confLocation + "/env-conf.gradle")
+    if (!file.exists()) {
+        // 2. プロジェクトルート
+        file = new File("$projectDir/env-conf.gradle")
+        if (!file.exists()) {
+            println "WARNING: env-conf.gradle not found. Please create it in project root or home directory."
+            return null
+        }
+    }
+    return new ConfigSlurper().parse(file.toURL())
+}()
+
+// 設定情報を拡張プロパティにセット
+ext.conf = conf
+
+// SQLを発行するメソッド（ディレクトリ指定）
+def execSqlDir(dir, url, user, password, driverClass) {
+    new File(dir).listFiles().sort{a, b -> a.name <=> b.name}.each{ File f ->
+        ant.sql(url: url,
+            userid: user,
+            password: password,
+            driver: driverClass,
+            classpath: buildscript.configurations.classpath.asPath,
+            encoding: "UTF-8",
+            onerror: "continue") {
+                fileset(file: f)
+            }
+    }
+}
+
+// SQLを発行するメソッド（ファイル指定）
+def execSql(file, url, user, password, driverClass) {
+    ant.sql(
+        driver: driverClass,
+        url: url,
+        userid: user,
+        password: password,
+        classpath: buildscript.configurations.classpath.asPath,
+        encoding: "UTF-8",
+        onerror: "continue") {
+            fileset(file: file)
+        }
+}
+
+// HSQLDB Databaseサーバーを起動する
+task startHsqldb doLast {
+    def hsqldbJar = file("hsqldb/lib/hsqldb.jar")
+    
+    if (!hsqldbJar.exists()) {
+        throw new GradleException("HSQLDB JAR not found: ${hsqldbJar}")
+    }
+    
+    println "Starting HSQLDB Database Server..."
+    println "  - TCP Server on port ${conf.hsqldb.tcpPort}"
+    println "  - Web Console on port ${conf.hsqldb.webPort} (http://localhost:${conf.hsqldb.webPort})"
+    println ""
+    println "To stop the server, run: gradle stopHsqldb"
+    println ""
+    
+    def pidFile = file("${buildDir}/.hsqldbserver.pid")
+    pidFile.parentFile.mkdirs()
+    
+    def process = [
+        "java", 
+        "-cp", hsqldbJar.absolutePath,
+        "org.hsqldb.server.Server",
+        "--database.0", "file:${conf.hsqldb.general.dbPath}",
+        "--dbname.0", conf.hsqldb.general.db,
+        "--port", conf.hsqldb.tcpPort
+    ].execute()
+    
+    // Windows用のプロセスID保存
+    if (System.properties['os.name'].toLowerCase().contains('windows')) {
+        sleep(2000)  // プロセスが起動するまで待機
+        def jpsProcess = "jps -l".execute()
+        jpsProcess.waitFor()
+        def jpsOutput = jpsProcess.text
+        def hsqldbProcessLine = jpsOutput.split('\n').find { it.contains('org.hsqldb.server.Server') }
+        if (hsqldbProcessLine) {
+            def pid = hsqldbProcessLine.split()[0]
+            pidFile.text = pid
+            println "HSQLDB Server started with PID: ${pid}"
+        }
+    } else {
+        pidFile.text = process.pid()
+        println "HSQLDB Server started with PID: ${process.pid()}"
+    }
+}
+
+// HSQLDB Databaseサーバーを停止する
+task stopHsqldb doLast {
+    def pidFile = file("${buildDir}/.hsqldbserver.pid")
+    
+    if (!pidFile.exists()) {
+        println "No PID file found. HSQLDB Server may not be running."
+        return
+    }
+    
+    def pid = pidFile.text.trim()
+    println "Stopping HSQLDB Server (PID: ${pid})..."
+    
+    try {
+        if (System.properties['os.name'].toLowerCase().contains('windows')) {
+            "taskkill /F /PID ${pid}".execute().waitFor()
+        } else {
+            "kill ${pid}".execute().waitFor()
+        }
+        pidFile.delete()
+        println "HSQLDB Server stopped successfully."
+    } catch (Exception e) {
+        println "Failed to stop HSQLDB Server: ${e.message}"
+        println "You may need to stop it manually."
+    }
+}
+
+// HSQLDBを初期化する（テーブル削除・作成用）
+task initHsqldb doLast {
+    execSql("$projectDir/sql/hsqldb/DROP_HSQLDB_USER.sql",
+            conf.hsqldb.general.url, conf.hsqldb.general.user, conf.hsqldb.general.password,
+            conf.hsqldb.driverClass)
+    execSql("$projectDir/sql/hsqldb/DROP_HSQLDB_DATABASE.sql",
+            conf.hsqldb.general.url, conf.hsqldb.general.user, conf.hsqldb.general.password,
+            conf.hsqldb.driverClass)
+    execSql("$projectDir/sql/hsqldb/CREATE_HSQLDB_USER.sql",
+            conf.hsqldb.general.url, conf.hsqldb.general.user, conf.hsqldb.general.password,
+            conf.hsqldb.driverClass)
+    execSql("$projectDir/sql/hsqldb/CREATE_HSQLDB_DATABASE.sql",
+            conf.hsqldb.general.url, conf.hsqldb.general.user, conf.hsqldb.general.password,
+            conf.hsqldb.driverClass)
+}
+
+// タスクをグループ化する
+[startHsqldb, stopHsqldb, initHsqldb]*.group = "hsqldb"
+
+// Payara Serverを起動する（バックグラウンド）
+task startPayara doLast {
+    def asadmin = file(conf.payaraServer.asadminCmd)
+    
+    if (!asadmin.exists()) {
+        throw new GradleException("asadmin command not found: ${asadmin}")
+    }
+    
+    println "Starting Payara Server..."
+    println "  - HTTP Port: ${conf.payaraServer.httpPort}"
+    println "  - HTTPS Port: ${conf.payaraServer.httpsPort}"
+    println "  - Admin Port: ${conf.payaraServer.adminPort}"
+    println "  - Admin Console: http://localhost:${conf.payaraServer.adminPort}"
+    println ""
+    
+    exec {
+        commandLine asadmin.absolutePath, "start-domain", conf.payaraServer.domain
+    }
+    
+    println ""
+    println "Payara Server started successfully."
+    println "To stop the server, run: gradle stopPayara"
+}
+
+// Payara Serverを停止する
+task stopPayara doLast {
+    def asadmin = file(conf.payaraServer.asadminCmd)
+    
+    if (!asadmin.exists()) {
+        throw new GradleException("asadmin command not found: ${asadmin}")
+    }
+    
+    println "Stopping Payara Server..."
+    
+    exec {
+        commandLine asadmin.absolutePath, "stop-domain", conf.payaraServer.domain
+        ignoreExitValue = true
+    }
+    
+    println "Payara Server stopped successfully."
+}
+
+// Payara Serverを再起動する
+task restartPayara {
+    group = "payara"
+    description = "Restart Payara Server"
+    dependsOn stopPayara
+    finalizedBy startPayara
+}
+
+// Payara Serverのステータスを確認する
+task statusPayara doLast {
+    def asadmin = file(conf.payaraServer.asadminCmd)
+    
+    if (!asadmin.exists()) {
+        throw new GradleException("asadmin command not found: ${asadmin}")
+    }
+    
+    exec {
+        commandLine asadmin.absolutePath, "list-domains"
+    }
+}
+
+// 全てのJavaプロセスを強制終了する（開発用）
+task killAllJava doLast {
+    println "WARNING: This will kill ALL Java processes including Gradle daemon!"
+    println "Killing all Java processes in 3 seconds... Press Ctrl+C to cancel."
+    
+    try {
+        Thread.sleep(3000)
+    } catch (InterruptedException e) {
+        println "Cancelled."
+        return
+    }
+    
+    if (System.properties['os.name'].toLowerCase().contains('windows')) {
+        exec {
+            commandLine 'taskkill', '/F', '/IM', 'java.exe'
+            ignoreExitValue = true
+        }
+    } else {
+        exec {
+            commandLine 'pkill', '-9', 'java'
+            ignoreExitValue = true
+        }
+    }
+    
+    println "All Java processes killed."
+}
+
+// タスクをグループ化する
+[startPayara, stopPayara, restartPayara, statusPayara, killAllJava]*.group = "payara"
+
+// HSQLDBドライバをPayara Serverにコピーする
+task installHsqldbDriver doLast {
+    def hsqldbJar = file(conf.hsqldb.jarPath)
+    def payaraLibDir = file("${conf.payaraServer.home}/glassfish/domains/${conf.payaraServer.domain}/lib")
+    
+    if (!hsqldbJar.exists()) {
+        throw new GradleException("HSQLDB JAR not found: ${hsqldbJar}")
+    }
+    
+    if (!payaraLibDir.exists()) {
+        payaraLibDir.mkdirs()
+    }
+    
+    def targetFile = new File(payaraLibDir, "hsqldb.jar")
+    
+    println "Copying HSQLDB driver to Payara Server..."
+    println "  Source: ${hsqldbJar.absolutePath}"
+    println "  Target: ${targetFile.absolutePath}"
+    
+    java.nio.file.Files.copy(
+        hsqldbJar.toPath(),
+        targetFile.toPath(),
+        java.nio.file.StandardCopyOption.REPLACE_EXISTING
+    )
+    
+    println "HSQLDB driver installed successfully."
+    println "Please restart Payara Server for changes to take effect."
+}
+
+// JDBCコネクションプールを作成する
+task createConnectionPool doLast {
+    def asadmin = file(conf.payaraServer.asadminCmd)
+    
+    if (!asadmin.exists()) {
+        throw new GradleException("asadmin command not found: ${asadmin}")
+    }
+    
+    println "Creating JDBC Connection Pool: ${conf.hsqldb.general.connPoolName}..."
+    
+    // 既存のコネクションプールを削除（エラーを無視）
+    exec {
+        executable asadmin.absolutePath
+        args "delete-jdbc-connection-pool"
+        args conf.hsqldb.general.connPoolName
+        ignoreExitValue = true
+    }
+    
+    // 新しいコネクションプールを作成
+    // URLの : をエスケープ（Payara asadminの要件）
+    def escapedUrl = conf.hsqldb.general.url.replace(":", "\\:")
+    
+    println "Creating connection pool with URL: ${conf.hsqldb.general.url}"
+    println "User: ${conf.hsqldb.general.user}"
+    println "Password: (none - HSQLDB SA default)"
+    
+    exec {
+        executable asadmin.absolutePath
+        args "create-jdbc-connection-pool"
+        args "--datasourceclassname", conf.hsqldb.datasourceClass
+        args "--restype", "javax.sql.DataSource"
+        args "--property", "url=${escapedUrl}:user=${conf.hsqldb.general.user}"
+        args conf.hsqldb.general.connPoolName
+    }
+    
+    println "JDBC Connection Pool created successfully."
+}
+
+// JDBCリソース（データソース）を作成する
+task createDataSource doLast {
+    def asadmin = file(conf.payaraServer.asadminCmd)
+    
+    if (!asadmin.exists()) {
+        throw new GradleException("asadmin command not found: ${asadmin}")
+    }
+    
+    println "Creating JDBC Resource: ${conf.hsqldb.general.datasourceJndiName}..."
+    
+    // 既存のJDBCリソースを削除（エラーを無視）
+    exec {
+        executable asadmin.absolutePath
+        args "delete-jdbc-resource"
+        args conf.hsqldb.general.datasourceJndiName
+        ignoreExitValue = true
+    }
+    
+    // 新しいJDBCリソースを作成
+    exec {
+        executable asadmin.absolutePath
+        args "create-jdbc-resource"
+        args "--connectionpoolid", conf.hsqldb.general.connPoolName
+        args "--enabled=true"
+        args conf.hsqldb.general.datasourceJndiName
+    }
+    
+    println "JDBC Resource created successfully."
+    println "JNDI Name: ${conf.hsqldb.general.datasourceJndiName}"
+}
+
+// コネクションプールをテストする
+task pingConnectionPool doLast {
+    def asadmin = file(conf.payaraServer.asadminCmd)
+    
+    if (!asadmin.exists()) {
+        throw new GradleException("asadmin command not found: ${asadmin}")
+    }
+    
+    println "Testing JDBC Connection Pool: ${conf.hsqldb.general.connPoolName}..."
+    
+    exec {
+        executable asadmin.absolutePath
+        args "ping-connection-pool"
+        args conf.hsqldb.general.connPoolName
+    }
+    
+    println "Connection pool test successful."
+}
+
+// データソースをセットアップする（統合タスク）
+task setupDataSource {
+    group = "payara"
+    description = "Setup HSQLDB datasource on Payara Server (driver + pool + resource)"
+    dependsOn installHsqldbDriver, createConnectionPool, createDataSource
+    
+    doLast {
+        println ""
+        println "===================================="
+        println "Datasource setup completed!"
+        println "===================================="
+        println "Connection Pool: ${conf.hsqldb.general.connPoolName}"
+        println "JNDI Name: ${conf.hsqldb.general.datasourceJndiName}"
+        println "Database URL: ${conf.hsqldb.general.url}"
+        println ""
+        println "You can test the connection with: gradle pingConnectionPool"
+    }
+}
+
+// データソースを削除する
+task deleteDataSource doLast {
+    def asadmin = file(conf.payaraServer.asadminCmd)
+    
+    if (!asadmin.exists()) {
+        throw new GradleException("asadmin command not found: ${asadmin}")
+    }
+    
+    println "Deleting JDBC Resource: ${conf.hsqldb.general.datasourceJndiName}..."
+    
+    exec {
+        executable asadmin.absolutePath
+        args "delete-jdbc-resource"
+        args conf.hsqldb.general.datasourceJndiName
+        ignoreExitValue = true
+    }
+    
+    println "JDBC Resource deleted (if it existed)."
+}
+
+// コネクションプールを削除する
+task deleteConnectionPool doLast {
+    def asadmin = file(conf.payaraServer.asadminCmd)
+    
+    if (!asadmin.exists()) {
+        throw new GradleException("asadmin command not found: ${asadmin}")
+    }
+    
+    println "Deleting JDBC Connection Pool: ${conf.hsqldb.general.connPoolName}..."
+    
+    exec {
+        executable asadmin.absolutePath
+        args "delete-jdbc-connection-pool"
+        args conf.hsqldb.general.connPoolName
+        ignoreExitValue = true
+    }
+    
+    println "JDBC Connection Pool deleted (if it existed)."
+}
+
+// すべてのデプロイ済みアプリケーションをアンデプロイする
+task undeployAllApps doLast {
+    def asadmin = file(conf.payaraServer.asadminCmd)
+    
+    if (!asadmin.exists()) {
+        throw new GradleException("asadmin command not found: ${asadmin}")
+    }
+    
+    println "Listing all deployed applications..."
+    
+    // アプリケーション一覧を取得
+    def output = new ByteArrayOutputStream()
+    try {
+        exec {
+            executable asadmin.absolutePath
+            args "list-applications"
+            standardOutput = output
+            ignoreExitValue = true
+        }
+    } catch (Exception e) {
+        println "Failed to list applications: ${e.message}"
+        return
+    }
+    
+    def apps = output.toString().split('\n')
+        .findAll { it.trim() && !it.contains('Command list-applications') && !it.contains('Nothing to list') }
+        .collect { it.split()[0] }  // アプリケーション名のみ取得
+    
+    if (apps.isEmpty()) {
+        println "No applications deployed."
+        return
+    }
+    
+    println "Found ${apps.size()} application(s): ${apps.join(', ')}"
+    
+    apps.each { appName ->
+        println "Undeploying: ${appName}..."
+        exec {
+            executable asadmin.absolutePath
+            args "undeploy"
+            args appName
+            ignoreExitValue = true
+        }
+    }
+    
+    println "All applications undeployed."
+}
+
+// すべてをクリーンアップする（統合タスク）
+task cleanupAll {
+    group = "payara"
+    description = "Cleanup all (undeploy all apps, delete datasource and connection pool)"
+    
+    doLast {
+        println ""
+        println "===================================="
+        println "Starting Cleanup"
+        println "===================================="
+        println ""
+    }
+}
+
+cleanupAll.dependsOn undeployAllApps, deleteDataSource, deleteConnectionPool
+
+cleanupAll.doLast {
+    println ""
+    println "===================================="
+    println "Cleanup Completed!"
+    println "===================================="
+    println "- All applications undeployed"
+    println "- JDBC Resource deleted"
+    println "- JDBC Connection Pool deleted"
+    println ""
+    println "You can now safely stop the servers:"
+    println "  gradle stopPayara"
+    println "  gradle stopHsqldb"
+    println ""
+}
+
+// タスクをグループ化する
+[installHsqldbDriver, createConnectionPool, createDataSource, 
+ pingConnectionPool, setupDataSource, deleteDataSource, deleteConnectionPool,
+ undeployAllApps, cleanupAll]*.group = "payara"
+

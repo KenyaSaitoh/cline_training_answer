@@ -1,0 +1,40 @@
+# Payara Server - デプロイされたアプリケーションと生成ファイル
+/payara6/glassfish/domains/domain1/applications/**
+/payara6/glassfish/domains/domain1/autodeploy/**
+/payara6/glassfish/domains/domain1/logs/**
+/payara6/glassfish/domains/domain1/lib/*.jar
+/payara6/glassfish/domains/domain1/generated/**
+/payara6/glassfish/domains/domain1/osgi-cache/**
+/payara6/glassfish/domains/domain1/config/**
+/payara6/glassfish/domains/domain1/docroot/**
+
+# HSQLDB データファイル
+/hsqldb/data/
+
+# Gradle ビルドファイル
+/classes
+/bin
+/build
+/target
+/.gradle
+/projects/build
+*.war
+*.class
+
+# VS Code
+.vscode/settings.json
+.vscode/launch.json
+.vscode/tasks.json
+*.code-workspace
+
+# Eclipse
+.metadata
+.classpath
+.project
+.settings/
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr

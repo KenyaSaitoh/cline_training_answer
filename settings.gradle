@@ -1,0 +1,25 @@
+/*
+ * JEE Web Projects - Multi-project build (Payara Server Edition)
+ */
+
+rootProject.name = 'jee-web-projects-payara'
+
+// Servlet系プロジェクト
+include 'projects:servlet_jsp'
+include 'projects:servlet_jsp_mvc'
+include 'projects:servlet_session'
+
+// JSF系プロジェクト
+include 'projects:jsf_person'
+include 'projects:jsf_person_rdb'
+include 'projects:jsf_ajax'
+
+// CDI系プロジェクト
+include 'projects:cdi_inject'
+include 'projects:cdi_conversation'
+include 'projects:cdi_transactional'
+
+// RESTful Webサービス
+include 'projects:person_service'
+include 'projects:rs_hello_service'
+include 'projects:rs_greeting_service'

@@ -1,0 +1,3 @@
+create-jdbc-connection-pool --datasourceclassname=org.hsqldb.jdbc.JDBCDataSource --restype=javax.sql.DataSource --property=URL=jdbc\:hsqldb\:hsql\://localhost\:9001/testdb:user=SA:password= HSQLDBPool
+create-jdbc-resource --connectionpoolid=HSQLDBPool jdbc/HsqldbDS
+
