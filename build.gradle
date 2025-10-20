@@ -39,13 +39,13 @@ subprojects {
     // Jakarta EE 10依存関係設定
     dependencies {
         // Jakarta EE 10 API（provided scope）
-        providedCompile "jakarta.platform:jakarta.jakartaee-api:10.0.0"
+        compileOnly "jakarta.platform:jakarta.jakartaee-api:10.0.0"
         
         // Jakarta Faces (JSF) API - JSFプロジェクト用
-        providedCompile "jakarta.faces:jakarta.faces-api:4.0.1"
+        compileOnly "jakarta.faces:jakarta.faces-api:4.0.1"
         
         // Jakarta Servlet Pages (JSP) API
-        providedCompile "jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.1.1"
+        compileOnly "jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.1.1"
         
         // JSTL API & Implementation
         implementation "org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1"
