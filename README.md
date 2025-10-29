@@ -60,12 +60,14 @@ jee_micro_vsc/
 # 3. Payara Serverを起動
 ./gradlew startPayara
 
-# 4. データソースをセットアップ（コネクションプール＋データソース作成）
+# 4. データソースをセットアップ（既存削除→コネクションプール作成→データソース作成）
 ./gradlew setupDataSource
 
-# または、個別に実行する場合：
-# ./gradlew createConnectionPool
-# ./gradlew createDataSource
+# ※ setupDataSourceは以下を自動実行します：
+#   1. deleteDataSource（既存のデータソースを削除）
+#   2. deleteConnectionPool（既存の接続プールを削除）
+#   3. createConnectionPool（新しい接続プールを作成）
+#   4. createDataSource（新しいデータソースを作成）
 ```
 
 ### ③ 研修開催につき最後に1回だけ実行（CleanUp）
@@ -145,7 +147,7 @@ tail -f -n 50 payara6/glassfish/domains/domain1/logs/server.log
 | `statusPayara` | Payara Serverのステータスを確認 |
 | `killAllJava` | 全てのJavaプロセスを強制終了（緊急時用） |
 | `initPayaraDomainConfig` | domain.xmlを初期状態にリセット（研修開催時に実行） |
-| `setupDataSource` | HSQLDBデータソースをセットアップ（初回向け統合タスク） |
+| `setupDataSource` | HSQLDBデータソースをセットアップ（既存削除→作成を自動実行） |
 | `installHsqldbDriver` | HSQLDBドライバをPayara Serverにコピー（初回のみ） |
 | `createConnectionPool` | JDBCコネクションプールを作成 |
 | `createDataSource` | JDBCリソース（データソース）を作成 |

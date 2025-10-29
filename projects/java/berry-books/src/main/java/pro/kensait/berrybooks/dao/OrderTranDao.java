@@ -59,7 +59,7 @@ public class OrderTranDao {
         logger.info("[ OrderTranDao#findOrderHistoryByCustomerId ]");
         
         TypedQuery<OrderHistoryTO> query = em.createQuery(
-                "SELECT new dev.berry.service.order.OrderHistoryTO(" +
+                "SELECT new pro.kensait.berrybooks.service.order.OrderHistoryTO(" +
                 "ot.orderDate, ot.orderTranId, od.orderDetailId, " +
                 "b.bookName, p.publisherName, b.price, od.count) " +
                 "FROM OrderTran ot " +
@@ -79,7 +79,7 @@ public class OrderTranDao {
         logger.info("[ OrderTranDao#findOrderSummaryByCustomerId ]");
         
         TypedQuery<OrderSummaryTO> query = em.createQuery(
-                "SELECT new dev.berry.service.order.OrderSummaryTO(" +
+                "SELECT new pro.kensait.berrybooks.service.order.OrderSummaryTO(" +
                 "ot.orderTranId, ot.orderDate, COUNT(od), ot.totalPrice) " +
                 "FROM OrderTran ot INNER JOIN ot.orderDetails od " +
                 "WHERE ot.customerId = :customerId " +

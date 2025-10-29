@@ -811,25 +811,6 @@ task pingConnectionPool doLast {
     println "Connection pool test successful."
 }
 
-// データソースをセットアップする（統合タスク）
-task setupDataSource {
-    group = "payara"
-    description = "Setup HSQLDB datasource on Payara Server (pool + resource)"
-    dependsOn createConnectionPool, createDataSource
-    
-    doLast {
-        println ""
-        println "===================================="
-        println "Datasource setup completed!"
-        println "===================================="
-        println "Connection Pool: ${conf.hsqldb.general.connPoolName}"
-        println "JNDI Name: ${conf.hsqldb.general.datasourceJndiName}"
-        println "Database URL: ${conf.hsqldb.general.url}"
-        println ""
-        println "You can test the connection with: gradle pingConnectionPool"
-    }
-}
-
 // データソースを削除する
 task deleteDataSource doLast {
     def asadmin = file(conf.payaraServer.asadminCmd)
@@ -868,6 +849,30 @@ task deleteConnectionPool doLast {
     }
     
     println "JDBC Connection Pool deleted (if it existed)."
+}
+
+// データソースをセットアップする（統合タスク）
+task setupDataSource {
+    group = "payara"
+    description = "Setup HSQLDB datasource on Payara Server (pool + resource)"
+    dependsOn deleteDataSource, deleteConnectionPool, createConnectionPool, createDataSource
+    
+    // 実行順序を保証：削除 → 作成
+    deleteConnectionPool.mustRunAfter deleteDataSource
+    createConnectionPool.mustRunAfter deleteConnectionPool
+    createDataSource.mustRunAfter createConnectionPool
+    
+    doLast {
+        println ""
+        println "===================================="
+        println "Datasource setup completed!"
+        println "===================================="
+        println "Connection Pool: ${conf.hsqldb.general.connPoolName}"
+        println "JNDI Name: ${conf.hsqldb.general.datasourceJndiName}"
+        println "Database URL: ${conf.hsqldb.general.url}"
+        println ""
+        println "You can test the connection with: gradle pingConnectionPool"
+    }
 }
 
 // すべてのデプロイ済みアプリケーションをアンデプロイする
