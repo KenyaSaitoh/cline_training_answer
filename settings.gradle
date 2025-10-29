@@ -4,22 +4,13 @@
 
 rootProject.name = 'jee-web-projects-payara'
 
-// Servlet系プロジェクト
-include 'projects:servlet_jsp'
-include 'projects:servlet_jsp_mvc'
-include 'projects:servlet_session'
-
 // JSF系プロジェクト
-include 'projects:jsf_person'
-include 'projects:jsf_person_rdb'
-include 'projects:jsf_ajax'
+include 'projects:java:jsf_person_rdb'
 
-// CDI系プロジェクト
-include 'projects:cdi_inject'
-include 'projects:cdi_conversation'
-include 'projects:cdi_transactional'
+// Berry Books プロジェクト
+include 'projects:java:berry-books'
+include 'projects:java:berry-books-rest'
+include 'projects:java:berry-books-swing'
 
-// RESTful Webサービス
-include 'projects:person_service'
-include 'projects:rs_hello_service'
-include 'projects:rs_greeting_service'
+// Struts系プロジェクト
+include 'projects:java:struts_person_rdb'

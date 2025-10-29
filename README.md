@@ -3,44 +3,33 @@
 ## 📖 概要
 
 Jakarta EE 10とPayara Serverを使用したWebアプリケーションの学習プロジェクト集です。
-全13プロジェクトで、Servlet/JSP、JSF、CDI、JAX-RSを段階的に学習できます。
+Servlet/JSP、JSF、CDI、JAX-RSを段階的に学習できます。
 
-## 📦 プロジェクト一覧
+## 📁 プロジェクト構成
 
-### Servlet系プロジェクト（3個）
+このリポジトリは複数の技術スタックを含むマルチプロジェクト構成です：
 
-| プロジェクト | 説明 |
-|------------|------|
-| `servlet_jsp` | ServletとJSPの基本 |
-| `servlet_jsp_mvc` | Servlet + JSP MVC パターン |
-| `servlet_session` | セッション管理とCookie |
+```
+jee_micro_vsc/
+├── projects/
+│   ├── java/                    # Jakarta EE (Java) プロジェクト
+│   │   ├── berry-books/         # JSF MVCオンライン書店
+│   │   ├── berry-books-rest/    # JAX-RS REST API
+│   │   ├── jsf_person_rdb/      # JSF + JPA CRUD
+│   │   └── struts_person_rdb/   # Struts 1.3 + EJB
+│   ├── python/                  # Pythonプロジェクト（今後追加予定）
+│   └── react/                   # Reactプロジェクト（今後追加予定）
+│
+├── payara6/                     # Payara Server 6
+├── hsqldb/                      # HSQLDB Database Server
+├── tomee8/                      # Apache TomEE 8 (Struts用)
+│
+├── build.gradle                 # Javaプロジェクト用ビルド設定
+├── settings.gradle              # Gradleマルチプロジェクト設定
+└── env-conf.gradle              # 環境設定
+```
 
-### JSF系プロジェクト（3個）
-
-| プロジェクト | 説明 |
-|------------|------|
-| `jsf_person` | JSFの基本（マネージドBean、Facelets） |
-| `jsf_person_rdb` | JSF + JPA（データベース連携） |
-| `jsf_ajax` | JSF Ajax機能 |
-
-### CDI系プロジェクト（3個）
-
-| プロジェクト | 説明 |
-|------------|------|
-| `cdi_inject` | CDI依存性注入の基本 |
-| `cdi_conversation` | 会話スコープ（@ConversationScoped） |
-| `cdi_transactional` | @Transactional（トランザクション管理） |
-
-### RESTful Webサービス（4個）
-
-| プロジェクト | 説明 |
-|------------|------|
-| `rs_hello_service` | JAX-RS Hello World |
-| `rs_greeting_service` | JAX-RS CRUD操作 |
-| `rs_employee_service` | JAX-RS + JPA（データベース連携） |
-| `person_service` | RESTful API設計の実践 |
-
-## 🚀 クイックスタート
+## 🚀 セットアップとコマンド実行ガイド
 
 ### 前提条件
 
@@ -48,60 +37,93 @@ Jakarta EE 10とPayara Serverを使用したWebアプリケーションの学習
 - **Gradle 8.x以上**
 - **Payara Server 6** (プロジェクトルートの`payara6/`に配置済み)
 - **HSQLDB** (プロジェクトルートの`hsqldb/`に配置済み)
+- **Windows**: Git Bash（Gradleコマンド実行用）
 
-### 初回セットアップ
+> **Note**: すべてのコマンドはbash形式（`./gradlew`）です。WindowsではGit Bashを使用してください。
 
-```powershell
-# 1. 全プロジェクトをビルド
-.\gradlew build
+### ① 研修環境セットアップ後に1回だけ実行
 
-# 2. HSQLDBサーバーを起動（毎回必要）
-.\gradlew startHsqldb
-
-# 3. ドライバをコピー（初回のみ）
-.\gradlew installHsqldbDriver
-
-# 4. Payara Serverを起動（毎回必要）
-.\gradlew startPayara
-
-# 5. データソースを作成（初回のみ）
-.\gradlew createConnectionPool
-.\gradlew createDataSource
-
-# 6. アプリケーションをデプロイ
-.\gradlew :projects:servlet_jsp:deploy
+```bash
+# HSQLDBドライバをPayara Serverにインストール
+./gradlew installHsqldbDriver
 ```
 
-**2回目以降の起動**：
-```powershell
-.\gradlew startHsqldb
-.\gradlew startPayara
+### ② 研修開催につき初回に1回だけ実行
+
+```bash
+# 1. Payara Serverのdomain.xmlを初期化（クリーンな状態にリセット）
+./gradlew initPayaraDomainConfig
+
+# 2. HSQLDBサーバーを起動
+./gradlew startHsqldb
+
+# 3. Payara Serverを起動
+./gradlew startPayara
+
+# 4. データソースをセットアップ（コネクションプール＋データソース作成）
+./gradlew setupDataSource
+
+# または、個別に実行する場合：
+# ./gradlew createConnectionPool
+# ./gradlew createDataSource
 ```
 
-### アプリケーションへのアクセス
+### ③ 研修開催につき最後に1回だけ実行（CleanUp）
 
-```
-http://localhost:8080/servlet_jsp/PersonServlet?personName=Alice
-```
+```bash
+# すべてのアプリケーションをアンデプロイし、データソースを削除
+./gradlew cleanupAll
 
-### ログをリアルタイム監視（別のターミナル）
-
-**Windows (PowerShell):**
-```powershell
-Get-Content -Path payara6\glassfish\domains\domain1\logs\server.log -Wait -Tail 50 -Encoding UTF8
+# サーバーを停止
+./gradlew stopPayara
+./gradlew stopHsqldb
 ```
 
-**Linux/Mac:**
+### ④ プロジェクトを開始するときに1回だけ実行
+
+```bash
+# プロジェクトのデータベーステーブルとデータを作成
+# 例：berry-booksの場合
+./gradlew :projects:java:berry-books:setupHsqldb
+
+# プロジェクトをビルド
+./gradlew :projects:java:berry-books:war
+
+# プロジェクトをデプロイ
+./gradlew :projects:java:berry-books:deploy
+```
+
+### ⑤ プロジェクトを終了するときに1回だけ実行（CleanUp）
+
+```bash
+# プロジェクトをアンデプロイ
+# 例：berry-booksの場合
+./gradlew :projects:java:berry-books:undeploy
+```
+
+### ⑥ アプリケーション作成・更新のたびに実行
+
+```bash
+# アプリケーションを再ビルドして再デプロイ
+# 例：berry-booksの場合
+./gradlew :projects:java:berry-books:war
+./gradlew :projects:java:berry-books:deploy
+```
+
+## 🌐 アプリケーションへのアクセス
+
+プロジェクトごとのアクセスURL例：
+```
+http://localhost:8080/berry-books
+```
+
+## 📊 ログをリアルタイム監視（別のターミナル）
+
 ```bash
 tail -f -n 50 payara6/glassfish/domains/domain1/logs/server.log
 ```
 
-### サーバーの停止
-
-```powershell
-.\gradlew stopPayara
-.\gradlew stopHsqldb
-```
+> **Note**: Windowsでは**Git Bash**を使用してください。
 
 ## 📋 Gradle タスク
 
@@ -122,6 +144,7 @@ tail -f -n 50 payara6/glassfish/domains/domain1/logs/server.log
 | `restartPayara` | Payara Serverを再起動 |
 | `statusPayara` | Payara Serverのステータスを確認 |
 | `killAllJava` | 全てのJavaプロセスを強制終了（緊急時用） |
+| `initPayaraDomainConfig` | domain.xmlを初期状態にリセット（研修開催時に実行） |
 | `setupDataSource` | HSQLDBデータソースをセットアップ（初回向け統合タスク） |
 | `installHsqldbDriver` | HSQLDBドライバをPayara Serverにコピー（初回のみ） |
 | `createConnectionPool` | JDBCコネクションプールを作成 |
@@ -163,15 +186,12 @@ tail -f -n 50 payara6/glassfish/domains/domain1/logs/server.log
 
 コマンドラインからSQLを実行する場合は、SqlToolを使用します：
 
-**Windows (PowerShell):**
-```powershell
-java -cp "hsqldb\lib\hsqldb.jar;hsqldb\lib\sqltool.jar" org.hsqldb.cmdline.SqlTool --rcFile hsqldb\sqltool.rc testdb
-```
-
-**Linux/Mac:**
 ```bash
+# Windows (Git Bash) / macOS / Linux
 java -cp "hsqldb/lib/hsqldb.jar:hsqldb/lib/sqltool.jar" org.hsqldb.cmdline.SqlTool --rcFile hsqldb/sqltool.rc testdb
 ```
+
+> **Note**: Windowsでは**Git Bash**を使用してください。PowerShellの場合は、クラスパス区切りを`;`に、パス区切りを`\`に変更する必要があります。
 
 接続設定は`hsqldb/sqltool.rc`に記述されています。
 
@@ -195,13 +215,13 @@ SELECT * FROM PERSON;
 
 研修終了時に環境をクリーンアップするには：
 
-```powershell
+```bash
 # すべてのアプリ、データソース、コネクションプールを削除
-.\gradlew cleanupAll
+./gradlew cleanupAll
 
 # サーバーを停止
-.\gradlew stopPayara
-.\gradlew stopHsqldb
+./gradlew stopPayara
+./gradlew stopHsqldb
 ```
 
 ## 🔧 使用技術
@@ -224,40 +244,57 @@ SELECT * FROM PERSON;
 ## 📚 ドキュメント
 
 - **[設定ファイル](env-conf.gradle)** - Payara ServerとHSQLDB Database環境設定
+- **[domain.xml.template](payara6/glassfish/domains/domain1/config/domain.xml.template)** - Payara Serverのクリーンな初期設定（Git管理対象）
+- **[server.xml.template](tomee8/conf/server.xml.template)** - TomEE 8のクリーンな初期設定（Git管理対象）
 - **各プロジェクトのREADME.md** - プロジェクト固有の詳細情報
+
+### 設定ファイルのテンプレート管理について
+
+#### Payara Server - domain.xml
+
+- **`domain.xml.template`**: Git管理対象の初期設定ファイル（デプロイ情報・データソース設定なし）
+- **`domain.xml`**: 実行時に使用される設定ファイル（Git管理対象外、実行時に動的に変更される）
+- 研修開催時に`initPayaraDomainConfig`タスクでテンプレートから初期化される
+
+#### TomEE 8 - server.xml
+
+- **`server.xml.template`**: Git管理対象の初期設定ファイル（デフォルトポート8080）
+- **`server.xml`**: 実行時に使用される設定ファイル（Git管理対象外、`configureTomee8Ports`で動的に変更される）
+- 研修開催時に`initTomee8Config`タスクでテンプレートから初期化される
+- **`tomee.xml`**: データソース設定（Git管理対象、手動で設定済み）
 
 ## 🐛 トラブルシューティング
 
 ### Payara Serverが起動しない
 
 Payara Serverのドメインステータスを確認：
-```powershell
-.\gradlew statusPayara
+```bash
+./gradlew statusPayara
 ```
 
 既存のドメインをクリーンアップして再起動：
-```powershell
-.\gradlew stopPayara
-.\gradlew startPayara
+```bash
+./gradlew stopPayara
+./gradlew startPayara
 ```
 
 プロセスが残っている場合（緊急時）：
-```powershell
+```bash
 # 全てのJavaプロセスを強制終了（Gradleも含む）
-.\gradlew killAllJava
+./gradlew killAllJava
 ```
 
 ### データベース接続エラー
 
 1. HSQLDB Databaseサーバーが起動していることを確認：
-```powershell
-.\gradlew startHsqldb
+```bash
+./gradlew startHsqldb
 ```
 
 2. データソースがセットアップされていることを確認：
-```powershell
-.\gradlew setupDataSource
-.\gradlew pingConnectionPool
+```bash
+./gradlew setupDataSource
+./gradlew pingConnectionPool
 ```
 
 3. `env-conf.gradle`の接続情報を確認
@@ -265,14 +302,14 @@ Payara Serverのドメインステータスを確認：
 ### デプロイエラー
 
 アプリケーションをアンデプロイしてから再デプロイ：
-```powershell
-.\gradlew :projects:servlet_jsp:undeploy
-.\gradlew :projects:servlet_jsp:deploy
+```bash
+./gradlew :projects:java:berry-books:undeploy
+./gradlew :projects:java:berry-books:deploy
 ```
 
 ### ビルドエラー
 
 クリーンビルドを実行：
-```powershell
-.\gradlew clean build
+```bash
+./gradlew clean build
 ```

@@ -93,7 +93,7 @@
     <managed-bean>
         <description></description>
     	<managed-bean-name>JavaHelpBean</managed-bean-name>
-    	<managed-bean-class>com.sun.webui.jsf.bean.HelpBackingBean</managed-bean-class>
+    	<managed-bean-class>com.sun.webui.jsf.bean.HelpバッキングBean</managed-bean-class>
     	<managed-bean-scope>request</managed-bean-scope>
     </managed-bean> 
 
