@@ -13,6 +13,7 @@
 !/payara6/glassfish/domains/domain1/docroot/.gitkeep
 /payara6/glassfish/domains/domain1/config/**
 !/payara6/glassfish/domains/domain1/config/.gitkeep
+!/payara6/glassfish/domains/domain1/config/domain.xml.template
 /payara6/glassfish/domains/domain1/endpoints/**
 !/payara6/glassfish/domains/domain1/endpoints/.gitkeep
 /payara6/glassfish/domains/domain1/init-info/**
