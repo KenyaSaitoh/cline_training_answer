@@ -12,7 +12,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 
-// 豕ｨ譁・・邏ｰ繝・・繝悶Ν縺ｸ縺ｮ繧｢繧ｯ繧ｻ繧ｹ繧定｡後≧DAO繧ｯ繝ｩ繧ｹ
+// ?????????????????DAO???
 @ApplicationScoped
 public class OrderDetailDao {
     private static final Logger logger = LoggerFactory.getLogger(
@@ -21,13 +21,13 @@ public class OrderDetailDao {
     @PersistenceContext(unitName = "bookstorePU")
     private EntityManager em;
 
-    // DAO繝｡繧ｽ繝・ラ・壽ｳｨ譁・・邏ｰ繧剃ｸｻ繧ｭ繝ｼ縺ｧ讀懃ｴ｢
+    // DAO????????????????
     public OrderDetail findById(OrderDetailPK id) {
         logger.info("[ OrderDetailDao#findById ]");
         return em.find(OrderDetail.class, id);
     }
 
-    // DAO繝｡繧ｽ繝・ラ・壽ｳｨ譁⑩D縺ｧ豕ｨ譁・・邏ｰ繝ｪ繧ｹ繝医ｒ讀懃ｴ｢
+    // DAO???????ID???????????
     public List<OrderDetail> findByOrderTranId(Integer orderTranId) {
         logger.info("[ OrderDetailDao#findByOrderTranId ]");
         
@@ -39,13 +39,11 @@ public class OrderDetailDao {
         return query.getResultList();
     }
 
-    // DAO繝｡繧ｽ繝・ラ・壽ｳｨ譁・・邏ｰ繧剃ｿ晏ｭ・
+    // DAO????????????
     public void persist(OrderDetail orderDetail) {
         logger.info("[ OrderDetailDao#persist ]");
         em.persist(orderDetail);
-        // 蜊ｳ蠎ｧ縺ｫINSERT繧貞ｮ溯｡後＠縺ｦ繝・・繧ｿ繝吶・繧ｹ縺ｫ蜿肴丐
+        // ???INSERT??????????????
         em.flush();
     }
 }
-
-

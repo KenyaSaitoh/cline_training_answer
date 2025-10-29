@@ -14,7 +14,7 @@ import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
-// 繧ｷ繝ｧ繝・ヴ繝ｳ繧ｰ繧ｫ繝ｼ繝域桃菴懊・繝舌ャ繧ｭ繝ｳ繧ｰBean
+// ?????????????????Bean
 @Named
 @SessionScoped
 public class CartBean implements Serializable {
@@ -34,13 +34,13 @@ public class CartBean implements Serializable {
     @Inject
     private DeliveryFeeService deliveryFeeService;
 
-    // 繧｢繧ｯ繧ｷ繝ｧ繝ｳ・壽嶌邀阪ｒ繧ｫ繝ｼ繝医↓霑ｽ蜉
+    // ???????????????
     public String addBook(Integer bookId, Integer count) {
         logger.info("[ CartBean#addBook ] bookId=" + bookId + ", count=" + count);
 
         Book book = bookService.getBook(bookId);
 
-        // 驕ｸ謚槭＆繧後◆譖ｸ邀阪′繧ｫ繝ｼ繝医↓蟄伜惠縺励※縺・ｋ蝣ｴ蜷医・縲∵ｳｨ譁・焚縺ｨ驥鷹｡阪ｒ蜉邂励☆繧・
+        // ?????????????????????????????????
         boolean isExists = false;
         for (CartItem cartItem : cartSession.getCartItems()) {
             if (bookId.equals(cartItem.getBookId())) {
@@ -51,7 +51,7 @@ public class CartBean implements Serializable {
             }
         }
 
-        // 驕ｸ謚槭＆繧後◆譖ｸ邀阪′繧ｫ繝ｼ繝医↓蟄伜惠縺励※縺・↑縺・ｴ蜷医・縲∵眠縺励＞CartItem繧堤函謌舌＠繧ｫ繝ｼ繝医↓霑ｽ蜉縺吶ｋ
+        // ??????????????????????????CartItem????????????
         if (!isExists) {
             CartItem cartItem = new CartItem(
                     book.getBookId(),
@@ -63,18 +63,18 @@ public class CartBean implements Serializable {
             cartSession.getCartItems().add(cartItem);
         }
 
-        // 蜷郁ｨ磯≡鬘阪ｒ蜉邂励☆繧・
+        // ???????????
         BigDecimal totalPrice = cartSession.getTotalPrice();
         cartSession.setTotalPrice(totalPrice.add(book.getPrice()));
 
         return "cartView?faces-redirect=true";
     }
 
-    // 繧｢繧ｯ繧ｷ繝ｧ繝ｳ・夐∈謚槭＠縺滓嶌邀阪ｒ繧ｫ繝ｼ繝医°繧牙炎髯､
+    // ????????????????????
     public String removeSelectedBooks() {
         logger.info("[ CartBean#removeSelectedBooks ]");
         
-        // 驕ｸ謚槭＆繧後◆譖ｸ邀阪ｒ蜑企勁縺励∝粋險磯≡鬘阪ｒ蜀崎ｨ育ｮ・
+        // ??????????????????????
         cartSession.getCartItems().removeIf(item -> {
             if (item.isRemove()) {
                 BigDecimal totalPrice = cartSession.getTotalPrice();
@@ -87,7 +87,7 @@ public class CartBean implements Serializable {
         return null;
     }
 
-    // 繧｢繧ｯ繧ｷ繝ｧ繝ｳ・壹き繝ｼ繝医ｒ繧ｯ繝ｪ繧｢
+    // ?????????????
     public String clearCart() {
         logger.info("[ CartBean#clearCart ]");
         cartSession.getCartItems().clear();
@@ -96,7 +96,7 @@ public class CartBean implements Serializable {
         return "cartClear?faces-redirect=true";
     }
 
-    // 繧｢繧ｯ繧ｷ繝ｧ繝ｳ・壹き繝ｼ繝医・蜀・ｮｹ繧堤｢ｺ螳壹☆繧・
+    // ?????????????????
     public String proceedToOrder() {
         logger.info("[ CartBean#proceedToOrder ]");
         
@@ -104,13 +104,13 @@ public class CartBean implements Serializable {
             return null;
         }
 
-        // 繝・ヵ繧ｩ繝ｫ繝医・驟埼∝・菴乗園縺ｨ縺励※縲・｡ｧ螳｢縺ｮ菴乗園繧定ｨｭ螳壹☆繧・
+        // ?????????????????????????
         if (customerBean.getCustomer() != null) {
             cartSession.setDeliveryAddress(customerBean.getCustomer().getAddress());
         }
 
-        // 驟埼∵侭驥代ｒ險育ｮ励☆繧・
-        // 窶ｻ騾壼ｸｸ800蜀・∵ｲ也ｸ・恁縺ｯ1700蜀・・000蜀・ｻ･荳翫・騾∵侭辟｡譁・
+        // ????????
+        // ???800?????1700??5000????????
         BigDecimal deliveryPrice = deliveryFeeService.calculateDeliveryFee(
                 cartSession.getDeliveryAddress(), 
                 cartSession.getTotalPrice());
@@ -119,20 +119,20 @@ public class CartBean implements Serializable {
         return "bookOrder?faces-redirect=true";
     }
 
-    // 繧｢繧ｯ繧ｷ繝ｧ繝ｳ・壹き繝ｼ繝医ｒ蜿ら・縺吶ｋ
+    // ??????????????
     public String viewCart() {
         logger.info("[ CartBean#viewCart ]");
 
-        // 繧ｫ繝ｼ繝医↓蝠・刀縺御ｸ縺､繧ょ・縺｣縺ｦ縺・↑縺九▲縺溷ｴ蜷医・縲√お繝ｩ繝ｼ繝｡繝・そ繝ｼ繧ｸ繧定ｨｭ螳・
+        // ????????????????????????????????
         if (cartSession.getCartItems().size() == 0) {
-            logger.info("[ CartBean#viewCart ] 繧ｫ繝ｼ繝医↓蝠・刀縺ｪ縺励お繝ｩ繝ｼ");
-            globalErrorMessage = "繧ｫ繝ｼ繝医↓蝠・刀縺悟・縺｣縺ｦ縺・∪縺帙ｓ";
+            logger.info("[ CartBean#viewCart ] ???????????");
+            globalErrorMessage = "?????????????";
         }
 
         return "cartView?faces-redirect=true";
     }
 
-    // 繧ｰ繝ｭ繝ｼ繝舌Ν繧ｨ繝ｩ繝ｼ繝｡繝・そ繝ｼ繧ｸ
+    // ?????????????
     private String globalErrorMessage;
 
     public String getGlobalErrorMessage() {
@@ -143,7 +143,7 @@ public class CartBean implements Serializable {
         this.globalErrorMessage = globalErrorMessage;
     }
 
-    // CartSession縺ｸ縺ｮ蟋碑ｭｲ繝｡繧ｽ繝・ラ
+    // CartSession????????
     public BigDecimal getTotalPrice() {
         return cartSession.getTotalPrice();
     }
@@ -156,4 +156,3 @@ public class CartBean implements Serializable {
         return cartSession.getCartItems().isEmpty();
     }
 }
-

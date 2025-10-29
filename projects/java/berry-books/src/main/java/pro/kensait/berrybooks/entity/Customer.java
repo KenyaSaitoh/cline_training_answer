@@ -9,7 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-// 顧客を表すエンチE��チE��クラス
+// ??????????????
 @Entity
 @Table(name = "CUSTOMER")
 public class Customer {
@@ -99,4 +99,3 @@ public class Customer {
                 + ", email=" + email + ", birthday=" + birthday + ", address=" + address + "]";
     }
 }
-

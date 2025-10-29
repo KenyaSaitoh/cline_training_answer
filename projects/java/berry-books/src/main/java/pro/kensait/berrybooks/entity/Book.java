@@ -12,51 +12,51 @@ import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.SecondaryTable;
 import jakarta.persistence.Table;
 
-// 譖ｸ邀阪ｒ陦ｨ縺吶お繝ｳ繝・ぅ繝・ぅ繧ｯ繝ｩ繧ｹ
+// ??????????????
 @Entity
 @Table(name = "BOOK")
 @SecondaryTable(name = "STOCK",
         pkJoinColumns = @PrimaryKeyJoinColumn(name = "BOOK_ID"))
 public class Book implements Serializable {
     private static final long serialVersionUID = 1L;
-    // 譖ｸ邀巧D
+    // ??ID
     @Id
     @Column(name = "BOOK_ID")
     private Integer bookId;
 
-    // 譖ｸ邀榊錐
+    // ???
     @Column(name = "BOOK_NAME")
     private String bookName;
 
-    // 闡苓・
+    // ??
     @Column(name = "AUTHOR")
     private String author;
 
-    // 繧ｫ繝・ざ繝ｪ
+    // ????
     @ManyToOne(targetEntity = Category.class)
     @JoinColumn(name = "CATEGORY_ID",
             referencedColumnName = "CATEGORY_ID")
     private Category category;
 
-    // 蜃ｺ迚育､ｾ
+    // ???
     @ManyToOne(targetEntity = Publisher.class)
     @JoinColumn(name = "PUBLISHER_ID",
             referencedColumnName = "PUBLISHER_ID")
     private Publisher publisher;
 
-    // 萓｡譬ｼ
+    // ??
     @Column(name = "PRICE")
     private BigDecimal price;
 
-    // 蝨ｨ蠎ｫ謨ｰ
+    // ???
     @Column(table = "STOCK", name = "QUANTITY")
     private Integer quantity;
 
-    // 蠑墓焚縺ｪ縺励・繧ｳ繝ｳ繧ｹ繝医Λ繧ｯ繧ｿ
+    // ???????????
     public Book() {
     }
 
-    // 繧ｳ繝ｳ繧ｹ繝医Λ繧ｯ繧ｿ
+    // ???????
     public Book(Integer bookId, String bookName, String author, Category category, 
             Publisher publisher, BigDecimal price, Integer quantity) {
         this.bookId = bookId;

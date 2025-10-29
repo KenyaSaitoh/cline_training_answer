@@ -11,7 +11,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 
-// 繧ｫ繝・ざ繝ｪ繝・・繝悶Ν縺ｸ縺ｮ繧｢繧ｯ繧ｻ繧ｹ繧定｡後≧DAO繧ｯ繝ｩ繧ｹ
+// ?????????????????DAO???
 @ApplicationScoped
 public class CategoryDao {
     private static final Logger logger = LoggerFactory.getLogger(
@@ -20,13 +20,13 @@ public class CategoryDao {
     @PersistenceContext(unitName = "bookstorePU")
     private EntityManager em;
 
-    // DAO繝｡繧ｽ繝・ラ・壹き繝・ざ繝ｪ繧剃ｸｻ繧ｭ繝ｼ縺ｧ讀懃ｴ｢
+    // DAO????????????????
     public Category findById(Integer categoryId) {
         logger.info("[ CategoryDao#findById ]");
         return em.find(Category.class, categoryId);
     }
 
-    // DAO繝｡繧ｽ繝・ラ・壼・繧ｫ繝・ざ繝ｪ繧貞叙蠕・
+    // DAO?????????????
     public List<Category> findAll() {
         logger.info("[ CategoryDao#findAll ]");
         
@@ -36,5 +36,3 @@ public class CategoryDao {
         return query.getResultList();
     }
 }
-
-

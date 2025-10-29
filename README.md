@@ -186,12 +186,19 @@ tail -f -n 50 payara6/glassfish/domains/domain1/logs/server.log
 
 コマンドラインからSQLを実行する場合は、SqlToolを使用します：
 
+**Windows PowerShell / CMD の場合:**
+```powershell
+java -cp "hsqldb\lib\hsqldb.jar;hsqldb\lib\sqltool.jar" org.hsqldb.cmdline.SqlTool --rcFile hsqldb\sqltool.rc testdb
+```
+
+**Git Bash / macOS / Linux の場合:**
 ```bash
-# Windows (Git Bash) / macOS / Linux
 java -cp "hsqldb/lib/hsqldb.jar:hsqldb/lib/sqltool.jar" org.hsqldb.cmdline.SqlTool --rcFile hsqldb/sqltool.rc testdb
 ```
 
-> **Note**: Windowsでは**Git Bash**を使用してください。PowerShellの場合は、クラスパス区切りを`;`に、パス区切りを`\`に変更する必要があります。
+> **重要**: 
+> - **PowerShell/CMD**: クラスパス区切りは `;`、パス区切りは `\`
+> - **Git Bash/Unix**: クラスパス区切りは `:`、パス区切りは `/`
 
 接続設定は`hsqldb/sqltool.rc`に記述されています。
 

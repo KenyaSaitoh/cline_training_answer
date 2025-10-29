@@ -14,52 +14,52 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
-// 豕ｨ譁・ｒ陦ｨ縺吶お繝ｳ繝・ぅ繝・ぅ繧ｯ繝ｩ繧ｹ
+// ??????????????
 @Entity
 @Table(name = "ORDER_TRAN")
 public class OrderTran implements Serializable {
     private static final long serialVersionUID = 1L;
-    // 豕ｨ譁⑩D
+    // ??ID
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "ORDER_TRAN_ID")
     private Integer orderTranId;
 
-    // 豕ｨ譁・律莉・
+    // ????
     @Column(name = "ORDER_DATE")
     private LocalDate orderDate;
 
-    // 鬘ｧ螳｢
+    // ??
     @Column(name = "CUSTOMER_ID")
     private Integer customerId;
 
-    // 豕ｨ譁・・邏ｰ
+    // ????
     @OneToMany(targetEntity = OrderDetail.class,
             mappedBy = "orderTran",
             fetch = FetchType.EAGER)
     private List<OrderDetail> orderDetails;
 
-    // 豕ｨ譁・≡鬘榊粋險・
+    // ??????
     @Column(name = "TOTAL_PRICE")
     private BigDecimal totalPrice;
 
-    // 驟埼∵侭驥・
+    // ???
     @Column(name = "DELIVERY_PRICE")
     private BigDecimal deliveryPrice;
 
-    // 驟埼∝・菴乗園
+    // ?????
     @Column(name = "DELIVERY_ADDRESS")
     private String deliveryAddress;
 
-    // 豎ｺ貂域婿豕輔∈縺ｮ繧｢繧ｯ繧ｻ繧ｵ繝｡繧ｽ繝・ラ
+    // ??????????????
     @Column(name = "SETTLEMENT_TYPE")
     private Integer settlementType;
 
-    // 蠑墓焚縺ｪ縺励・繧ｳ繝ｳ繧ｹ繝医Λ繧ｯ繧ｿ
+    // ???????????
     public OrderTran() {
     }
 
-    // 繧ｳ繝ｳ繧ｹ繝医Λ繧ｯ繧ｿ
+    // ???????
     public OrderTran(LocalDate orderDate, Integer customerId, BigDecimal totalPrice, 
             BigDecimal deliveryPrice, String deliveryAddress, Integer settlementType) {
         this.orderDate = orderDate;

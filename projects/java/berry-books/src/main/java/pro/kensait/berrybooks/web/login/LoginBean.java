@@ -16,7 +16,7 @@ import jakarta.inject.Named;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-// ログイン画面のバッキングBean
+// ????????????Bean
 @Named
 @SessionScoped
 public class LoginBean implements Serializable {
@@ -30,18 +30,18 @@ public class LoginBean implements Serializable {
     @Inject
     private CustomerBean customerBean;
 
-    // ログインフォームの入力値
-    @NotBlank(message = "メールアドレスを�E力してください")
-    @Email(message = "有効なメールアドレスを�E力してください")
+    // ????????????
+    @NotBlank(message = "????????????????")
+    @Email(message = "???????????????????")
     private String email;
     
-    @NotBlank(message = "パスワードを入力してください")
+    @NotBlank(message = "??????????????")
     private String password;
 
-    // ログイン済みフラグ
+    // ?????????
     private boolean loggedIn = false;
 
-    // ログイン処琁E
+    // ??????
     public String processLogin() {
         logger.info("[ LoginBean#processLogin ] email=" + email);
 
@@ -51,37 +51,37 @@ public class LoginBean implements Serializable {
             if (customer == null) {
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                "ログインに失敗しました",
-                                "メールアドレスまた�Eパスワードが正しくありません"));
+                                "???????????",
+                                "????????????????????????"));
                 return null;
             }
 
-            // CustomerBeanに顧客惁E��を設宁E
+            // CustomerBean????????
             customerBean.setCustomer(customer);
             loggedIn = true;
 
             logger.info("Login successful: " + customer.getCustomerName());
             
-            // 書籍選択�Eージへ遷移
+            // ??????????
             return "bookSelect?faces-redirect=true";
 
         } catch (Exception e) {
             logger.error("Login error", e);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "エラーが発生しました", e.getMessage()));
+                            "??????????", e.getMessage()));
             return null;
         }
     }
 
-    // ログアウト�E琁E
+    // ???????
     public String processLogout() {
         logger.info("[ LoginBean#processLogout ]");
         
-        // セチE��ョンを無効匁E
+        // ?????????
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
         
-        // トップ�Eージへ遷移
+        // ?????????
         return "index?faces-redirect=true";
     }
 
@@ -106,4 +106,3 @@ public class LoginBean implements Serializable {
         return loggedIn;
     }
 }
-

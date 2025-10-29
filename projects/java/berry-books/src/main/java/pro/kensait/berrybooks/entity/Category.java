@@ -7,25 +7,25 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-// 繧ｫ繝・ざ繝ｪ繧定｡ｨ縺吶お繝ｳ繝・ぅ繝・ぅ繧ｯ繝ｩ繧ｹ
+// ????????????????
 @Entity
 @Table(name = "CATEGORY")
 public class Category implements Serializable {
     private static final long serialVersionUID = 1L;
-    // 繧ｫ繝・ざ繝ｪID
+    // ????ID
     @Id
     @Column(name = "CATEGORY_ID")
     private Integer categoryId;
 
-    // 繧ｫ繝・ざ繝ｪ蜷・
+    // ?????
     @Column(name = "CATEGORY_NAME")
     private String categoryName;
 
-    // 蠑墓焚縺ｪ縺励・繧ｳ繝ｳ繧ｹ繝医Λ繧ｯ繧ｿ
+    // ???????????
     public Category() {
     }
     
-    // 繧ｳ繝ｳ繧ｹ繝医Λ繧ｯ繧ｿ
+    // ???????
     public Category(Integer categoryId, String categoryName) {
         this.categoryId = categoryId;
         this.categoryName = categoryName;

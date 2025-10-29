@@ -58,6 +58,11 @@ public class BerryBooksSwingApp extends JFrame {
         customerTable.setFont(new Font("MS Gothic", Font.PLAIN, 14));
         customerTable.getTableHeader().setFont(new Font("MS Gothic", Font.BOLD, 14));
         customerTable.getTableHeader().setReorderingAllowed(false);
+        
+        // 罫線の表示設定
+        customerTable.setShowGrid(true);
+        customerTable.setGridColor(new Color(200, 200, 200));
+        customerTable.setIntercellSpacing(new Dimension(1, 1));
 
         // 列幅設定
         customerTable.getColumnModel().getColumn(0).setPreferredWidth(80);  // 顧客ID
@@ -72,6 +77,7 @@ public class BerryBooksSwingApp extends JFrame {
         // 中央揃え（数値列）
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        centerRenderer.setBorder(BorderFactory.createEmptyBorder()); // 罫線を維持
         customerTable.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
         customerTable.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
         customerTable.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
@@ -139,7 +145,10 @@ public class BerryBooksSwingApp extends JFrame {
         customer.setCustomerId(customerId);
         customer.setCustomerName(customerName);
         customer.setEmail(email);
-        customer.setBirthDate(java.time.LocalDate.parse(birthDateStr, DateTimeFormatter.ofPattern("yyyy/MM/dd")));
+        // 誕生日が空でない場合のみパース
+        if (birthDateStr != null && !birthDateStr.isEmpty()) {
+            customer.setBirthDate(java.time.LocalDate.parse(birthDateStr, DateTimeFormatter.ofPattern("yyyy/MM/dd")));
+        }
         customer.setAddress(address);
         customer.setOrderCount(orderCount);
         customer.setBookCount(bookCount);
@@ -149,10 +158,13 @@ public class BerryBooksSwingApp extends JFrame {
 
         if (dialog.isConfirmed()) {
             // APIで更新
+            String birthDateForUpdate = customer.getBirthDate() != null 
+                ? customer.getBirthDate().format(DateTimeFormatter.ISO_LOCAL_DATE) 
+                : null;
             CustomerTO customerTO = new CustomerTO(
                 customer.getCustomerName(),
                 customer.getEmail(),
-                customer.getBirthDate().format(DateTimeFormatter.ISO_LOCAL_DATE),
+                birthDateForUpdate,
                 customer.getAddress()
             );
 
@@ -186,12 +198,16 @@ public class BerryBooksSwingApp extends JFrame {
     class ButtonRenderer extends JButton implements javax.swing.table.TableCellRenderer {
         public ButtonRenderer() {
             setOpaque(true);
+            setFocusPainted(false);
+            setBorderPainted(true);
         }
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
                 boolean isSelected, boolean hasFocus, int row, int column) {
             setText((value == null) ? "編集" : value.toString());
+            setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
+            setForeground(isSelected ? table.getSelectionForeground() : table.getForeground());
             return this;
         }
     }

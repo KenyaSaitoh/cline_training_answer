@@ -13,7 +13,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 
-// 豕ｨ譁・ユ繝ｼ繝悶Ν縺ｸ縺ｮ繧｢繧ｯ繧ｻ繧ｹ繧定｡後≧DAO繧ｯ繝ｩ繧ｹ
+// ???????????????DAO???
 @ApplicationScoped
 public class OrderTranDao {
     private static final Logger logger = LoggerFactory.getLogger(
@@ -22,24 +22,24 @@ public class OrderTranDao {
     @PersistenceContext(unitName = "bookstorePU")
     private EntityManager em;
 
-    // DAO繝｡繧ｽ繝・ラ・壽ｳｨ譁・ｒ荳ｻ繧ｭ繝ｼ縺ｧ讀懃ｴ｢
+    // DAO??????????????
     public OrderTran findById(Integer orderTranId) {
         logger.info("[ OrderTranDao#findById ]");
         return em.find(OrderTran.class, orderTranId);
     }
 
-    // DAO繝｡繧ｽ繝・ラ・壽ｳｨ譁・ｒ荳ｻ繧ｭ繝ｼ縺ｧ讀懃ｴ｢・域・邏ｰ蜷ｫ繧・・
+    // DAO????????????????????
     public OrderTran findByIdWithDetails(Integer orderTranId) {
         logger.info("[ OrderTranDao#findByIdWithDetails ] orderTranId=" + orderTranId);
         
-        // EntityManager繧偵け繝ｪ繧｢縺励※繧ｭ繝｣繝・す繝･繧偵け繝ｪ繧｢
+        // EntityManager???????????????
         em.clear();
         
-        // OrderTran繧貞叙蠕暦ｼ・AGER繝ｭ繝ｼ繝峨↓繧医ｊ譏守ｴｰ繧り・蜍慕噪縺ｫ蜿門ｾ励＆繧後ｋ・・
+        // OrderTran????EAGER???????????????????
         return em.find(OrderTran.class, orderTranId);
     }
 
-    // DAO繝｡繧ｽ繝・ラ・夐｡ｧ螳｢ID縺ｧ豕ｨ譁・ｱ･豁ｴ繧呈､懃ｴ｢
+    // DAO???????ID????????
     public List<OrderTran> findByCustomerId(Integer customerId) {
         logger.info("[ OrderTranDao#findByCustomerId ]");
         
@@ -54,7 +54,7 @@ public class OrderTranDao {
         return query.getResultList();
     }
 
-    // DAO繝｡繧ｽ繝・ラ・夐｡ｧ螳｢ID縺ｧ豕ｨ譁・ｱ･豁ｴ繧呈､懃ｴ｢・郁ｩｳ邏ｰDTO菴ｿ逕ｨ・・
+    // DAO???????ID???????????DTO???
     public List<OrderHistoryTO> findOrderHistoryByCustomerId(Integer customerId) {
         logger.info("[ OrderTranDao#findOrderHistoryByCustomerId ]");
         
@@ -74,7 +74,7 @@ public class OrderTranDao {
         return query.getResultList();
     }
 
-    // DAO繝｡繧ｽ繝・ラ・夐｡ｧ螳｢ID縺ｧ豕ｨ譁・ｱ･豁ｴ繧呈､懃ｴ｢・医し繝槭Μ繝ｼDTO菴ｿ逕ｨ・・
+    // DAO???????ID????????????DTO???
     public List<OrderSummaryTO> findOrderSummaryByCustomerId(Integer customerId) {
         logger.info("[ OrderTranDao#findOrderSummaryByCustomerId ]");
         
@@ -91,7 +91,7 @@ public class OrderTranDao {
         return query.getResultList();
     }
 
-    // DAO繝｡繧ｽ繝・ラ・夐｡ｧ螳｢ID縺ｧ豕ｨ譁・ｱ･豁ｴ繧呈､懃ｴ｢・域・邏ｰ蜷ｫ繧・・
+    // DAO???????ID??????????????
     public List<OrderTran> findByCustomerIdWithDetails(Integer customerId) {
         logger.info("[ OrderTranDao#findByCustomerIdWithDetails ]");
         
@@ -107,13 +107,11 @@ public class OrderTranDao {
         return query.getResultList();
     }
 
-    // DAO繝｡繧ｽ繝・ラ・壽ｳｨ譁・ｒ菫晏ｭ・
+    // DAO??????????
     public void persist(OrderTran orderTran) {
         logger.info("[ OrderTranDao#persist ]");
         em.persist(orderTran);
-        // IDENTITY繧ｹ繝医Λ繝・ず繝ｼ縺ｧID繧堤｢ｺ螳溘↓逕滓・縺吶ｋ縺溘ａ縺ｫflush
+        // IDENTITY???????ID???????????flush
         em.flush();
     }
 }
-
-

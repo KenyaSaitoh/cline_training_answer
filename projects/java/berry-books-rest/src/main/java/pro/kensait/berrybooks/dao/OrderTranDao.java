@@ -11,7 +11,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 
-// 豕ｨ譁・ユ繝ｼ繝悶Ν縺ｸ縺ｮ繧｢繧ｯ繧ｻ繧ｹ繧定｡後≧DAO繧ｯ繝ｩ繧ｹ
+// ???????????????DAO???
 @ApplicationScoped
 public class OrderTranDao {
     private static final Logger logger = LoggerFactory.getLogger(
@@ -20,7 +20,7 @@ public class OrderTranDao {
     @PersistenceContext(unitName = "bookstorePU")
     private EntityManager em;
 
-    // DAO繝｡繧ｽ繝・ラ・夐｡ｧ螳｢ID縺ｧ豕ｨ譁・ｱ･豁ｴ繧貞叙蠕・
+    // DAO???????ID????????
     public List<OrderTran> findByCustomerId(Integer customerId) {
         logger.info("[ OrderTranDao#findByCustomerId ]");
         
@@ -32,7 +32,7 @@ public class OrderTranDao {
         return query.getResultList();
     }
 
-    // DAO繝｡繧ｽ繝・ラ・夐｡ｧ螳｢ID縺ｧ豕ｨ譁・ｻｶ謨ｰ繧貞叙蠕・
+    // DAO???????ID????????
     public Long countOrdersByCustomerId(Integer customerId) {
         logger.info("[ OrderTranDao#countOrdersByCustomerId ]");
         
@@ -44,7 +44,7 @@ public class OrderTranDao {
         return query.getSingleResult();
     }
 
-    // DAO繝｡繧ｽ繝・ラ・夐｡ｧ螳｢ID縺ｧ雉ｼ蜈･蜀頑焚縺ｮ蜷郁ｨ医ｒ蜿門ｾ・
+    // DAO???????ID???????????
     public Long sumBookCountByCustomerId(Integer customerId) {
         logger.info("[ OrderTranDao#sumBookCountByCustomerId ]");
         
@@ -57,4 +57,3 @@ public class OrderTranDao {
         return query.getSingleResult();
     }
 }
-

@@ -12,7 +12,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 
-// 鬘ｧ螳｢繝・・繝悶Ν縺ｸ縺ｮ繧｢繧ｯ繧ｻ繧ｹ繧定｡後≧DAO繧ｯ繝ｩ繧ｹ
+// ???????????????DAO???
 @ApplicationScoped
 public class CustomerDao {
     private static final Logger logger = LoggerFactory.getLogger(
@@ -21,13 +21,13 @@ public class CustomerDao {
     @PersistenceContext(unitName = "bookstorePU")
     private EntityManager em;
 
-    // DAO繝｡繧ｽ繝・ラ・夐｡ｧ螳｢繧剃ｸｻ繧ｭ繝ｼ縺ｧ讀懃ｴ｢
+    // DAO??????????????
     public Customer findById(Integer customerId) {
         logger.info("[ CustomerDao#findById ]");
         return em.find(Customer.class, customerId);
     }
 
-    // DAO繝｡繧ｽ繝・ラ・夐｡ｧ螳｢繧偵Γ繝ｼ繝ｫ繧｢繝峨Ξ繧ｹ縺ｧ讀懃ｴ｢
+    // DAO??????????????????
     public Customer findCustomerByEmail(String email) {
         logger.info("[ CustomerDao#findCustomerByEmail ]");
         
@@ -39,7 +39,7 @@ public class CustomerDao {
         return results.isEmpty() ? null : results.get(0);
     }
 
-    // DAO繝｡繧ｽ繝・ラ・夊ｪ慕函譌･莉･髯阪・鬘ｧ螳｢繧呈､懃ｴ｢
+    // DAO????????????????
     public List<Customer> searchCustomersFromBirthday(LocalDate from) {
         logger.info("[ CustomerDao#searchCustomersFromBirthday ]");
         
@@ -50,25 +50,25 @@ public class CustomerDao {
         return query.getResultList();
     }
 
-    // DAO繝｡繧ｽ繝・ラ・夐｡ｧ螳｢繧呈眠隕冗匳骭ｲ
+    // DAO????????????
     public void persist(Customer customer) {
         logger.info("[ CustomerDao#persist ]");
         em.persist(customer);
     }
 
-    // DAO繝｡繧ｽ繝・ラ・夐｡ｧ螳｢繧呈峩譁ｰ
+    // DAO??????????
     public Customer merge(Customer customer) {
         logger.info("[ CustomerDao#merge ]");
         return em.merge(customer);
     }
 
-    // DAO繝｡繧ｽ繝・ラ・夐｡ｧ螳｢繧貞炎髯､
+    // DAO??????????
     public void remove(Customer customer) {
         logger.info("[ CustomerDao#remove ]");
         em.remove(customer);
     }
 
-    // DAO繝｡繧ｽ繝・ラ・壼・鬘ｧ螳｢繧貞叙蠕・
+    // DAO???????????
     public List<Customer> findAll() {
         logger.info("[ CustomerDao#findAll ]");
         
@@ -78,4 +78,3 @@ public class CustomerDao {
         return query.getResultList();
     }
 }
-

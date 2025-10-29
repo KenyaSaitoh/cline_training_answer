@@ -10,7 +10,7 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 
-// 顧客チE�Eブルへのアクセスを行うDAOクラス
+// ???????????????DAO???
 @ApplicationScoped
 public class CustomerDao {
     private static final Logger logger = LoggerFactory.getLogger(
@@ -19,7 +19,7 @@ public class CustomerDao {
     @PersistenceContext(unitName = "bookstorePU")
     private EntityManager em;
 
-    // メールアドレスで顧客を検索する
+    // ???????????????
     public Customer findByEmail(String email) {
         logger.info("[ CustomerDao#findByEmail ] email=" + email);
         
@@ -35,22 +35,21 @@ public class CustomerDao {
         }
     }
 
-    // 顧客IDで顧客を検索する
+    // ??ID????????
     public Customer findById(Integer customerId) {
         logger.info("[ CustomerDao#findById ] customerId=" + customerId);
         return em.find(Customer.class, customerId);
     }
 
-    // 顧客を登録する
+    // ???????
     public void register(Customer customer) {
         logger.info("[ CustomerDao#register ] customer=" + customer);
         em.persist(customer);
     }
 
-    // 顧客を更新する
+    // ???????
     public void update(Customer customer) {
         logger.info("[ CustomerDao#update ] customer=" + customer);
         em.merge(customer);
     }
 }
-

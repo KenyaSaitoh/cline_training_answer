@@ -4,17 +4,17 @@ package pro.kensait.berrybooks.model;
 public class CustomerTO {
     private String customerName;
     private String email;
-    private String birthDate; // yyyy-MM-dd形式
+    private String birthday; // yyyy-MM-dd形式（REST APIの仕様に合わせる）
     private String address;
 
     // デフォルトコンストラクタ
     public CustomerTO() {}
 
     // コンストラクタ
-    public CustomerTO(String customerName, String email, String birthDate, String address) {
+    public CustomerTO(String customerName, String email, String birthday, String address) {
         this.customerName = customerName;
         this.email = email;
-        this.birthDate = birthDate;
+        this.birthday = birthday;
         this.address = address;
     }
 
@@ -34,12 +34,12 @@ public class CustomerTO {
         this.email = email;
     }
 
-    public String getBirthDate() {
-        return birthDate;
+    public String getBirthday() {
+        return birthday;
     }
 
-    public void setBirthDate(String birthDate) {
-        this.birthDate = birthDate;
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
     }
 
     public String getAddress() {

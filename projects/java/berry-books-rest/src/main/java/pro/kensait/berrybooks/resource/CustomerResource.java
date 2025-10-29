@@ -28,7 +28,7 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-// 鬘ｧ螳｢諠・ｱ繧呈署萓帙☆繧騎EST API繝ｪ繧ｽ繝ｼ繧ｹ繧ｯ繝ｩ繧ｹ
+// ?????????REST API???????
 @Path("/customers")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -39,16 +39,16 @@ public class CustomerResource {
     @Inject
     private CustomerService customerService;
 
-    // API繝｡繧ｽ繝・ラ・壼・鬘ｧ螳｢縺ｨ邨ｱ險域ュ蝣ｱ繧貞叙蠕励☆繧・
+    // API??????????????????
     @GET
     @Path("/")
     public Response getAllWithStats() {
         logger.info("[ CustomerResource#getAllWithStats ]");
 
-        // 蜈ｨ鬘ｧ螳｢繧貞叙蠕・
+        // ??????
         List<Customer> customers = customerService.getAllCustomers();
 
-        // 鬘ｧ螳｢縺斐→縺ｫ邨ｱ險域ュ蝣ｱ繧定ｿｽ蜉
+        // ????????????
         List<CustomerStatsTO> responseCustomers = new ArrayList<>();
         for (Customer customer : customers) {
             Long orderCount = customerService.getOrderCount(customer.getCustomerId());
@@ -65,103 +65,103 @@ public class CustomerResource {
             ));
         }
 
-        // 鬘ｧ螳｢邨ｱ險医Μ繧ｹ繝茨ｼ医・繝・ぅ・峨→HTTP繧ｹ繝・・繧ｿ繧ｹOK繧呈戟縺､Response繧定ｿ斐☆
+        // ?????????????HTTP?????OK???Response???
         return Response.ok(responseCustomers).build();
     }
 
-    // API繝｡繧ｽ繝・ラ・夐｡ｧ螳｢繧貞叙蠕励☆繧具ｼ井ｸｻ繧ｭ繝ｼ讀懃ｴ｢・・
+    // API???????????????????
     @GET
     @Path("/{customerId}")
     public Response getById(@PathParam("customerId") Integer customerId) {
         logger.info("[ CustomerResource#getById ]");
 
-        // 繝｡繝ｼ繝ｫ繧｢繝峨Ξ繧ｹ縺九ｉ鬘ｧ螳｢繧ｨ繝ｳ繝・ぅ繝・ぅ繧呈､懃ｴ｢縺吶ｋ
+        // ??????????????????????
         Customer customer = customerService.getCustomerById(customerId);
 
-        // 鬘ｧ螳｢繧ｨ繝ｳ繝・ぅ繝・ぅ縺九ｉ縲？TTP繝ｬ繧ｹ繝昴Φ繧ｹ霑泌唆逕ｨ縺ｮ鬘ｧ螳｢TO繧堤函謌舌☆繧・
+        // ???????????HTTP???????????TO?????
         CustomerTO responseCustomer = toCustomerTO(customer);
  
-        // 鬘ｧ螳｢TO・医・繝・ぅ・峨→HTTP繧ｹ繝・・繧ｿ繧ｹOK繧呈戟縺､Response繧定ｿ斐☆
+        // ??TO??????HTTP?????OK???Response???
         return Response.ok(responseCustomer).build();
     }
 
-    // API繝｡繧ｽ繝・ラ・夐｡ｧ螳｢縺ｮ豕ｨ譁・ｱ･豁ｴ繧貞叙蠕励☆繧・
+    // API?????????????????
     @GET
     @Path("/{customerId}/orders")
     public Response getOrderHistory(@PathParam("customerId") Integer customerId) {
         logger.info("[ CustomerResource#getOrderHistory ]");
 
-        // 鬘ｧ螳｢縺ｮ豕ｨ譁・ｱ･豁ｴ繧貞叙蠕励☆繧・
+        // ????????????
         List<OrderTran> orderTrans = customerService.getOrderHistory(customerId);
 
-        // OrderTran繧ｨ繝ｳ繝・ぅ繝・ぅ縺九ｉ縲？TTP繝ｬ繧ｹ繝昴Φ繧ｹ霑泌唆逕ｨ縺ｮOrderHistoryTO繝ｪ繧ｹ繝医ｒ逕滓・縺吶ｋ
+        // OrderTran?????????HTTP?????????OrderHistoryTO????????
         List<OrderHistoryTO> responseOrders = new ArrayList<>();
         for (OrderTran orderTran : orderTrans) {
             responseOrders.add(toOrderHistoryTO(orderTran));
         }
  
-        // 豕ｨ譁・ｱ･豁ｴ繝ｪ繧ｹ繝茨ｼ医・繝・ぅ・峨→HTTP繧ｹ繝・・繧ｿ繧ｹOK繧呈戟縺､Response繧定ｿ斐☆
+        // ?????????????HTTP?????OK???Response???
         return Response.ok(responseOrders).build();
     }
 
-    // API繝｡繧ｽ繝・ラ・夐｡ｧ螳｢繧貞叙蠕励☆繧具ｼ井ｸ諢上く繝ｼ縺九ｉ縺ｮ譚｡莉ｶ讀懃ｴ｢・・
+    // API?????????????????????????
     @GET
     @Path("/query_email")
     public Response queryByEmail(@QueryParam("email") String email) {
         logger.info("[ CustomerResource#queryByEmail ]");
 
-        // 繝｡繝ｼ繝ｫ繧｢繝峨Ξ繧ｹ縺九ｉ鬘ｧ螳｢繧ｨ繝ｳ繝・ぅ繝・ぅ繧呈､懃ｴ｢縺吶ｋ
+        // ??????????????????????
         Customer customer = customerService.getCustomerByEmail(email);
 
-        // 鬘ｧ螳｢繧ｨ繝ｳ繝・ぅ繝・ぅ縺九ｉ縲？TTP繝ｬ繧ｹ繝昴Φ繧ｹ霑泌唆逕ｨ縺ｮ鬘ｧ螳｢TO繧堤函謌舌☆繧・
+        // ???????????HTTP???????????TO?????
         CustomerTO responseCustomer = toCustomerTO(customer);
 
-        // 鬘ｧ螳｢繧ｨ繝ｳ繝・ぅ繝・ぅ・医・繝・ぅ・峨→HTTP繧ｹ繝・・繧ｿ繧ｹOK繧呈戟縺､Response繧定ｿ斐☆
+        // ??????????????HTTP?????OK???Response???
         return Response.ok(responseCustomer).build();
     }
 
-    // API繝｡繧ｽ繝・ラ・夐｡ｧ螳｢繝ｪ繧ｹ繝医ｒ蜿門ｾ励☆繧具ｼ郁ｪ慕函譌･縺九ｉ縺ｮ譚｡莉ｶ讀懃ｴ｢・・
+    // API???????????????????????????
     @GET
     @Path("/query_birthday")
     public Response queryFromBirthday(@QueryParam("birthday") String birthdayStr) {
         logger.info("[ CustomerResource#queryFromBirthday ]");
 
-        // 譁・ｭ怜・繧鱈ocalDate縺ｫ螟画鋤
+        // ????LocalDate???
         LocalDate birthday = LocalDate.parse(birthdayStr);
 
-        // 隱慕函譌･髢句ｧ区律縺九ｉ鬘ｧ螳｢繧ｨ繝ｳ繝・ぅ繝・ぅ縺ｮ繝ｪ繧ｹ繝医ｒ蜿門ｾ励☆繧・
+        // ?????????????????????????
         List<Customer> customers = customerService.searchCustomersFromBirthday(birthday);
 
-        // 鬘ｧ螳｢繧ｨ繝ｳ繝・ぅ繝・ぅ縺ｮ繝ｪ繧ｹ繝医°繧峨？TTP繝ｬ繧ｹ繝昴Φ繧ｹ霑泌唆逕ｨ縺ｮ鬘ｧ螳｢TO繝ｪ繧ｹ繝医ｒ逕滓・縺吶ｋ
+        // ???????????????HTTP???????????TO????????
         List<CustomerTO> responseCustomerList = new ArrayList<>();
         for (Customer customer : customers) {
             responseCustomerList.add(toCustomerTO(customer));
         }
 
-        // 鬘ｧ螳｢繝ｪ繧ｹ繝茨ｼ医・繝・ぅ・峨→HTTP繧ｹ繝・・繧ｿ繧ｹOK繧呈戟縺､Response繧定ｿ斐☆
+        // ???????????HTTP?????OK???Response???
         return Response.ok(responseCustomerList).build();
     }
     
-    // API繝｡繧ｽ繝・ラ・夐｡ｧ螳｢繧呈眠隕冗匳骭ｲ縺吶ｋ
+    // API??????????????
     @POST
     @Path("/")
     public Response create(CustomerTO requestCustomer) {
         logger.info("[ CustomerResource#create ]");
 
-        // 蜿励￠蜿悶▲縺滄｡ｧ螳｢TO縺九ｉ縲・｡ｧ螳｢繧ｨ繝ｳ繝・ぅ繝・ぅ繧堤函謌舌☆繧・
+        // ???????TO????????????????
         Customer customer = toCustomer(requestCustomer);
 
-        // 蜿励￠蜿悶▲縺滄｡ｧ螳｢繧ｨ繝ｳ繝・ぅ繝・ぅ繧剃ｿ晏ｭ倥☆繧・
+        // ??????????????????
         customerService.registerCustomer(customer);
 
-        // 鬘ｧ螳｢繧ｨ繝ｳ繝・ぅ繝・ぅ縺九ｉ縲？TTP繝ｬ繧ｹ繝昴Φ繧ｹ霑泌唆逕ｨ縺ｮ鬘ｧ螳｢TO繧堤函謌舌☆繧・
+        // ???????????HTTP???????????TO?????
         CustomerTO responseCustomerTO = toCustomerTO(customer);
 
-        // 繝懊ョ繧｣縺檎ｩｺ縺ｧ縲？TTP繧ｹ繝・・繧ｿ繧ｹOK繧呈戟縺､Response繧定ｿ斐☆
+        // ???????HTTP?????OK???Response???
         return Response.ok(responseCustomerTO).build();
     }
 
-    // API繝｡繧ｽ繝・ラ・夐｡ｧ螳｢繧堤ｽｮ謠帙☆繧・
+    // API????????????
     @PUT
     @Path("/{customerId}")
     public Response replace(
@@ -169,31 +169,31 @@ public class CustomerResource {
             CustomerTO requestCustomer) {
         logger.info("[ CustomerResource#replace ]");
 
-        // 蜿励￠蜿悶▲縺滄｡ｧ螳｢TO縺九ｉ縲・｡ｧ螳｢繧ｨ繝ｳ繝・ぅ繝・ぅ繧堤函謌舌☆繧・
+        // ???????TO????????????????
         Customer customer = toCustomer(requestCustomer);
 
-        // 蜿励￠蜿悶▲縺滄｡ｧ螳｢繧ｨ繝ｳ繝・ぅ繝・ぅ繧堤ｽｮ謠帙☆繧・
+        // ??????????????????
         customer.setCustomerId(customerId);
         customerService.replaceCustomer(customer);
 
-        // 繝懊ョ繧｣縺檎ｩｺ縺ｧ縲？TTP繧ｹ繝・・繧ｿ繧ｹOK繧呈戟縺､Response繧定ｿ斐☆
+        // ???????HTTP?????OK???Response???
         return Response.ok().build();
     }
 
-    // API繝｡繧ｽ繝・ラ・夐｡ｧ螳｢繧貞炎髯､縺吶ｋ
+    // API????????????
     @DELETE
     @Path("/{customerId}")
     public Response delete(@PathParam("customerId") Integer customerId) {
         logger.info("[ CustomerResource#delete ]");
 
-        // 蜿励￠蜿悶▲縺滄｡ｧ螳｢ID繧呈戟縺､繧ｨ繝ｳ繝・ぅ繝・ぅ繧貞炎髯､縺吶ｋ
+        // ???????ID??????????????
         customerService.deleteCustomer(customerId);
 
-        // 繝懊ョ繧｣縺檎ｩｺ縺ｧ縲？TTP繧ｹ繝・・繧ｿ繧ｹOK繧呈戟縺､Response繧定ｿ斐☆
+        // ???????HTTP?????OK???Response???
         return Response.ok().build();
     }
 
-    // 隧ｰ繧∵崛縺亥・逅・ｼ・ustomer竊辰ustomerTO・・
+    // ???????Customer?CustomerTO
     private CustomerTO toCustomerTO(Customer customer) {
         return new CustomerTO(customer.getCustomerId(),
                 customer.getCustomerName(),
@@ -202,17 +202,17 @@ public class CustomerResource {
                 customer.getAddress());
     }
 
-    // 隧ｰ繧∵崛縺亥・逅・ｼ・ustomerTO竊辰ustomer・・
+    // ???????CustomerTO?Customer
     private Customer toCustomer(CustomerTO customerTO) {
-        // 繝代せ繝ｯ繝ｼ繝峨・遨ｺ譁・ｭ怜・縺ｨ縺励※謇ｱ縺・ｼ域眠隕冗匳骭ｲ譎ゅ・蛻･騾碑ｨｭ螳壹′蠢・ｦ・ｼ・
+        // ??????????????????????????????
         return new Customer(customerTO.customerName(),
-                "",  // 繝代せ繝ｯ繝ｼ繝峨・蛻･騾碑ｨｭ螳・
+                "",  // ??????????
                 customerTO.email(),
                 customerTO.birthday(),
                 customerTO.address());
     }
 
-    // 隧ｰ繧∵崛縺亥・逅・ｼ・rderTran竊丹rderHistoryTO・・
+    // ???????OrderTran?OrderHistoryTO
     private OrderHistoryTO toOrderHistoryTO(OrderTran orderTran) {
         List<OrderItemTO> items = new ArrayList<>();
         
@@ -240,4 +240,3 @@ public class CustomerResource {
         );
     }
 }
-

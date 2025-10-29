@@ -12,7 +12,7 @@ import pro.kensait.berrybooks.entity.Category;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
-// 繧ｫ繝・ざ繝ｪ繧貞叙蠕励☆繧九し繝ｼ繝薙せ繧ｯ繝ｩ繧ｹ
+// ????????????????
 @ApplicationScoped
 public class CategoryService {
     private static final Logger logger = LoggerFactory.getLogger(
@@ -21,13 +21,13 @@ public class CategoryService {
     @Inject
     private CategoryDao categoryDao;
 
-    // 繧ｵ繝ｼ繝薙せ繝｡繧ｽ繝・ラ・壹き繝・ざ繝ｪ縺ｮ蜿門ｾ暦ｼ亥・莉ｶ讀懃ｴ｢・・
+    // ??????????????????????
     public List<Category> getCategoriesAll() {
         logger.info("[ CategoryService#getCategoriesAll ]");
         return categoryDao.findAll();
     }
 
-    // 繧ｵ繝ｼ繝薙せ繝｡繧ｽ繝・ラ・壹き繝・ざ繝ｪ繝槭ャ繝励・蜿門ｾ・
+    // ???????????????????
     public Map<String, Integer> getCategoryMap() {
         logger.info("[ CategoryService#getCategoryMap ]");
         
@@ -41,5 +41,3 @@ public class CategoryService {
         return categoryMap;
     }
 }
-
-

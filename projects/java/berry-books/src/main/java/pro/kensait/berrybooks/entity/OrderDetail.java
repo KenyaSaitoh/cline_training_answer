@@ -11,51 +11,51 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
-// 豕ｨ譁・・邏ｰ繧定｡ｨ縺吶お繝ｳ繝・ぅ繝・ぅ繧ｯ繝ｩ繧ｹ
+// ????????????????
 @Entity
 @Table(name = "ORDER_DETAIL")
 @IdClass(OrderDetailPK.class)
 public class OrderDetail implements Serializable {
     private static final long serialVersionUID = 1L;
-    // 豕ｨ譁⑩D
+    // ??ID
     @Id
     @Column(name = "ORDER_TRAN_ID",
             nullable = false)
     private Integer orderTranId;
 
-    // 豕ｨ譁・・邏ｰID
+    // ????ID
     @Id
     @Column(name = "ORDER_DETAIL_ID",
             nullable = false)
     private Integer orderDetailId;
 
-    // 豕ｨ譁・
+    // ??
     @ManyToOne(targetEntity = OrderTran.class)
     @JoinColumn(name = "ORDER_TRAN_ID",
             referencedColumnName = "ORDER_TRAN_ID",
-            insertable = false, updatable = false) // 縺薙％縺後・繧､繝ｳ繝茨ｼ゛PA謨呎攝縺ｧ繧ゅ■繧・ｓ縺ｨ隱ｬ譏弱☆繧・
+            insertable = false, updatable = false) // ????????JPA????????
     private OrderTran orderTran;
 
-    // 譖ｸ邀・
+    // ??
     @ManyToOne(targetEntity = Book.class)
     @JoinColumn(name = "BOOK_ID",
             referencedColumnName = "BOOK_ID")
     private Book book;
 
-    // 萓｡譬ｼ
-    // 雉ｼ蜈･譎らせ縺ｮ萓｡譬ｼ繧貞ｱ･豁ｴ縺ｫ險倬鹸縺吶ｋ縺溘ａ縲√≠縺医※髢｢騾｣縺ｯ菴ｿ繧上★迢ｬ遶九＠縺溘ヵ繧｣繝ｼ繝ｫ繝峨↓縺吶ｋ
+    // ??
+    // ????????????????????????????????????
     @Column(name = "PRICE")
     private BigDecimal price;
 
-    // 豕ｨ譁・焚
+    // ???
     @Column(name = "COUNT")
     private Integer count;
 
-    // 蠑墓焚縺ｪ縺励・繧ｳ繝ｳ繧ｹ繝医Λ繧ｯ繧ｿ
+    // ???????????
     public OrderDetail() {
     }
 
-    // 繧ｳ繝ｳ繧ｹ繝医Λ繧ｯ繧ｿ
+    // ???????
     public OrderDetail(Integer orderTranId, Integer orderDetailId, Book book, 
             Integer count) {
         this.orderTranId = orderTranId;

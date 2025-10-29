@@ -48,7 +48,7 @@ const CustomerList = () => {
     setFormData({
       customerName: customer.customerName,
       email: customer.email,
-      birthday: customer.birthday,
+      birthday: customer.birthday || '',
       address: customer.address
     });
     setSaveError(null);
@@ -90,10 +90,8 @@ const CustomerList = () => {
       return 'メールアドレスの形式が正しくありません';
     }
 
-    // 生年月日のバリデーション
-    if (!formData.birthday) {
-      return '生年月日は必須です';
-    }
+    // 生年月日のバリデーション（任意項目）
+    // バリデーションなし
 
     // 住所のバリデーション
     if (!formData.address.trim()) {
@@ -189,7 +187,7 @@ const CustomerList = () => {
               <td>{customer.customerId}</td>
               <td>{customer.customerName}</td>
               <td>{customer.email}</td>
-              <td>{customer.birthday}</td>
+              <td>{customer.birthday ? new Date(customer.birthday).toLocaleDateString('ja-JP') : ''}</td>
               <td>{customer.address}</td>
               <td className="number-cell">{customer.orderCount}</td>
               <td className="number-cell">{customer.totalBooks}</td>
@@ -245,14 +243,13 @@ const CustomerList = () => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="birthday">生年月日 <span className="required">*</span></label>
+                <label htmlFor="birthday">生年月日</label>
                 <input
                   type="date"
                   id="birthday"
                   name="birthday"
                   value={formData.birthday}
                   onChange={handleInputChange}
-                  required
                 />
               </div>
 

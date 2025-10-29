@@ -26,7 +26,7 @@ public class BerryBooksApiClient {
 
     // 全顧客の統計情報を取得
     public List<CustomerStats> fetchCustomerStats() throws IOException, InterruptedException {
-        URL url = new URL(baseUrl + "/customers/stats");
+        URL url = new URL(baseUrl + "/customers/");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Accept", "application/json");
@@ -55,7 +55,8 @@ public class BerryBooksApiClient {
             customer.setCustomerName(json.getString("customerName"));
             customer.setEmail(json.getString("email"));
             
-            String birthDateStr = json.optString("birthDate", null);
+            // JSONフィールド名は "birthday" (REST APIの仕様)
+            String birthDateStr = json.optString("birthday", null);
             if (birthDateStr != null && !birthDateStr.isEmpty()) {
                 customer.setBirthDate(LocalDate.parse(birthDateStr));
             }
@@ -80,7 +81,7 @@ public class BerryBooksApiClient {
         JSONObject json = new JSONObject();
         json.put("customerName", customerTO.getCustomerName());
         json.put("email", customerTO.getEmail());
-        json.put("birthDate", customerTO.getBirthDate());
+        json.put("birthday", customerTO.getBirthday()); // REST APIの仕様に合わせる
         json.put("address", customerTO.getAddress());
 
         try (OutputStream os = conn.getOutputStream()) {

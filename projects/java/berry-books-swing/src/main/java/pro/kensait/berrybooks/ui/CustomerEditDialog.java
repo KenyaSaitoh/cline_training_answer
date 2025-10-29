@@ -75,7 +75,7 @@ public class CustomerEditDialog extends JDialog {
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.weightx = 0.3;
-        formPanel.add(new JLabel("生年月日: *"), gbc);
+        formPanel.add(new JLabel("生年月日:"), gbc);
         
         gbc.gridx = 1;
         gbc.weightx = 0.7;
@@ -156,25 +156,18 @@ public class CustomerEditDialog extends JDialog {
             return;
         }
 
-        if (birthDateStr.isEmpty()) {
-            JOptionPane.showMessageDialog(this, 
-                "生年月日を入力してください。", 
-                "入力エラー", 
-                JOptionPane.ERROR_MESSAGE);
-            birthDateField.requestFocus();
-            return;
-        }
-
-        // 生年月日の形式チェック
-        try {
-            LocalDate.parse(birthDateStr, DateTimeFormatter.ISO_LOCAL_DATE);
-        } catch (DateTimeParseException ex) {
-            JOptionPane.showMessageDialog(this, 
-                "生年月日はyyyy-MM-dd形式で入力してください。\n例: 1990-01-15", 
-                "入力エラー", 
-                JOptionPane.ERROR_MESSAGE);
-            birthDateField.requestFocus();
-            return;
+        // 生年月日の形式チェック（空でない場合のみ）
+        if (!birthDateStr.isEmpty()) {
+            try {
+                LocalDate.parse(birthDateStr, DateTimeFormatter.ISO_LOCAL_DATE);
+            } catch (DateTimeParseException ex) {
+                JOptionPane.showMessageDialog(this, 
+                    "生年月日はyyyy-MM-dd形式で入力してください。\n例: 1990-01-15", 
+                    "入力エラー", 
+                    JOptionPane.ERROR_MESSAGE);
+                birthDateField.requestFocus();
+                return;
+            }
         }
 
         if (address.isEmpty()) {
@@ -189,7 +182,7 @@ public class CustomerEditDialog extends JDialog {
         // 顧客情報を更新
         customer.setCustomerName(name);
         customer.setEmail(email);
-        customer.setBirthDate(LocalDate.parse(birthDateStr, DateTimeFormatter.ISO_LOCAL_DATE));
+        customer.setBirthDate(birthDateStr.isEmpty() ? null : LocalDate.parse(birthDateStr, DateTimeFormatter.ISO_LOCAL_DATE));
         customer.setAddress(address);
 
         confirmed = true;
