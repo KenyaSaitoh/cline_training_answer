@@ -9,11 +9,25 @@
 !/payara6/glassfish/domains/domain1/generated/.gitkeep
 /payara6/glassfish/domains/domain1/osgi-cache/**
 !/payara6/glassfish/domains/domain1/osgi-cache/.gitkeep
-/payara6/glassfish/domains/domain1/docroot/**
-!/payara6/glassfish/domains/domain1/docroot/.gitkeep
+# Payara docroot - デフォルトランディングページは管理対象
+# （カスタムファイルは除外される可能性があるため、必要に応じて追加）
 /payara6/glassfish/domains/domain1/config/**
 !/payara6/glassfish/domains/domain1/config/.gitkeep
 !/payara6/glassfish/domains/domain1/config/domain.xml.template
+!/payara6/glassfish/domains/domain1/config/admin-keyfile
+!/payara6/glassfish/domains/domain1/config/keyfile
+!/payara6/glassfish/domains/domain1/config/cacerts.p12
+!/payara6/glassfish/domains/domain1/config/keystore.p12
+!/payara6/glassfish/domains/domain1/config/default-web.xml
+!/payara6/glassfish/domains/domain1/config/login.conf
+!/payara6/glassfish/domains/domain1/config/server.policy
+!/payara6/glassfish/domains/domain1/config/restrict.server.policy
+!/payara6/glassfish/domains/domain1/config/javaee.server.policy
+!/payara6/glassfish/domains/domain1/config/logging.properties
+!/payara6/glassfish/domains/domain1/config/default-logging.properties
+!/payara6/glassfish/domains/domain1/config/glassfish-acc.xml
+!/payara6/glassfish/domains/domain1/config/wss-server-config-1.0.xml
+!/payara6/glassfish/domains/domain1/config/wss-server-config-2.0.xml
 /payara6/glassfish/domains/domain1/endpoints/**
 !/payara6/glassfish/domains/domain1/endpoints/.gitkeep
 /payara6/glassfish/domains/domain1/init-info/**
