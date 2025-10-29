@@ -5,7 +5,7 @@
 rootProject.name = 'jee-web-projects-payara'
 
 // JSF系プロジェクト
-include 'projects:java:jsf_person_rdb'
+include 'projects:java:jsf-person'
 
 // Berry Books プロジェクト
 include 'projects:java:berry-books'
@@ -13,4 +13,4 @@ include 'projects:java:berry-books-rest'
 include 'projects:java:berry-books-swing'
 
 // Struts系プロジェクト
-include 'projects:java:struts_person_rdb'
+include 'projects:java:struts-person'

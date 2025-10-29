@@ -2,9 +2,7 @@ package pro.kensait.berrybooks.model;
 
 import java.time.LocalDate;
 
-/**
- * ?????????????????
- */
+// 顧客統計情報を保持するモデルクラス
 public class CustomerStats {
     private Long customerId;
     private String customerName;
@@ -14,10 +12,9 @@ public class CustomerStats {
     private Long orderCount;
     private Long bookCount;
 
-    // ????????????
+    // デフォルトコンストラクタ
     public CustomerStats() {}
 
-    // Getter/Setter
     public Long getCustomerId() {
         return customerId;
     }

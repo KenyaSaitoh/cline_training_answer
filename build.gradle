@@ -46,7 +46,7 @@ subprojects {
         implementation files(rootProject.file('hsqldb/lib/hsqldb.jar'))
         
         // Struts 1.3.10 - Strutsプロジェクト用（条件付き - TomEE 8用）
-        if (project.name == "struts_person_rdb") {
+        if (project.name == "struts-person") {
             implementation "org.apache.struts:struts-core:1.3.10"
             implementation "org.apache.struts:struts-taglib:1.3.10"
             implementation "commons-beanutils:commons-beanutils:1.9.4"
@@ -183,8 +183,8 @@ subprojects {
         useJUnitPlatform()
     }
 
-    // TomEE 8専用タスク（struts_person_rdbプロジェクトのみ）
-    if (project.name == "struts_person_rdb") {
+    // TomEE 8専用タスク（struts-personプロジェクトのみ）
+    if (project.name == "struts-person") {
         // クリーンなserver.xmlをテンプレートから初期化する
         task initTomee8Config doLast {
             def templateFile = rootProject.file("${rootProject.conf.tomee8.home}/conf/server.xml.template")
@@ -223,8 +223,8 @@ subprojects {
             println "===================================="
             println ""
             println "次のステップ:"
-            println "  1. ポート設定を変更: gradle :projects:java:struts_person_rdb:configureTomee8Ports"
-            println "  2. TomEE 8を起動: gradle :projects:java:struts_person_rdb:startTomee8"
+            println "  1. ポート設定を変更: gradle :projects:java:struts-person:configureTomee8Ports"
+            println "  2. TomEE 8を起動: gradle :projects:java:struts-person:startTomee8"
         }
         
         // TomEE 8のポート設定を変更
@@ -328,7 +328,7 @@ subprojects {
             
             println ""
             println "TomEE 8 started in background."
-            println "To stop the server, run: gradle :projects:struts_person_rdb:stopTomee8"
+            println "To stop the server, run: gradle :projects:java:struts-person:stopTomee8"
         }
 
         // TomEE 8を再起動
@@ -342,7 +342,7 @@ subprojects {
         // TomEE 8にデプロイ
         task deployToTomee8 {
             group = "tomee8"
-            description = "Deploy struts_person_rdb to TomEE 8"
+            description = "Deploy struts-person to TomEE 8"
             dependsOn "war"
             
             doLast {
@@ -385,7 +385,7 @@ subprojects {
         // TomEE 8からアンデプロイ
         task undeployFromTomee8 {
             group = "tomee8"
-            description = "Undeploy struts_person_rdb from TomEE 8"
+            description = "Undeploy struts-person from TomEE 8"
             
             doLast {
                 def webappsDir = rootProject.file(rootProject.conf.tomee8.webappsDir)

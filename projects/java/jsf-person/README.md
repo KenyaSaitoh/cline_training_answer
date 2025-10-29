@@ -1,4 +1,4 @@
-﻿# jsf_person_rdb プロジェクト
+﻿# jsf-person プロジェクト
 
 ## 📖 概要
 
@@ -27,40 +27,40 @@ JSFとJPA (Java Persistence API) を組み合わせたデータベースCRUD操�
 
 ```bash
 # 1. データベーステーブルとデータを作成
-./gradlew :projects:java:jsf_person_rdb:setupHsqldb
+./gradlew :projects:java:jsf-person:setupHsqldb
 
 # 2. プロジェクトをビルド
-./gradlew :projects:java:jsf_person_rdb:war
+./gradlew :projects:java:jsf-person:war
 
 # 3. プロジェクトをデプロイ
-./gradlew :projects:java:jsf_person_rdb:deploy
+./gradlew :projects:java:jsf-person:deploy
 ```
 
 ### ⑤ プロジェクトを終了するときに1回だけ実行（CleanUp）
 
 ```bash
 # プロジェクトをアンデプロイ
-./gradlew :projects:java:jsf_person_rdb:undeploy
+./gradlew :projects:java:jsf-person:undeploy
 ```
 
 ### ⑥ アプリケーション作成・更新のたびに実行
 
 ```bash
 # アプリケーションを再ビルドして再デプロイ
-./gradlew :projects:java:jsf_person_rdb:war
-./gradlew :projects:java:jsf_person_rdb:deploy
+./gradlew :projects:java:jsf-person:war
+./gradlew :projects:java:jsf-person:deploy
 ```
 
 ## 📍 アクセスURL
 
 デプロイ後、以下のURLにアクセス：
 
-- **Person一覧**: http://localhost:8080/jsf_person_rdb/faces/PersonTablePage.xhtml
+- **Person一覧**: http://localhost:8080/jsf-person/faces/PersonTablePage.xhtml
 
 ## 🎯 プロジェクト構成
 
 ```
-projects/jsf_person_rdb/
+projects/jsf-person/
 ├── src/
 │   ├── main/
 │   │   ├── java/
@@ -82,7 +82,7 @@ projects/jsf_person_rdb/
 │   └── hsqldb/                     # SQLスクリプト
 └── build/
     └── libs/
-        └── jsf_person_rdb.war
+        └── jsf-person.war
 ```
 
 ## 🔧 使用している技術
@@ -120,7 +120,7 @@ projects/jsf_person_rdb/
 ### アプリケーションのアンデプロイ
 
 ```bash
-./gradlew :projects:java:jsf_person_rdb:undeploy
+./gradlew :projects:java:jsf-person:undeploy
 ```
 
 ### Payara Server全体を停止

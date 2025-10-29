@@ -1,18 +1,16 @@
 package pro.kensait.berrybooks.model;
 
-/**
- * ??????????????
- */
+// 顧客更新用の転送オブジェクト
 public class CustomerTO {
     private String customerName;
     private String email;
-    private String birthDate; // yyyy-MM-dd??
+    private String birthDate; // yyyy-MM-dd形式
     private String address;
 
-    // ????????????
+    // デフォルトコンストラクタ
     public CustomerTO() {}
 
-    // ???????
+    // コンストラクタ
     public CustomerTO(String customerName, String email, String birthDate, String address) {
         this.customerName = customerName;
         this.email = email;
@@ -20,7 +18,6 @@ public class CustomerTO {
         this.address = address;
     }
 
-    // Getter/Setter
     public String getCustomerName() {
         return customerName;
     }

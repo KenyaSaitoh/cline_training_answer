@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -15,9 +16,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Berry Books REST API??????
- */
+// Berry Books REST APIクライアント
 public class BerryBooksApiClient {
     private final String baseUrl;
 
@@ -25,22 +24,20 @@ public class BerryBooksApiClient {
         this.baseUrl = baseUrl;
     }
 
-    /**
-     * ???????????
-     */
-    public List<CustomerStats> getAllCustomers() throws Exception {
-        URL url = new URL(baseUrl + "/customers");
+    // 全顧客の統計情報を取得
+    public List<CustomerStats> fetchCustomerStats() throws IOException, InterruptedException {
+        URL url = new URL(baseUrl + "/customers/stats");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Accept", "application/json");
 
         int responseCode = conn.getResponseCode();
         if (responseCode != 200) {
-            throw new RuntimeException("HTTP GET failed: " + responseCode);
+            throw new RuntimeException("Failed to fetch customers: HTTP " + responseCode);
         }
 
         BufferedReader in = new BufferedReader(
-            new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
+                new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
         StringBuilder response = new StringBuilder();
         String line;
         while ((line = in.readLine()) != null) {
@@ -53,29 +50,31 @@ public class BerryBooksApiClient {
 
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject json = jsonArray.getJSONObject(i);
-            CustomerStats stats = new CustomerStats();
-            stats.setCustomerId(json.getLong("customerId"));
-            stats.setCustomerName(json.getString("customerName"));
-            stats.setEmail(json.getString("email"));
-            stats.setBirthDate(LocalDate.parse(json.getString("birthDate")));
-            stats.setAddress(json.getString("address"));
-            stats.setOrderCount(json.getLong("orderCount"));
-            stats.setBookCount(json.getLong("bookCount"));
-            customers.add(stats);
+            CustomerStats customer = new CustomerStats();
+            customer.setCustomerId(json.getLong("customerId"));
+            customer.setCustomerName(json.getString("customerName"));
+            customer.setEmail(json.getString("email"));
+            
+            String birthDateStr = json.optString("birthDate", null);
+            if (birthDateStr != null && !birthDateStr.isEmpty()) {
+                customer.setBirthDate(LocalDate.parse(birthDateStr));
+            }
+            
+            customer.setAddress(json.getString("address"));
+            customer.setOrderCount(json.getLong("orderCount"));
+            customer.setBookCount(json.getLong("totalBooks"));
+            customers.add(customer);
         }
 
         return customers;
     }
 
-    /**
-     * ???????
-     */
-    public void updateCustomer(Long customerId, CustomerTO customerTO) throws Exception {
+    // 顧客情報を更新
+    public void updateCustomer(Long customerId, CustomerTO customerTO) throws IOException, InterruptedException {
         URL url = new URL(baseUrl + "/customers/" + customerId);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("PUT");
         conn.setRequestProperty("Content-Type", "application/json");
-        conn.setRequestProperty("Accept", "application/json");
         conn.setDoOutput(true);
 
         JSONObject json = new JSONObject();
@@ -91,7 +90,7 @@ public class BerryBooksApiClient {
 
         int responseCode = conn.getResponseCode();
         if (responseCode != 200) {
-            // ?????????????
+            // エラーレスポンスを読み取る
             BufferedReader in = new BufferedReader(
                 new InputStreamReader(conn.getErrorStream(), StandardCharsets.UTF_8));
             StringBuilder response = new StringBuilder();
@@ -101,13 +100,13 @@ public class BerryBooksApiClient {
             }
             in.close();
             
-            // JSON????????????
+            // JSONエラーレスポンスをパース
             try {
                 JSONObject errorJson = new JSONObject(response.toString());
-                String message = errorJson.optString("message", "?????????");
+                String message = errorJson.optString("message", "更新に失敗しました");
                 throw new RuntimeException(message);
             } catch (Exception e) {
-                throw new RuntimeException("HTTP PUT failed: " + responseCode);
+                throw new RuntimeException("Failed to update customer: HTTP " + responseCode + " - " + response.toString());
             }
         }
     }
