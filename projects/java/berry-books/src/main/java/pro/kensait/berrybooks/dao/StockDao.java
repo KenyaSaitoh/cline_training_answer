@@ -9,7 +9,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
 
-// ???????????????DAO???
+// 在庫テーブルへのアクセスを行うDAOクラス
 @ApplicationScoped
 public class StockDao {
     private static final Logger logger = LoggerFactory.getLogger(
@@ -18,21 +18,23 @@ public class StockDao {
     @PersistenceContext(unitName = "bookstorePU")
     private EntityManager em;
 
-    // DAO??????????????????????
+    // DAOメソッド：在庫を主キーで検索（悲観的ロック）
     public Stock findByIdWithLock(Integer bookId) {
         logger.info("[ StockDao#findByIdWithLock ]");
         return em.find(Stock.class, bookId, LockModeType.PESSIMISTIC_WRITE);
     }
 
-    // DAO??????????????
+    // DAOメソッド：在庫を主キーで検索
     public Stock findById(Integer bookId) {
         logger.info("[ StockDao#findById ]");
         return em.find(Stock.class, bookId);
     }
 
-    // DAO??????????
+    // DAOメソッド：在庫を更新
     public void update(Stock stock) {
         logger.info("[ StockDao#update ]");
         em.merge(stock);
     }
 }
+
+

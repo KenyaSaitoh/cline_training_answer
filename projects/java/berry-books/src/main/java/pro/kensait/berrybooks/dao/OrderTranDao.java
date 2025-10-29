@@ -13,7 +13,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 
-// ???????????????DAO???
+// 注文テーブルへのアクセスを行うDAOクラス
 @ApplicationScoped
 public class OrderTranDao {
     private static final Logger logger = LoggerFactory.getLogger(
@@ -22,24 +22,24 @@ public class OrderTranDao {
     @PersistenceContext(unitName = "bookstorePU")
     private EntityManager em;
 
-    // DAO??????????????
+    // DAOメソッド：注文を主キーで検索
     public OrderTran findById(Integer orderTranId) {
         logger.info("[ OrderTranDao#findById ]");
         return em.find(OrderTran.class, orderTranId);
     }
 
-    // DAO????????????????????
+    // DAOメソッド：注文を主キーで検索（明細含む）
     public OrderTran findByIdWithDetails(Integer orderTranId) {
         logger.info("[ OrderTranDao#findByIdWithDetails ] orderTranId=" + orderTranId);
         
-        // EntityManager???????????????
+        // EntityManagerをクリアしてキャッシュをクリア
         em.clear();
         
-        // OrderTran????EAGER???????????????????
+        // OrderTranを取得（EAGERロードにより明細も自動的に取得される）
         return em.find(OrderTran.class, orderTranId);
     }
 
-    // DAO???????ID????????
+    // DAOメソッド：顧客IDで注文履歴を検索
     public List<OrderTran> findByCustomerId(Integer customerId) {
         logger.info("[ OrderTranDao#findByCustomerId ]");
         
@@ -54,7 +54,7 @@ public class OrderTranDao {
         return query.getResultList();
     }
 
-    // DAO???????ID???????????DTO???
+    // DAOメソッド：顧客IDで注文履歴を検索（詳細DTO使用）
     public List<OrderHistoryTO> findOrderHistoryByCustomerId(Integer customerId) {
         logger.info("[ OrderTranDao#findOrderHistoryByCustomerId ]");
         
@@ -74,7 +74,7 @@ public class OrderTranDao {
         return query.getResultList();
     }
 
-    // DAO???????ID????????????DTO???
+    // DAOメソッド：顧客IDで注文履歴を検索（サマリーDTO使用）
     public List<OrderSummaryTO> findOrderSummaryByCustomerId(Integer customerId) {
         logger.info("[ OrderTranDao#findOrderSummaryByCustomerId ]");
         
@@ -91,7 +91,7 @@ public class OrderTranDao {
         return query.getResultList();
     }
 
-    // DAO???????ID??????????????
+    // DAOメソッド：顧客IDで注文履歴を検索（明細含む）
     public List<OrderTran> findByCustomerIdWithDetails(Integer customerId) {
         logger.info("[ OrderTranDao#findByCustomerIdWithDetails ]");
         
@@ -107,11 +107,13 @@ public class OrderTranDao {
         return query.getResultList();
     }
 
-    // DAO??????????
+    // DAOメソッド：注文を保存
     public void persist(OrderTran orderTran) {
         logger.info("[ OrderTranDao#persist ]");
         em.persist(orderTran);
-        // IDENTITY???????ID???????????flush
+        // IDENTITYストラテジーでIDを確実に生成するためにflush
         em.flush();
     }
 }
+
+

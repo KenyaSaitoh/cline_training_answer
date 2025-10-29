@@ -16,7 +16,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
-// ???????????????DAO???
+// 書籍テーブルへのアクセスを行うDAOクラス
 @ApplicationScoped
 public class BookDao {
     private static final Logger logger = LoggerFactory.getLogger(
@@ -25,13 +25,13 @@ public class BookDao {
     @PersistenceContext(unitName = "bookstorePU")
     private EntityManager em;
 
-    // DAO??????????????
+    // DAOメソッド：書籍を主キーで検索
     public Book findById(Integer bookId) {
         logger.info("[ BookDao#findById ]");
         return em.find(Book.class, bookId);
     }
 
-    // DAO???????????
+    // DAOメソッド：全書籍を取得
     public List<Book> findAll() {
         logger.info("[ BookDao#findAll ]");
         
@@ -40,7 +40,7 @@ public class BookDao {
         
         List<Book> books = query.getResultList();
         
-        // ??????????????????????????????????
+        // 各エンティティをデータベースから再読み込みして最新の在庫データを取得
         for (Book book : books) {
             em.refresh(book);
         }
@@ -48,7 +48,7 @@ public class BookDao {
         return books;
     }
 
-    // DAO?????????ID??????
+    // DAOメソッド：カテゴリIDで書籍を検索
     public List<Book> queryByCategory(Integer categoryId) {
         logger.info("[ BookDao#queryByCategory ]");
         
@@ -59,7 +59,7 @@ public class BookDao {
         
         List<Book> books = query.getResultList();
         
-        // ??????????????????????????????????
+        // 各エンティティをデータベースから再読み込みして最新の在庫データを取得
         for (Book book : books) {
             em.refresh(book);
         }
@@ -67,7 +67,7 @@ public class BookDao {
         return books;
     }
 
-    // DAO????????????????
+    // DAOメソッド：キーワードで書籍を検索
     public List<Book> queryByKeyword(String keyword) {
         logger.info("[ BookDao#queryByKeyword ]");
         
@@ -78,7 +78,7 @@ public class BookDao {
         
         List<Book> books = query.getResultList();
         
-        // ??????????????????????????????????
+        // 各エンティティをデータベースから再読み込みして最新の在庫データを取得
         for (Book book : books) {
             em.refresh(book);
         }
@@ -86,7 +86,7 @@ public class BookDao {
         return books;
     }
 
-    // DAO?????????ID????????????
+    // DAOメソッド：カテゴリIDとキーワードで書籍を検索
     public List<Book> query(Integer categoryId, String keyword) {
         logger.info("[ BookDao#query ]");
         
@@ -99,7 +99,7 @@ public class BookDao {
         
         List<Book> books = query.getResultList();
         
-        // ??????????????????????????????????
+        // 各エンティティをデータベースから再読み込みして最新の在庫データを取得
         for (Book book : books) {
             em.refresh(book);
         }
@@ -107,7 +107,7 @@ public class BookDao {
         return books;
     }
 
-    // DAO?????????????????Criteria API?
+    // DAOメソッド：動的クエリで書籍を検索（Criteria API）
     public List<Book> searchWithCriteria(Integer categoryId, String keyword) {
         logger.info("[ BookDao#searchWithCriteria ]");
         
@@ -115,7 +115,7 @@ public class BookDao {
         CriteriaQuery<Book> cq = cb.createQuery(Book.class);
         Root<Book> book = cq.from(Book.class);
 
-        // ????????
+        // 動的に条件を構築
         List<Predicate> predicates = new ArrayList<>();
         
         if (categoryId != null) {
@@ -135,7 +135,7 @@ public class BookDao {
         TypedQuery<Book> query = em.createQuery(cq);
         List<Book> books = query.getResultList();
         
-        // ??????????????????????????????????
+        // 各エンティティをデータベースから再読み込みして最新の在庫データを取得
         for (Book book2 : books) {
             em.refresh(book2);
         }
@@ -143,3 +143,5 @@ public class BookDao {
         return books;
     }
 }
+
+

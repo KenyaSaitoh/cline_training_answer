@@ -7,7 +7,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
-// 顧客関連の例外をHTTPレスポンスに変換するマッパ�Eクラス
+// 顧客関連の例外をHTTPレスポンスに変換するマッパークラス
 @Provider
 public class CustomerExceptionMapper implements ExceptionMapper<RuntimeException> {
 
@@ -23,7 +23,7 @@ public class CustomerExceptionMapper implements ExceptionMapper<RuntimeException
                     .build();
         }
         
-        // そ�E他�E例外�E500エラーとして返す
+        // その他の例外は500エラーとして返す
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(new ErrorResponse("internal.error", exception.getMessage()))
                 .build();

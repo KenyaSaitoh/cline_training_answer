@@ -16,11 +16,11 @@ public class Publisher implements Serializable {
     @Column(name = "PUBLISHER_ID")
     private int publisherId;
 
-    // 出版社吁E
+    // 出版社名
     @Column(name = "PUBLISHER_NAME")
     private String publisherName;
 
-    //  引数なし�Eコンストラクタ
+    //  引数なしのコンストラクタ
     public Publisher() {
     }
 

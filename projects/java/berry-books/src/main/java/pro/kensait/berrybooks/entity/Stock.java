@@ -5,28 +5,28 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-// ????????????????
+// 在庫情報を表すエンティティクラス
 @Entity
 @Table(name = "STOCK")
 public class Stock {
-    // ??ID
+    // 書籍ID
     @Id
     @Column(name = "BOOK_ID")
     private Integer bookId;
 
-    // ???
+    // 在庫数
     @Column(name = "QUANTITY")
     private Integer quantity;
 
-    // ?????
+    // バージョン
     @Column(name = "VERSION")
     private Long version;
 
-    //  ???????????
+    //  引数なしのコンストラクタ
     public Stock() {
     }
 
-    // ???????
+    // コンストラクタ
     public Stock(Integer bookId, Integer quantity, Long version) {
         this.bookId = bookId;
         this.quantity = quantity;

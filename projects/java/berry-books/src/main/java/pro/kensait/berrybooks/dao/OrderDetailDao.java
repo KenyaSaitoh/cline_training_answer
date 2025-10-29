@@ -12,7 +12,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 
-// ?????????????????DAO???
+// 注文明細テーブルへのアクセスを行うDAOクラス
 @ApplicationScoped
 public class OrderDetailDao {
     private static final Logger logger = LoggerFactory.getLogger(
@@ -21,13 +21,13 @@ public class OrderDetailDao {
     @PersistenceContext(unitName = "bookstorePU")
     private EntityManager em;
 
-    // DAO????????????????
+    // DAOメソッド：注文明細を主キーで検索
     public OrderDetail findById(OrderDetailPK id) {
         logger.info("[ OrderDetailDao#findById ]");
         return em.find(OrderDetail.class, id);
     }
 
-    // DAO???????ID???????????
+    // DAOメソッド：注文IDで注文明細リストを検索
     public List<OrderDetail> findByOrderTranId(Integer orderTranId) {
         logger.info("[ OrderDetailDao#findByOrderTranId ]");
         
@@ -39,11 +39,13 @@ public class OrderDetailDao {
         return query.getResultList();
     }
 
-    // DAO????????????
+    // DAOメソッド：注文明細を保存
     public void persist(OrderDetail orderDetail) {
         logger.info("[ OrderDetailDao#persist ]");
         em.persist(orderDetail);
-        // ???INSERT??????????????
+        // 即座にINSERTを実行してデータベースに反映
         em.flush();
     }
 }
+
+

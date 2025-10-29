@@ -2,26 +2,26 @@ package pro.kensait.berrybooks.web.cart;
 
 import java.math.BigDecimal;
 
-// ???????????????
+// カート内の書籍を保持するクラス
 public class CartItem {
-    // ??ID
+    // 書籍ID
     private Integer bookId;
-    // ???
+    // 書籍名
     private String bookName;
-    // ????
+    // 出版社名
     private String publisherName;
-    // ??
+    // 価格
     private BigDecimal price;
-    // ??
+    // 個数
     private Integer count;
-    // ?????
+    // 削除フラグ
     private boolean remove;
 
-    // ????????????
+    // 引数のないコンストラクタ
     public CartItem() {
     }
 
-    // ????????????????????????
+    // すべてのフィールドをパラメータに持つコンストラクタ
     public CartItem(Integer bookId, String bookName, String publisherName,
             BigDecimal price, Integer count, boolean remove) {
         this.bookId = bookId;
@@ -32,7 +32,7 @@ public class CartItem {
         this.remove = remove;
     }
 
-    // ????????
+    // アクセサメソッド
     public Integer getBookId() {
         return bookId;
     }
@@ -81,7 +81,7 @@ public class CartItem {
         this.remove = remove;
     }
 
-    // ???????????
+    // 小計を計算するメソッド
     public BigDecimal getSubtotal() {
         if (price == null || count == null) {
             return BigDecimal.ZERO;

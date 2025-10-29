@@ -11,7 +11,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 
-// ?????????????????DAO???
+// カテゴリテーブルへのアクセスを行うDAOクラス
 @ApplicationScoped
 public class CategoryDao {
     private static final Logger logger = LoggerFactory.getLogger(
@@ -20,13 +20,13 @@ public class CategoryDao {
     @PersistenceContext(unitName = "bookstorePU")
     private EntityManager em;
 
-    // DAO????????????????
+    // DAOメソッド：カテゴリを主キーで検索
     public Category findById(Integer categoryId) {
         logger.info("[ CategoryDao#findById ]");
         return em.find(Category.class, categoryId);
     }
 
-    // DAO?????????????
+    // DAOメソッド：全カテゴリを取得
     public List<Category> findAll() {
         logger.info("[ CategoryDao#findAll ]");
         
@@ -36,3 +36,5 @@ public class CategoryDao {
         return query.getResultList();
     }
 }
+
+

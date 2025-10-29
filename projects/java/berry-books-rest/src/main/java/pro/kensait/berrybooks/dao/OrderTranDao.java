@@ -11,7 +11,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 
-// ???????????????DAO???
+// 注文テーブルへのアクセスを行うDAOクラス
 @ApplicationScoped
 public class OrderTranDao {
     private static final Logger logger = LoggerFactory.getLogger(
@@ -20,7 +20,7 @@ public class OrderTranDao {
     @PersistenceContext(unitName = "bookstorePU")
     private EntityManager em;
 
-    // DAO???????ID????????
+    // DAOメソッド：顧客IDで注文履歴を取得
     public List<OrderTran> findByCustomerId(Integer customerId) {
         logger.info("[ OrderTranDao#findByCustomerId ]");
         
@@ -32,7 +32,7 @@ public class OrderTranDao {
         return query.getResultList();
     }
 
-    // DAO???????ID????????
+    // DAOメソッド：顧客IDで注文件数を取得
     public Long countOrdersByCustomerId(Integer customerId) {
         logger.info("[ OrderTranDao#countOrdersByCustomerId ]");
         
@@ -44,7 +44,7 @@ public class OrderTranDao {
         return query.getSingleResult();
     }
 
-    // DAO???????ID???????????
+    // DAOメソッド：顧客IDで購入冊数の合計を取得
     public Long sumBookCountByCustomerId(Integer customerId) {
         logger.info("[ OrderTranDao#sumBookCountByCustomerId ]");
         
@@ -57,3 +57,4 @@ public class OrderTranDao {
         return query.getSingleResult();
     }
 }
+

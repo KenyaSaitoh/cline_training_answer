@@ -16,7 +16,7 @@ import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
-// ????????????Bean
+// 書籍検索画面のバッキングBean
 @Named
 @SessionScoped
 public class BookSearchBean implements Serializable {
@@ -30,36 +30,36 @@ public class BookSearchBean implements Serializable {
     @Inject
     private CategoryService categoryService;
 
-    // ????
+    // 検索条件
     private Integer categoryId;
     private String keyword;
 
-    // ????
+    // 検索結果
     private List<Book> bookList;
 
-    // ??????????????????
+    // カテゴリマップ（セレクトボックス用）
     private Map<String, Integer> categoryMap;
 
     @PostConstruct
     public void init() {
         logger.info("[ BookSearchBean#init ]");
         
-        // ???????????
+        // カテゴリマップを初期化
         categoryMap = new HashMap<>();
         categoryMap.put("", null);
         categoryMap.putAll(categoryService.getCategoryMap());
         
-        // bookList?????????????
+        // bookListは初期化時は全書籍を取得
         if (bookList == null || bookList.isEmpty()) {
             bookList = bookService.getBooksAll();
         }
     }
 
-    // ????????????????????
+    // アクション：書籍を検索する（静的クエリ）
     public String search() {
         logger.info("[ BookSearchBean#search ] categoryId=" + categoryId + ", keyword=" + keyword);
 
-        // ??????????????
+        // 検索条件に基づいて書籍を検索
         if (categoryId != null && categoryId != 0) {
             if (keyword != null && !keyword.isEmpty()) {
                 bookList = bookService.searchBook(categoryId, keyword);
@@ -74,38 +74,38 @@ public class BookSearchBean implements Serializable {
             }
         }
 
-        // ?????bookSelect ??????
+        // 検索結果を bookSelect ページに表示
         return "bookSelect?faces-redirect=true";
     }
 
-    // ????????????????????
+    // アクション：書籍を検索する（動的クエリ）
     public String search2() {
         logger.info("[ BookSearchBean#search2 ] categoryId=" + categoryId + ", keyword=" + keyword);
         
-        // ???????????
+        // 動的クエリで書籍を検索
         bookList = bookService.searchBookWithCriteria(categoryId, keyword);
         
-        // ?????bookSelect ??????
+        // 検索結果を bookSelect ページに表示
         return "bookSelect?faces-redirect=true";
     }
 
-    // ???????????????bookSelect?????
+    // アクション：全書籍を読み込む（bookSelectページ用）
     public void loadAllBooks() {
         logger.info("[ BookSearchBean#loadAllBooks ]");
         bookList = bookService.getBooksAll();
     }
 
-    // ??????????????????????????????
+    // アクション：書籍リストを最新の状態に更新する（在庫数を含む）
     public void refreshBookList() {
         logger.info("[ BookSearchBean#refreshBookList ]");
         
-        // ?????????????????????
+        // 既存の検索条件を使用して書籍リストを再取得
         if (bookList == null || bookList.isEmpty()) {
-            // ????????????
+            // 初回表示時は全書籍を取得
             bookList = bookService.getBooksAll();
         } else {
-            // ????????????????????????
-            // ???????????????????????
+            // 既に検索が実行されている場合は、同じ条件で再検索
+            // カテゴリとキーワードの両方が設定されている場合
             if (categoryId != null && categoryId != 0) {
                 if (keyword != null && !keyword.isEmpty()) {
                     bookList = bookService.searchBook(categoryId, keyword);
@@ -113,11 +113,11 @@ public class BookSearchBean implements Serializable {
                     bookList = bookService.searchBook(categoryId);
                 }
             } else {
-                // ????????????????
+                // キーワードのみ設定されている場合
                 if (keyword != null && !keyword.isEmpty()) {
                     bookList = bookService.searchBook(keyword);
                 } else {
-                    // ????????????????
+                    // 検索条件がない場合は全書籍を取得
                     bookList = bookService.getBooksAll();
                 }
             }
@@ -149,3 +149,4 @@ public class BookSearchBean implements Serializable {
         return categoryMap;
     }
 }
+

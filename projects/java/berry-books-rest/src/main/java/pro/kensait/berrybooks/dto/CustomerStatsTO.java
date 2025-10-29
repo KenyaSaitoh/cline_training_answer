@@ -9,12 +9,13 @@ public record CustomerStatsTO (
         String customerName,
         // メールアドレス
         String email,
-        // 誕生日
+        // 生年月日
         LocalDate birthday,
         // 住所
         String address,
         // 注文件数
         Long orderCount,
-        // 購入冊数合計
+        // 購入冊数（合計）
         Long totalBooks) {
 }
+

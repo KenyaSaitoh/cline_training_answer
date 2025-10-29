@@ -12,7 +12,7 @@ import pro.kensait.berrybooks.entity.Category;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
-// ????????????????
+// カテゴリを取得するサービスクラス
 @ApplicationScoped
 public class CategoryService {
     private static final Logger logger = LoggerFactory.getLogger(
@@ -21,13 +21,13 @@ public class CategoryService {
     @Inject
     private CategoryDao categoryDao;
 
-    // ??????????????????????
+    // サービスメソッド：カテゴリの取得（全件検索）
     public List<Category> getCategoriesAll() {
         logger.info("[ CategoryService#getCategoriesAll ]");
         return categoryDao.findAll();
     }
 
-    // ???????????????????
+    // サービスメソッド：カテゴリマップの取得
     public Map<String, Integer> getCategoryMap() {
         logger.info("[ CategoryService#getCategoryMap ]");
         
@@ -41,3 +41,5 @@ public class CategoryService {
         return categoryMap;
     }
 }
+
+

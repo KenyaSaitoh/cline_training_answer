@@ -6,7 +6,7 @@ import pro.kensait.berrybooks.entity.OrderDetail;
 import pro.kensait.berrybooks.entity.OrderDetailPK;
 import pro.kensait.berrybooks.entity.OrderTran;
 
-// ???????????????
+// 注文サービスのインターフェース
 public interface OrderServiceIF {
     List<OrderTran> getOrderHistory(Integer customerId);
     List<OrderHistoryTO> getOrderHistory2(Integer customerId);

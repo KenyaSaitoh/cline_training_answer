@@ -20,7 +20,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-// ????????????Bean
+// 顧客登録画面のバッキングBean
 @Named
 @SessionScoped
 public class CustomerBean implements Serializable {
@@ -31,52 +31,52 @@ public class CustomerBean implements Serializable {
     @Inject
     private CustomerService customerService;
 
-    // ??????????
+    // 現在ログイン中の顧客
     private Customer customer;
 
-    // ??????????
-    @NotBlank(message = "????????????")
-    @Size(max = 50, message = "????50?????????????")
+    // 登録フォームの入力値
+    @NotBlank(message = "顧客名を入力してください")
+    @Size(max = 50, message = "顧客名は50文字以内で入力してください")
     private String customerName;
     
-    @NotBlank(message = "????????????????")
-    @Email(message = "???????????????????")
-    @Size(max = 100, message = "????????100?????????????")
+    @NotBlank(message = "メールアドレスを入力してください")
+    @Email(message = "有効なメールアドレスを入力してください")
+    @Size(max = 100, message = "メールアドレスは100文字以内で入力してください")
     private String email;
     
-    @NotBlank(message = "??????????????")
-    @Size(min = 8, max = 20, message = "??????8????20?????????????")
+    @NotBlank(message = "パスワードを入力してください")
+    @Size(min = 8, max = 20, message = "パスワードは8文字以上20文字以内で入力してください")
     private String password;
     
     @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$|^$", 
-             message = "?????yyyy-MM-dd??????????????1990-01-15?")
-    private String birthday; // yyyy-MM-dd??????
+             message = "生年月日はyyyy-MM-dd形式で入力してください（例：1990-01-15）")
+    private String birthday; // yyyy-MM-dd形式の文字列
     
-    @Size(max = 200, message = "???200?????????????")
+    @Size(max = 200, message = "住所は200文字以内で入力してください")
     private String address;
 
     /**
-     * ??????
-     * ?????????????Bean Validation??????????
+     * 顧客登録処理
+     * ※基本的なバリデーションはBean Validationで自動的に実行される
      */
     public String register() {
         logger.info("[ CustomerBean#register ]");
 
         try {
-            // ??????????????????????????????
+            // 住所に対する入力チェック（正しい都道府県名で始まっているか）
             if (address != null && !address.isBlank() && !AddressUtil.startsWithValidPrefecture(address)) {
-                logger.info("[ CustomerBean#register ] ???????");
-                addErrorMessage("??????????????????????");
+                logger.info("[ CustomerBean#register ] 住所入力エラー");
+                addErrorMessage("住所は正しい都道府県名で始まる必要があります");
                 return null;
             }
 
-            // Customer?????????
+            // Customerエンティティを生成
             Customer newCustomer = new Customer();
             newCustomer.setCustomerName(customerName);
             newCustomer.setEmail(email);
-            newCustomer.setPassword(password); // TODO: ?????????????
+            newCustomer.setPassword(password); // TODO: パスワードエンコーディング
             
-            // ?????????Pattern??????????
+            // 生年月日のパース（@Patternで形式チェック済み）
             if (birthday != null && !birthday.isEmpty()) {
                 try {
                     LocalDate birthDate = LocalDate.parse(birthday, 
@@ -84,19 +84,19 @@ public class CustomerBean implements Serializable {
                     newCustomer.setBirthday(birthDate);
                 } catch (Exception e) {
                     logger.warn("Birthday parse error: " + birthday, e);
-                    addErrorMessage("???????????????????1990-01-15?");
+                    addErrorMessage("生年月日の形式が正しくありません（例：1990-01-15）");
                     return null;
                 }
             }
             
             newCustomer.setAddress(address);
 
-            // ????
+            // 顧客登録
             customer = customerService.registerCustomer(newCustomer);
 
             logger.info("Customer registered: " + customer);
 
-            // ??????????
+            // 登録完了ページへ遷移
             return "customerOutput?faces-redirect=true";
 
         } catch (IllegalArgumentException e) {
@@ -105,13 +105,13 @@ public class CustomerBean implements Serializable {
             return null;
         } catch (Exception e) {
             logger.error("Registration error", e);
-            addErrorMessage("??????????????");
+            addErrorMessage("登録中にエラーが発生しました");
             return null;
         }
     }
 
     /**
-     * ???????????
+     * エラーメッセージを追加
      */
     private void addErrorMessage(String message) {
         FacesContext.getCurrentInstance().addMessage(null,
@@ -167,3 +167,4 @@ public class CustomerBean implements Serializable {
         this.address = address;
     }
 }
+

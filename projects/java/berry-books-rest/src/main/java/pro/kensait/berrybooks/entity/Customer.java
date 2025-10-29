@@ -12,37 +12,37 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "CUSTOMER")
 public class Customer {
-    // ??ID
+    // 顧客ID
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "CUSTOMER_ID")
     private Integer customerId;
 
-    // ???
+    // 顧客名
     @Column(name = "CUSTOMER_NAME")
     private String customerName;
 
-    // ?????
+    // パスワード
     @Column(name = "PASSWORD")
     private String password;
 
-    // ???????
+    // メールアドレス
     @Column(name = "EMAIL")
     private String email;
 
-    // ????
+    // 生年月日
     @Column(name = "BIRTHDAY")
     private LocalDate birthday;
 
-    // ??
+    // 住所
     @Column(name = "ADDRESS")
     private String address;
 
-    // ???????????
+    // 引数なしのコンストラクタ
     public Customer() {
     }
 
-    // ???????
+    // コンストラクタ
     public Customer(String customerName, String password, String email,
             LocalDate birthday, String address) {
         this.customerName = customerName;
@@ -107,3 +107,4 @@ public class Customer {
                 + ", address=" + address + "]";
     }
 }
+

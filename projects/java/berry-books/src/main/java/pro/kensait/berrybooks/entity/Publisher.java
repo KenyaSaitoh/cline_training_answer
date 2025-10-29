@@ -7,25 +7,25 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-// ???????????????
+// 出版社を表すエンティティクラス
 @Entity
 @Table(name = "PUBLISHER")
 public class Publisher implements Serializable {
     private static final long serialVersionUID = 1L;
-    // ???ID
+    // 出版社ID
     @Id
     @Column(name = "PUBLISHER_ID")
     private int publisherId;
 
-    // ????
+    // 出版社名
     @Column(name = "PUBLISHER_NAME")
     private String publisherName;
 
-    //  ???????????
+    //  引数なしのコンストラクタ
     public Publisher() {
     }
 
-    // ???????
+    // コンストラクタ
     public Publisher(int publisherId, String publisherName) {
         this.publisherId = publisherId;
         this.publisherName = publisherName;

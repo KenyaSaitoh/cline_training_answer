@@ -11,20 +11,20 @@ import jakarta.persistence.Table;
 @Table(name = "CATEGORY")
 public class Category implements Serializable {
     private static final long serialVersionUID = 1L;
-    // ????ID
+    // カテゴリID
     @Id
     @Column(name = "CATEGORY_ID")
     private Integer categoryId;
 
-    // ?????
+    // カテゴリ名
     @Column(name = "CATEGORY_NAME")
     private String categoryName;
 
-    // ???????????
+    // 引数なしのコンストラクタ
     public Category() {
     }
     
-    // ???????
+    // コンストラクタ
     public Category(Integer categoryId, String categoryName) {
         this.categoryId = categoryId;
         this.categoryName = categoryName;
@@ -52,3 +52,4 @@ public class Category implements Serializable {
                 + "]";
     }
 }
+

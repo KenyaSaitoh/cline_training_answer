@@ -16,45 +16,45 @@ import jakarta.persistence.Table;
 @IdClass(OrderDetailPK.class)
 public class OrderDetail implements Serializable {
     private static final long serialVersionUID = 1L;
-    // ??ID
+    // 注文ID
     @Id
     @Column(name = "ORDER_TRAN_ID",
             nullable = false)
     private Integer orderTranId;
 
-    // ????ID
+    // 注文明細ID
     @Id
     @Column(name = "ORDER_DETAIL_ID",
             nullable = false)
     private Integer orderDetailId;
 
-    // ??
+    // 注文
     @ManyToOne(targetEntity = OrderTran.class)
     @JoinColumn(name = "ORDER_TRAN_ID",
             referencedColumnName = "ORDER_TRAN_ID",
-            insertable = false, updatable = false) // ????????JPA????????
+            insertable = false, updatable = false) // ここがポイント！JPA教材でもちゃんと説明する
     private OrderTran orderTran;
 
-    // ??
+    // 書籍
     @ManyToOne(targetEntity = Book.class)
     @JoinColumn(name = "BOOK_ID",
             referencedColumnName = "BOOK_ID")
     private Book book;
 
-    // ??
-    // ????????????????????????????????????
+    // 価格
+    // 購入時点の価格を履歴に記録するため、あえて関連は使わず独立したフィールドにする
     @Column(name = "PRICE")
     private BigDecimal price;
 
-    // ???
+    // 注文数
     @Column(name = "COUNT")
     private Integer count;
 
-    // ???????????
+    // 引数なしのコンストラクタ
     public OrderDetail() {
     }
 
-    // ???????
+    // コンストラクタ
     public OrderDetail(Integer orderTranId, Integer orderDetailId, Book book, 
             Integer count) {
         this.orderTranId = orderTranId;
@@ -111,3 +111,4 @@ public class OrderDetail implements Serializable {
                 + ", price=" + price + ", count=" + count + "]";
     }
 }
+

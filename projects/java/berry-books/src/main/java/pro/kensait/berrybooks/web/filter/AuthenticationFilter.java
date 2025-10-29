@@ -16,7 +16,7 @@ import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-// ????????????????????????index.xhtml??????????
+// 認証チェックフィルタ（ログインしていないユーザーをindex.xhtmlにリダイレクトする）
 @WebFilter(filterName = "AuthenticationFilter", urlPatterns = {"*.xhtml"})
 public class AuthenticationFilter implements Filter {
     
@@ -32,32 +32,33 @@ public class AuthenticationFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         
-        // ?????????????????
+        // リクエストされたページのパスを取得
         String requestURI = httpRequest.getRequestURI();
         String contextPath = httpRequest.getContextPath();
         
         logger.debug("AuthenticationFilter - RequestURI: {}", requestURI);
         
-        // ???????????????????
+        // 認証不要なページ（公開ページ）のリスト
         boolean isPublicPage = requestURI.endsWith("/index.xhtml") 
                 || requestURI.endsWith("/customerInput.xhtml")
                 || requestURI.endsWith("/customerOutput.xhtml")
-                || requestURI.contains("/jakarta.faces.resource/");  // JSF ?????CSS??????
+                || requestURI.contains("/jakarta.faces.resource/");  // JSF リソース（CSS、画像など）
         
-        // LoginBean????????????????DI?????
+        // LoginBeanから直接ログイン状態をチェック（CDIインジェクション経由）
         boolean isLoggedIn = (loginBean != null && loginBean.isLoggedIn());
         
         logger.debug("isPublicPage: {}, isLoggedIn: {}, loginBean: {}", 
                 isPublicPage, isLoggedIn, loginBean);
         
-        // ?????????????????????index.xhtml ???????
+        // ログインが必要なページで未ログインの場合、index.xhtml にリダイレクト
         if (!isPublicPage && !isLoggedIn) {
-            logger.info("??????????????? {} -> {}/index.xhtml", 
+            logger.info("未ログインユーザーをリダイレクト: {} -> {}/index.xhtml", 
                     requestURI, contextPath);
             httpResponse.sendRedirect(contextPath + "/index.xhtml");
         } else {
-            // ??OK??????????? ? ?????
+            // 認証OK、または認証不要なページ → 処理を続行
             chain.doFilter(request, response);
         }
     }
 }
+

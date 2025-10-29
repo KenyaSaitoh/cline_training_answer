@@ -28,7 +28,7 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-// ?????????REST API???????
+// 顧客情報を提供するREST APIリソースクラス
 @Path("/customers")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -39,16 +39,16 @@ public class CustomerResource {
     @Inject
     private CustomerService customerService;
 
-    // API??????????????????
+    // APIメソッド：全顧客と統計情報を取得する
     @GET
     @Path("/")
     public Response getAllWithStats() {
         logger.info("[ CustomerResource#getAllWithStats ]");
 
-        // ??????
+        // 全顧客を取得
         List<Customer> customers = customerService.getAllCustomers();
 
-        // ????????????
+        // 顧客ごとに統計情報を追加
         List<CustomerStatsTO> responseCustomers = new ArrayList<>();
         for (Customer customer : customers) {
             Long orderCount = customerService.getOrderCount(customer.getCustomerId());
@@ -65,103 +65,103 @@ public class CustomerResource {
             ));
         }
 
-        // ?????????????HTTP?????OK???Response???
+        // 顧客統計リスト（ボディ）とHTTPステータスOKを持つResponseを返す
         return Response.ok(responseCustomers).build();
     }
 
-    // API???????????????????
+    // APIメソッド：顧客を取得する（主キー検索）
     @GET
     @Path("/{customerId}")
     public Response getById(@PathParam("customerId") Integer customerId) {
         logger.info("[ CustomerResource#getById ]");
 
-        // ??????????????????????
+        // メールアドレスから顧客エンティティを検索する
         Customer customer = customerService.getCustomerById(customerId);
 
-        // ???????????HTTP???????????TO?????
+        // 顧客エンティティから、HTTPレスポンス返却用の顧客TOを生成する
         CustomerTO responseCustomer = toCustomerTO(customer);
  
-        // ??TO??????HTTP?????OK???Response???
+        // 顧客TO（ボディ）とHTTPステータスOKを持つResponseを返す
         return Response.ok(responseCustomer).build();
     }
 
-    // API?????????????????
+    // APIメソッド：顧客の注文履歴を取得する
     @GET
     @Path("/{customerId}/orders")
     public Response getOrderHistory(@PathParam("customerId") Integer customerId) {
         logger.info("[ CustomerResource#getOrderHistory ]");
 
-        // ????????????
+        // 顧客の注文履歴を取得する
         List<OrderTran> orderTrans = customerService.getOrderHistory(customerId);
 
-        // OrderTran?????????HTTP?????????OrderHistoryTO????????
+        // OrderTranエンティティから、HTTPレスポンス返却用のOrderHistoryTOリストを生成する
         List<OrderHistoryTO> responseOrders = new ArrayList<>();
         for (OrderTran orderTran : orderTrans) {
             responseOrders.add(toOrderHistoryTO(orderTran));
         }
  
-        // ?????????????HTTP?????OK???Response???
+        // 注文履歴リスト（ボディ）とHTTPステータスOKを持つResponseを返す
         return Response.ok(responseOrders).build();
     }
 
-    // API?????????????????????????
+    // APIメソッド：顧客を取得する（一意キーからの条件検索）
     @GET
     @Path("/query_email")
     public Response queryByEmail(@QueryParam("email") String email) {
         logger.info("[ CustomerResource#queryByEmail ]");
 
-        // ??????????????????????
+        // メールアドレスから顧客エンティティを検索する
         Customer customer = customerService.getCustomerByEmail(email);
 
-        // ???????????HTTP???????????TO?????
+        // 顧客エンティティから、HTTPレスポンス返却用の顧客TOを生成する
         CustomerTO responseCustomer = toCustomerTO(customer);
 
-        // ??????????????HTTP?????OK???Response???
+        // 顧客エンティティ（ボディ）とHTTPステータスOKを持つResponseを返す
         return Response.ok(responseCustomer).build();
     }
 
-    // API???????????????????????????
+    // APIメソッド：顧客リストを取得する（誕生日からの条件検索）
     @GET
     @Path("/query_birthday")
     public Response queryFromBirthday(@QueryParam("birthday") String birthdayStr) {
         logger.info("[ CustomerResource#queryFromBirthday ]");
 
-        // ????LocalDate???
+        // 文字列をLocalDateに変換
         LocalDate birthday = LocalDate.parse(birthdayStr);
 
-        // ?????????????????????????
+        // 誕生日開始日から顧客エンティティのリストを取得する
         List<Customer> customers = customerService.searchCustomersFromBirthday(birthday);
 
-        // ???????????????HTTP???????????TO????????
+        // 顧客エンティティのリストから、HTTPレスポンス返却用の顧客TOリストを生成する
         List<CustomerTO> responseCustomerList = new ArrayList<>();
         for (Customer customer : customers) {
             responseCustomerList.add(toCustomerTO(customer));
         }
 
-        // ???????????HTTP?????OK???Response???
+        // 顧客リスト（ボディ）とHTTPステータスOKを持つResponseを返す
         return Response.ok(responseCustomerList).build();
     }
     
-    // API??????????????
+    // APIメソッド：顧客を新規登録する
     @POST
     @Path("/")
     public Response create(CustomerTO requestCustomer) {
         logger.info("[ CustomerResource#create ]");
 
-        // ???????TO????????????????
+        // 受け取った顧客TOから、顧客エンティティを生成する
         Customer customer = toCustomer(requestCustomer);
 
-        // ??????????????????
+        // 受け取った顧客エンティティを保存する
         customerService.registerCustomer(customer);
 
-        // ???????????HTTP???????????TO?????
+        // 顧客エンティティから、HTTPレスポンス返却用の顧客TOを生成する
         CustomerTO responseCustomerTO = toCustomerTO(customer);
 
-        // ???????HTTP?????OK???Response???
+        // ボディが空で、HTTPステータスOKを持つResponseを返す
         return Response.ok(responseCustomerTO).build();
     }
 
-    // API????????????
+    // APIメソッド：顧客を置換する
     @PUT
     @Path("/{customerId}")
     public Response replace(
@@ -169,31 +169,31 @@ public class CustomerResource {
             CustomerTO requestCustomer) {
         logger.info("[ CustomerResource#replace ]");
 
-        // ???????TO????????????????
+        // 受け取った顧客TOから、顧客エンティティを生成する
         Customer customer = toCustomer(requestCustomer);
 
-        // ??????????????????
+        // 受け取った顧客エンティティを置換する
         customer.setCustomerId(customerId);
         customerService.replaceCustomer(customer);
 
-        // ???????HTTP?????OK???Response???
+        // ボディが空で、HTTPステータスOKを持つResponseを返す
         return Response.ok().build();
     }
 
-    // API????????????
+    // APIメソッド：顧客を削除する
     @DELETE
     @Path("/{customerId}")
     public Response delete(@PathParam("customerId") Integer customerId) {
         logger.info("[ CustomerResource#delete ]");
 
-        // ???????ID??????????????
+        // 受け取った顧客IDを持つエンティティを削除する
         customerService.deleteCustomer(customerId);
 
-        // ???????HTTP?????OK???Response???
+        // ボディが空で、HTTPステータスOKを持つResponseを返す
         return Response.ok().build();
     }
 
-    // ???????Customer?CustomerTO
+    // 詰め替え処理（Customer→CustomerTO）
     private CustomerTO toCustomerTO(Customer customer) {
         return new CustomerTO(customer.getCustomerId(),
                 customer.getCustomerName(),
@@ -202,17 +202,17 @@ public class CustomerResource {
                 customer.getAddress());
     }
 
-    // ???????CustomerTO?Customer
+    // 詰め替え処理（CustomerTO→Customer）
     private Customer toCustomer(CustomerTO customerTO) {
-        // ??????????????????????????????
+        // パスワードは空文字列として扱う（新規登録時は別途設定が必要）
         return new Customer(customerTO.customerName(),
-                "",  // ??????????
+                "",  // パスワードは別途設定
                 customerTO.email(),
                 customerTO.birthday(),
                 customerTO.address());
     }
 
-    // ???????OrderTran?OrderHistoryTO
+    // 詰め替え処理（OrderTran→OrderHistoryTO）
     private OrderHistoryTO toOrderHistoryTO(OrderTran orderTran) {
         List<OrderItemTO> items = new ArrayList<>();
         
@@ -240,3 +240,4 @@ public class CustomerResource {
         );
     }
 }
+

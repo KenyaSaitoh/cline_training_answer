@@ -12,51 +12,51 @@ import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.SecondaryTable;
 import jakarta.persistence.Table;
 
-// ??????????????
+// 書籍を表すエンティティクラス
 @Entity
 @Table(name = "BOOK")
 @SecondaryTable(name = "STOCK",
         pkJoinColumns = @PrimaryKeyJoinColumn(name = "BOOK_ID"))
 public class Book implements Serializable {
     private static final long serialVersionUID = 1L;
-    // ??ID
+    // 書籍ID
     @Id
     @Column(name = "BOOK_ID")
     private Integer bookId;
 
-    // ???
+    // 書籍名
     @Column(name = "BOOK_NAME")
     private String bookName;
 
-    // ??
+    // 著者
     @Column(name = "AUTHOR")
     private String author;
 
-    // ????
+    // カテゴリ
     @ManyToOne(targetEntity = Category.class)
     @JoinColumn(name = "CATEGORY_ID",
             referencedColumnName = "CATEGORY_ID")
     private Category category;
 
-    // ???
+    // 出版社
     @ManyToOne(targetEntity = Publisher.class)
     @JoinColumn(name = "PUBLISHER_ID",
             referencedColumnName = "PUBLISHER_ID")
     private Publisher publisher;
 
-    // ??
+    // 価格
     @Column(name = "PRICE")
     private BigDecimal price;
 
-    // ???
+    // 在庫数
     @Column(table = "STOCK", name = "QUANTITY")
     private Integer quantity;
 
-    // ???????????
+    // 引数なしのコンストラクタ
     public Book() {
     }
 
-    // ???????
+    // コンストラクタ
     public Book(Integer bookId, String bookName, String author, Category category, 
             Publisher publisher, BigDecimal price, Integer quantity) {
         this.bookId = bookId;

@@ -26,7 +26,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.persistence.OptimisticLockException;
 
-// ?????????????????Bean
+// 注文処理と注文履歴表示のバッキングBean
 @Named
 @ViewScoped
 public class OrderBean implements Serializable {
@@ -46,58 +46,58 @@ public class OrderBean implements Serializable {
     @Inject
     private DeliveryFeeService deliveryFeeService;
 
-    // ????
+    // 注文履歴
     private List<OrderHistoryTO> orderHistory;
     private List<OrderHistoryTO> orderHistoryList;
     private List<OrderTran> orderList;
 
-    // ????
+    // 注文詳細
     private OrderTran selectedOrderTran;
     private OrderTran orderTran;
     private List<OrderDetail> orderDetails;
     private OrderDetail orderDetail;
 
-    // ????????
+    // ビューパラメータ
     private Integer selectedTranId;
     private Integer selectedDetailId;
-    private Integer orderTranId; // ???????
+    private Integer orderTranId; // 注文成功画面用
 
-    // ????????
+    // エラーメッセージ
     private String errorMessage;
 
-    // ????????????????
+    // アクション：注文を確定（方式1）
     public String placeOrder1() {
         logger.info("[ OrderBean#placeOrder1 ]");
         return placeOrderInternal();
     }
 
-    // ????????????????
+    // アクション：注文を確定（方式2）
     public String placeOrder2() {
         logger.info("[ OrderBean#placeOrder2 ]");
         return placeOrderInternal();
     }
 
-    // ????????????
-    // ?????????????Bean Validation?CartSession???????????
+    // 内部メソッド：注文を確定
+    // ※基本的なバリデーションはBean Validation（CartSession）で自動的に実行される
     private String placeOrderInternal() {
         try {
-            // ??????????????
+            // 配送先住所の都道府県をチェックする
             if (cartSession.getDeliveryAddress() != null && 
                     !cartSession.getDeliveryAddress().isBlank() && 
                     !AddressUtil.startsWithValidPrefecture(cartSession.getDeliveryAddress())) {
-                logger.info("[ OrderBean#placeOrderInternal ] ??????????");
-                errorMessage = "?????????????????????????";
+                logger.info("[ OrderBean#placeOrderInternal ] 配送先住所入力エラー");
+                errorMessage = "配送先住所は正しい都道府県名で始まる必要があります";
                 setFlashErrorMessage(errorMessage);
                 return "orderError?faces-redirect=true";
             }
 
-            // ????????????????????????????????
+            // 配送料金を再計算する（配送先住所が変更されている可能性があるため）
             BigDecimal deliveryPrice = deliveryFeeService.calculateDeliveryFee(
                     cartSession.getDeliveryAddress(), 
                     cartSession.getTotalPrice());
             cartSession.setDeliveryPrice(deliveryPrice);
 
-            // ????????ID???
+            // ログイン中の顧客IDを取得
             Customer customer = customerBean.getCustomer();
             Integer customerId = (customer != null && customer.getCustomerId() != null) 
                     ? customer.getCustomerId() 
@@ -114,57 +114,57 @@ public class OrderBean implements Serializable {
 
             orderTran = orderService.orderBooks(orderTO);
 
-            // HTTP?????????????
+            // HTTPセッションからカートを削除
             cartSession.getCartItems().clear();
             cartSession.setTotalPrice(BigDecimal.ZERO);
             cartSession.setDeliveryPrice(BigDecimal.ZERO);
             cartSession.setDeliveryAddress(null);
             cartSession.setSettlementType(null);
 
-            // ??ID?URL??????????
+            // 注文IDをURLパラメータとして渡す
             return "orderSuccess?faces-redirect=true&orderTranId=" + orderTran.getOrderTranId();
 
         } catch (OutOfStockException e) {
-            logger.error("???????", e);
-            errorMessage = "????: " + e.getBookName();
+            logger.error("在庫不足エラー", e);
+            errorMessage = "在庫不足: " + e.getBookName();
             setFlashErrorMessage(errorMessage);
             return "orderError?faces-redirect=true";
 
         } catch (OptimisticLockException e) {
-            logger.error("?????????", e);
-            errorMessage = "???????????????????????????";
+            logger.error("楽観的ロックエラー", e);
+            errorMessage = "他のユーザーが同時に注文しました。もう一度お試しください";
             setFlashErrorMessage(errorMessage);
             return "orderError?faces-redirect=true";
         } catch (Exception e) {
-            logger.error("?????", e);
-            errorMessage = "????????????????: " + e.getMessage();
+            logger.error("注文エラー", e);
+            errorMessage = "注文処理中にエラーが発生しました: " + e.getMessage();
             setFlashErrorMessage(errorMessage);
             return "orderError?faces-redirect=true";
         }
     }
 
-    // ??????????????????
+    // アクション：注文履歴を取得（方式1）
     public void loadOrderHistory() {
         logger.info("[ OrderBean#loadOrderHistory ]");
         Integer customerId = getCustomerId();
         orderHistoryList = orderService.getOrderHistory2(customerId);
     }
 
-    // ??????????????????
+    // アクション：注文履歴を取得（方式2）
     public void loadOrderHistory2() {
         logger.info("[ OrderBean#loadOrderHistory2 ]");
         Integer customerId = getCustomerId();
         orderHistoryList = orderService.getOrderHistory2(customerId);
     }
 
-    // ??????????????????
+    // アクション：注文履歴を取得（方式3）
     public void loadOrderHistory3() {
         logger.info("[ OrderBean#loadOrderHistory3 ]");
         Integer customerId = getCustomerId();
         orderList = orderService.getOrderHistory3(customerId);
     }
 
-    // ?????????????
+    // アクション：注文詳細を取得
     public void loadOrderDetail() {
         logger.info("[ OrderBean#loadOrderDetail ] tranId=" + selectedTranId 
                 + ", detailId=" + selectedDetailId);
@@ -174,17 +174,17 @@ public class OrderBean implements Serializable {
         }
     }
 
-    // ?????????????
+    // アクション：注文詳細を表示
     public String showOrderDetail(Integer orderTranId) {
         logger.info("[ OrderBean#showOrderDetail ] orderTranId=" + orderTranId);
         
         selectedOrderTran = orderService.getOrderTran(orderTranId);
         orderDetails = orderService.getOrderDetails(orderTranId);
         
-        return "orderDetail"; // ???????
+        return "orderDetail"; // 注文詳細画面へ
     }
 
-    // ???????ID???
+    // ヘルパー：顧客IDを取得
     private Integer getCustomerId() {
         Customer customer = customerBean.getCustomer();
         return (customer != null && customer.getCustomerId() != null) 
@@ -193,8 +193,8 @@ public class OrderBean implements Serializable {
     }
 
     /**
-     * FlashScope????????????
-     * ?????????????????????
+     * FlashScopeにエラーメッセージを設定
+     * ※リダイレット後もメッセージを保持するため
      */
     private void setFlashErrorMessage(String message) {
         FacesContext.getCurrentInstance()
@@ -203,7 +203,7 @@ public class OrderBean implements Serializable {
                 .put("errorMessage", message);
     }
 
-    // Getters and Setters (CartSession????)
+    // Getters and Setters (CartSessionへの委譲)
     public String getDeliveryAddress() {
         return cartSession.getDeliveryAddress();
     }
@@ -280,7 +280,7 @@ public class OrderBean implements Serializable {
         this.orderTranId = orderTranId;
     }
 
-    // ?????????????????????
+    // アクション：注文成功画面用にデータをロード
     public void loadOrderSuccess() {
         logger.info("[ OrderBean#loadOrderSuccess ] orderTranId=" + orderTranId);
         if (orderTranId != null) {
@@ -288,3 +288,4 @@ public class OrderBean implements Serializable {
         }
     }
 }
+

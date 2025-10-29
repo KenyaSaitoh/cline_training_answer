@@ -24,7 +24,7 @@ public class OrderTran implements Serializable {
     @Column(name = "ORDER_TRAN_ID")
     private Integer orderTranId;
 
-    // 注斁E��仁E
+    // 注文日付
     @Column(name = "ORDER_DATE")
     private LocalDate orderDate;
 
@@ -32,29 +32,29 @@ public class OrderTran implements Serializable {
     @Column(name = "CUSTOMER_ID")
     private Integer customerId;
 
-    // 注斁E�E細
+    // 注文明細
     @OneToMany(targetEntity = OrderDetail.class,
             mappedBy = "orderTran",
             fetch = FetchType.EAGER)
     private List<OrderDetail> orderDetails;
 
-    // 注斁E��額合訁E
+    // 注文金額合計
     @Column(name = "TOTAL_PRICE")
     private BigDecimal totalPrice;
 
-    // 配送料釁E
+    // 配送料金
     @Column(name = "DELIVERY_PRICE")
     private BigDecimal deliveryPrice;
 
-    // 配送�E住所
+    // 配送先住所
     @Column(name = "DELIVERY_ADDRESS")
     private String deliveryAddress;
 
-    // 決済方法へのアクセサメソチE��
+    // 決済方法へのアクセサメソッド
     @Column(name = "SETTLEMENT_TYPE")
     private Integer settlementType;
 
-    // 引数なし�Eコンストラクタ
+    // 引数なしのコンストラクタ
     public OrderTran() {
     }
 

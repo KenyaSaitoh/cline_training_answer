@@ -14,52 +14,52 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
-// ??????????????
+// 注文を表すエンティティクラス
 @Entity
 @Table(name = "ORDER_TRAN")
 public class OrderTran implements Serializable {
     private static final long serialVersionUID = 1L;
-    // ??ID
+    // 注文ID
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "ORDER_TRAN_ID")
     private Integer orderTranId;
 
-    // ????
+    // 注文日付
     @Column(name = "ORDER_DATE")
     private LocalDate orderDate;
 
-    // ??
+    // 顧客
     @Column(name = "CUSTOMER_ID")
     private Integer customerId;
 
-    // ????
+    // 注文明細
     @OneToMany(targetEntity = OrderDetail.class,
             mappedBy = "orderTran",
             fetch = FetchType.EAGER)
     private List<OrderDetail> orderDetails;
 
-    // ??????
+    // 注文金額合計
     @Column(name = "TOTAL_PRICE")
     private BigDecimal totalPrice;
 
-    // ???
+    // 配送料金
     @Column(name = "DELIVERY_PRICE")
     private BigDecimal deliveryPrice;
 
-    // ?????
+    // 配送先住所
     @Column(name = "DELIVERY_ADDRESS")
     private String deliveryAddress;
 
-    // ??????????????
+    // 決済方法へのアクセサメソッド
     @Column(name = "SETTLEMENT_TYPE")
     private Integer settlementType;
 
-    // ???????????
+    // 引数なしのコンストラクタ
     public OrderTran() {
     }
 
-    // ???????
+    // コンストラクタ
     public OrderTran(LocalDate orderDate, Integer customerId, BigDecimal totalPrice, 
             BigDecimal deliveryPrice, String deliveryAddress, Integer settlementType) {
         this.orderDate = orderDate;

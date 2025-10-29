@@ -14,7 +14,7 @@ import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
-// ?????????????????Bean
+// ショッピングカート操作のバッキングBean
 @Named
 @SessionScoped
 public class CartBean implements Serializable {
@@ -34,13 +34,13 @@ public class CartBean implements Serializable {
     @Inject
     private DeliveryFeeService deliveryFeeService;
 
-    // ???????????????
+    // アクション：書籍をカートに追加
     public String addBook(Integer bookId, Integer count) {
         logger.info("[ CartBean#addBook ] bookId=" + bookId + ", count=" + count);
 
         Book book = bookService.getBook(bookId);
 
-        // ?????????????????????????????????
+        // 選択された書籍がカートに存在している場合は、注文数と金額を加算する
         boolean isExists = false;
         for (CartItem cartItem : cartSession.getCartItems()) {
             if (bookId.equals(cartItem.getBookId())) {
@@ -51,7 +51,7 @@ public class CartBean implements Serializable {
             }
         }
 
-        // ??????????????????????????CartItem????????????
+        // 選択された書籍がカートに存在していない場合は、新しいCartItemを生成しカートに追加する
         if (!isExists) {
             CartItem cartItem = new CartItem(
                     book.getBookId(),
@@ -63,18 +63,18 @@ public class CartBean implements Serializable {
             cartSession.getCartItems().add(cartItem);
         }
 
-        // ???????????
+        // 合計金額を加算する
         BigDecimal totalPrice = cartSession.getTotalPrice();
         cartSession.setTotalPrice(totalPrice.add(book.getPrice()));
 
         return "cartView?faces-redirect=true";
     }
 
-    // ????????????????????
+    // アクション：選択した書籍をカートから削除
     public String removeSelectedBooks() {
         logger.info("[ CartBean#removeSelectedBooks ]");
         
-        // ??????????????????????
+        // 選択された書籍を削除し、合計金額を再計算
         cartSession.getCartItems().removeIf(item -> {
             if (item.isRemove()) {
                 BigDecimal totalPrice = cartSession.getTotalPrice();
@@ -87,7 +87,7 @@ public class CartBean implements Serializable {
         return null;
     }
 
-    // ?????????????
+    // アクション：カートをクリア
     public String clearCart() {
         logger.info("[ CartBean#clearCart ]");
         cartSession.getCartItems().clear();
@@ -96,7 +96,7 @@ public class CartBean implements Serializable {
         return "cartClear?faces-redirect=true";
     }
 
-    // ?????????????????
+    // アクション：カートの内容を確定する
     public String proceedToOrder() {
         logger.info("[ CartBean#proceedToOrder ]");
         
@@ -104,13 +104,13 @@ public class CartBean implements Serializable {
             return null;
         }
 
-        // ?????????????????????????
+        // デフォルトの配送先住所として、顧客の住所を設定する
         if (customerBean.getCustomer() != null) {
             cartSession.setDeliveryAddress(customerBean.getCustomer().getAddress());
         }
 
-        // ????????
-        // ???800?????1700??5000????????
+        // 配送料金を計算する
+        // ※通常800円、沖縄県は1700円、5000円以上は送料無料
         BigDecimal deliveryPrice = deliveryFeeService.calculateDeliveryFee(
                 cartSession.getDeliveryAddress(), 
                 cartSession.getTotalPrice());
@@ -119,20 +119,20 @@ public class CartBean implements Serializable {
         return "bookOrder?faces-redirect=true";
     }
 
-    // ??????????????
+    // アクション：カートを参照する
     public String viewCart() {
         logger.info("[ CartBean#viewCart ]");
 
-        // ????????????????????????????????
+        // カートに商品が一つも入っていなかった場合は、エラーメッセージを設定
         if (cartSession.getCartItems().size() == 0) {
-            logger.info("[ CartBean#viewCart ] ???????????");
-            globalErrorMessage = "?????????????";
+            logger.info("[ CartBean#viewCart ] カートに商品なしエラー");
+            globalErrorMessage = "カートに商品が入っていません";
         }
 
         return "cartView?faces-redirect=true";
     }
 
-    // ?????????????
+    // グローバルエラーメッセージ
     private String globalErrorMessage;
 
     public String getGlobalErrorMessage() {
@@ -143,7 +143,7 @@ public class CartBean implements Serializable {
         this.globalErrorMessage = globalErrorMessage;
     }
 
-    // CartSession????????
+    // CartSessionへの委譲メソッド
     public BigDecimal getTotalPrice() {
         return cartSession.getTotalPrice();
     }
@@ -156,3 +156,4 @@ public class CartBean implements Serializable {
         return cartSession.getCartItems().isEmpty();
     }
 }
+
