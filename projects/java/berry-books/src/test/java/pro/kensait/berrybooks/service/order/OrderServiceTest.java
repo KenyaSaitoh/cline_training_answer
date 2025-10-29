@@ -64,15 +64,15 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("顧客IDで注斁E��歴を取得できることをテストすめE)
+    @DisplayName("顧客IDで注文履歴を取得できることをテストする")
     void testGetOrderHistory() {
-        // 準備フェーズ�E�テストフィクスチャのセチE��アチE�E�E�E
+        // 準備フェーズ（テストフィクスチャのセットアップ）
         when(orderTranDao.findByCustomerId(testCustomerId)).thenReturn(testOrderTranList);
 
         // 実行フェーズ
         List<OrderTran> result = orderService.getOrderHistory(testCustomerId);
 
-        // 検証フェーズ�E��E力値ベ�Eス、コミュニケーションベ�Eス�E�E
+        // 検証フェーズ（出力値ベース、コミュニケーションベース）
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals(testOrderTranId, result.get(0).getOrderTranId());
@@ -80,57 +80,57 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("注斁E��歴をTransfer Objectで取得できることをテストすめE)
+    @DisplayName("注文履歴をTransfer Objectで取得できることをテストする")
     void testGetOrderHistory2() {
-        // 準備フェーズ�E�テストフィクスチャのセチE��アチE�E�E�E
+        // 準備フェーズ（テストフィクスチャのセットアップ）
         List<OrderHistoryTO> expectedList = new ArrayList<>();
         when(orderTranDao.findOrderHistoryByCustomerId(testCustomerId)).thenReturn(expectedList);
 
         // 実行フェーズ
         List<OrderHistoryTO> result = orderService.getOrderHistory2(testCustomerId);
 
-        // 検証フェーズ�E��E力値ベ�Eス、コミュニケーションベ�Eス�E�E
+        // 検証フェーズ（出力値ベース、コミュニケーションベース）
         assertNotNull(result);
         verify(orderTranDao, times(1)).findOrderHistoryByCustomerId(testCustomerId);
     }
 
     @Test
-    @DisplayName("注斁E��歴を�E細と共に取得できることをテストすめE)
+    @DisplayName("注文履歴を明細と共に取得できることをテストする")
     void testGetOrderHistory3() {
-        // 準備フェーズ�E�テストフィクスチャのセチE��アチE�E�E�E
+        // 準備フェーズ（テストフィクスチャのセットアップ）
         when(orderTranDao.findByCustomerIdWithDetails(testCustomerId)).thenReturn(testOrderTranList);
 
         // 実行フェーズ
         List<OrderTran> result = orderService.getOrderHistory3(testCustomerId);
 
-        // 検証フェーズ�E��E力値ベ�Eス、コミュニケーションベ�Eス�E�E
+        // 検証フェーズ（出力値ベース、コミュニケーションベース）
         assertNotNull(result);
         assertEquals(1, result.size());
         verify(orderTranDao, times(1)).findByCustomerIdWithDetails(testCustomerId);
     }
 
     @Test
-    @DisplayName("注文IDで注斁E��報を取得できることをテストすめE)
+    @DisplayName("注文IDで注文情報を取得できることをテストする")
     void testGetOrderTran() {
-        // 準備フェーズ�E�テストフィクスチャのセチE��アチE�E�E�E
+        // 準備フェーズ（テストフィクスチャのセットアップ）
         when(orderTranDao.findById(testOrderTranId)).thenReturn(testOrderTran);
 
         // 実行フェーズ
         OrderTran result = orderService.getOrderTran(testOrderTranId);
 
-        // 検証フェーズ�E��E力値ベ�Eス、コミュニケーションベ�Eス�E�E
+        // 検証フェーズ（出力値ベース、コミュニケーションベース）
         assertNotNull(result);
         assertEquals(testOrderTranId, result.getOrderTranId());
         verify(orderTranDao, times(1)).findById(testOrderTranId);
     }
 
     @Test
-    @DisplayName("存在しなぁE��文IDで例外がスローされることをテストすめE)
+    @DisplayName("存在しない注文IDで例外がスローされることをテストする")
     void testGetOrderTranNotFound() {
-        // 準備フェーズ�E�テストフィクスチャのセチE��アチE�E�E�E
+        // 準備フェーズ（テストフィクスチャのセットアップ）
         when(orderTranDao.findById(testOrderTranId)).thenReturn(null);
 
-        // 実行フェーズと検証フェーズ�E��E力値ベ�Eス�E�E
+        // 実行フェーズと検証フェーズ（出力値ベース）
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
             orderService.getOrderTran(testOrderTranId);
         });
@@ -138,27 +138,27 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("注斁E��報を�E細と共に取得できることをテストすめE)
+    @DisplayName("注文情報を明細と共に取得できることをテストする")
     void testGetOrderTranWithDetails() {
-        // 準備フェーズ�E�テストフィクスチャのセチE��アチE�E�E�E
+        // 準備フェーズ（テストフィクスチャのセットアップ）
         when(orderTranDao.findByIdWithDetails(testOrderTranId)).thenReturn(testOrderTran);
 
         // 実行フェーズ
         OrderTran result = orderService.getOrderTranWithDetails(testOrderTranId);
 
-        // 検証フェーズ�E��E力値ベ�Eス、コミュニケーションベ�Eス�E�E
+        // 検証フェーズ（出力値ベース、コミュニケーションベース）
         assertNotNull(result);
         assertEquals(testOrderTranId, result.getOrderTranId());
         verify(orderTranDao, times(1)).findByIdWithDetails(testOrderTranId);
     }
 
     @Test
-    @DisplayName("存在しなぁE��文IDで明細取得時に例外がスローされることをテストすめE)
+    @DisplayName("存在しない注文IDで明細取得時に例外がスローされることをテストする")
     void testGetOrderTranWithDetailsNotFound() {
-        // 準備フェーズ�E�テストフィクスチャのセチE��アチE�E�E�E
+        // 準備フェーズ（テストフィクスチャのセットアップ）
         when(orderTranDao.findByIdWithDetails(testOrderTranId)).thenReturn(null);
 
-        // 実行フェーズと検証フェーズ�E��E力値ベ�Eス�E�E
+        // 実行フェーズと検証フェーズ（出力値ベース）
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
             orderService.getOrderTranWithDetails(testOrderTranId);
         });
@@ -166,9 +166,9 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("褁E��主キーで注斁E�E細を取得できることをテストすめE)
+    @DisplayName("複合主キーで注文明細を取得できることをテストする")
     void testGetOrderDetailByPK() {
-        // 準備フェーズ�E�テストフィクスチャのセチE��アチE�E�E�E
+        // 準備フェーズ（テストフィクスチャのセットアップ）
         OrderDetailPK pk = new OrderDetailPK(testOrderTranId, 1);
         OrderDetail expectedDetail = new OrderDetail();
         expectedDetail.setOrderDetailId(1);
@@ -177,20 +177,20 @@ class OrderServiceTest {
         // 実行フェーズ
         OrderDetail result = orderService.getOrderDetail(pk);
 
-        // 検証フェーズ�E��E力値ベ�Eス、コミュニケーションベ�Eス�E�E
+        // 検証フェーズ（出力値ベース、コミュニケーションベース）
         assertNotNull(result);
         assertEquals(1, result.getOrderDetailId());
         verify(orderDetailDao, times(1)).findById(pk);
     }
 
     @Test
-    @DisplayName("存在しなぁE��斁E�E細IDで例外がスローされることをテストすめE)
+    @DisplayName("存在しない注文明細IDで例外がスローされることをテストする")
     void testGetOrderDetailByPKNotFound() {
-        // 準備フェーズ�E�テストフィクスチャのセチE��アチE�E�E�E
+        // 準備フェーズ（テストフィクスチャのセットアップ）
         OrderDetailPK pk = new OrderDetailPK(testOrderTranId, 1);
         when(orderDetailDao.findById(pk)).thenReturn(null);
 
-        // 実行フェーズと検証フェーズ�E��E力値ベ�Eス�E�E
+        // 実行フェーズと検証フェーズ（出力値ベース）
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
             orderService.getOrderDetail(pk);
         });
@@ -198,9 +198,9 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("注文IDと明細IDで注斁E�E細を取得できることをテストする（オーバ�Eロード！E)
+    @DisplayName("注文IDと明細IDで注文明細を取得できることをテストする（オーバーロード）")
     void testGetOrderDetailByIds() {
-        // 準備フェーズ�E�テストフィクスチャのセチE��アチE�E�E�E
+        // 準備フェーズ（テストフィクスチャのセットアップ）
         Integer detailId = 1;
         OrderDetail expectedDetail = new OrderDetail();
         expectedDetail.setOrderDetailId(detailId);
@@ -209,16 +209,16 @@ class OrderServiceTest {
         // 実行フェーズ
         OrderDetail result = orderService.getOrderDetail(testOrderTranId, detailId);
 
-        // 検証フェーズ�E��E力値ベ�Eス、コミュニケーションベ�Eス�E�E
+        // 検証フェーズ（出力値ベース、コミュニケーションベース）
         assertNotNull(result);
         assertEquals(detailId, result.getOrderDetailId());
         verify(orderDetailDao, times(1)).findById(any(OrderDetailPK.class));
     }
 
     @Test
-    @DisplayName("注文IDで注斁E�E細のリストを取得できることをテストすめE)
+    @DisplayName("注文IDで注文明細のリストを取得できることをテストする")
     void testGetOrderDetails() {
-        // 準備フェーズ�E�テストフィクスチャのセチE��アチE�E�E�E
+        // 準備フェーズ（テストフィクスチャのセットアップ）
         List<OrderDetail> expectedList = new ArrayList<>();
         OrderDetail detail1 = new OrderDetail();
         detail1.setOrderDetailId(1);
@@ -228,16 +228,16 @@ class OrderServiceTest {
         // 実行フェーズ
         List<OrderDetail> result = orderService.getOrderDetails(testOrderTranId);
 
-        // 検証フェーズ�E��E力値ベ�Eス、コミュニケーションベ�Eス�E�E
+        // 検証フェーズ（出力値ベース、コミュニケーションベース）
         assertNotNull(result);
         assertEquals(1, result.size());
         verify(orderDetailDao, times(1)).findByOrderTranId(testOrderTranId);
     }
 
     @Test
-    @DisplayName("注斁E��正常に完亁E��、在庫が減少することをテストすめE)
+    @DisplayName("注文が正常に完了し、在庫が減少することをテストする")
     void testOrderBooksSuccess() {
-        // 準備フェーズ�E�テストフィクスチャのセチE��アチE�E�E�E
+        // 準備フェーズ（テストフィクスチャのセットアップ）
         Integer bookId = 1;
         Integer quantity = 2;
         Integer stockQuantity = 10;
@@ -257,7 +257,7 @@ class OrderServiceTest {
             new BigDecimal("2000"),
             new BigDecimal("800"),
             "東京都渋谷区",
-            1 // クレジチE��カーチE
+            1 // クレジットカード
         );
         
         Stock stock = new Stock();
@@ -284,7 +284,7 @@ class OrderServiceTest {
         // 実行フェーズ
         OrderTran result = orderService.orderBooks(orderTO);
 
-        // 検証フェーズ�E��E力値ベ�Eス、状態�Eース、コミュニケーションベ�Eス�E�E
+        // 検証フェーズ（出力値ベース、状態ベース、コミュニケーションベース）
         assertNotNull(result);
         assertEquals(stockQuantity - quantity, stock.getQuantity());
         verify(stockDao, times(1)).findByIdWithLock(bookId);
@@ -294,9 +294,9 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("在庫不足の場合にOutOfStockExceptionがスローされることをテストすめE)
+    @DisplayName("在庫不足の場合にOutOfStockExceptionがスローされることをテストする")
     void testOrderBooksOutOfStock() {
-        // 準備フェーズ�E�テストフィクスチャのセチE��アチE�E�E�E
+        // 準備フェーズ（テストフィクスチャのセットアップ）
         Integer bookId = 1;
         Integer quantity = 10;
         Integer stockQuantity = 5;
@@ -316,7 +316,7 @@ class OrderServiceTest {
             new BigDecimal("2000"),
             new BigDecimal("800"),
             "東京都渋谷区",
-            1 // クレジチE��カーチE
+            1 // クレジットカード
         );
         
         Stock stock = new Stock();
@@ -325,7 +325,7 @@ class OrderServiceTest {
         
         when(stockDao.findByIdWithLock(bookId)).thenReturn(stock);
 
-        // 実行フェーズと検証フェーズ�E��E力値ベ�Eス、コミュニケーションベ�Eス�E�E
+        // 実行フェーズと検証フェーズ（出力値ベース、コミュニケーションベース）
         OutOfStockException exception = assertThrows(OutOfStockException.class, () -> {
             orderService.orderBooks(orderTO);
         });
@@ -336,9 +336,9 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("褁E��の書籍を含む注斁E��正常に処琁E��れることをテストすめE)
+    @DisplayName("複数の書籍を含む注文が正常に処理されることをテストする")
     void testOrderBooksMultipleItems() {
-        // 準備フェーズ�E�テストフィクスチャのセチE��アチE�E�E�E
+        // 準備フェーズ（テストフィクスチャのセットアップ）
         Integer bookId1 = 1;
         Integer bookId2 = 2;
         
@@ -363,7 +363,7 @@ class OrderServiceTest {
             new BigDecimal("5000"),
             new BigDecimal("800"),
             "東京都渋谷区",
-            1 // クレジチE��カーチE
+            1 // クレジットカード
         );
         
         Stock stock1 = new Stock();
@@ -400,7 +400,7 @@ class OrderServiceTest {
         // 実行フェーズ
         OrderTran result = orderService.orderBooks(orderTO);
 
-        // 検証フェーズ�E��E力値ベ�Eス、状態�Eース、コミュニケーションベ�Eス�E�E
+        // 検証フェーズ（出力値ベース、状態ベース、コミュニケーションベース）
         assertNotNull(result);
         assertEquals(8, stock1.getQuantity()); // 10 - 2
         assertEquals(17, stock2.getQuantity()); // 20 - 3

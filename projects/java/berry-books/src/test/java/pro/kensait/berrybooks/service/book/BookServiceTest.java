@@ -68,29 +68,34 @@ class BookServiceTest {
         testBookList.add(testBook3);
     }
 
-    // getBookのチE��チE
+    // getBookのテスト
+
     @Test
-    @DisplayName("書籍IDで書籍情報を取得できることをテストすめE)
+    @DisplayName("書籍IDで書籍情報を取得できることをテストする")
     void testGetBookSuccess() {
-        // 準備フェーズ�E�テストフィクスチャのセチE��アチE�E�E�E        Integer bookId = 1;
+        // 準備フェーズ（テストフィクスチャのセットアップ）
+        Integer bookId = 1;
         when(bookDao.findById(bookId)).thenReturn(testBook1);
 
         // 実行フェーズ
         Book result = bookService.getBook(bookId);
 
-        // 検証フェーズ�E��E力値ベ�Eス、コミュニケーションベ�Eス�E�E        assertNotNull(result);
+        // 検証フェーズ（出力値ベース、コミュニケーションベース）
+        assertNotNull(result);
         assertEquals(bookId, result.getBookId());
         assertEquals("Java入門", result.getBookName());
         verify(bookDao, times(1)).findById(bookId);
     }
 
     @Test
-    @DisplayName("存在しなぁE��籍IDで例外がスローされることをテストすめE)
+    @DisplayName("存在しない書籍IDで例外がスローされることをテストする")
     void testGetBookNotFound() {
-        // 準備フェーズ�E�テストフィクスチャのセチE��アチE�E�E�E        Integer bookId = 999;
+        // 準備フェーズ（テストフィクスチャのセットアップ）
+        Integer bookId = 999;
         when(bookDao.findById(bookId)).thenReturn(null);
 
-        // 実行フェーズと検証フェーズ�E��E力値ベ�Eス、コミュニケーションベ�Eス�E�E        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+        // 実行フェーズと検証フェーズ（出力値ベース、コミュニケーションベース）
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
             bookService.getBook(bookId);
         });
         assertTrue(exception.getMessage().contains("Book not found"));
@@ -98,27 +103,32 @@ class BookServiceTest {
     }
 
     @Test
-    @DisplayName("書籍IDがnullの場合に例外がスローされることをテストすめE)
+    @DisplayName("書籍IDがnullの場合に例外がスローされることをテストする")
     void testGetBookNullId() {
-        // 準備フェーズ�E�テストフィクスチャのセチE��アチE�E�E�E        when(bookDao.findById(null)).thenReturn(null);
+        // 準備フェーズ（テストフィクスチャのセットアップ）
+        when(bookDao.findById(null)).thenReturn(null);
 
-        // 実行フェーズと検証フェーズ�E��E力値ベ�Eス、コミュニケーションベ�Eス�E�E        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+        // 実行フェーズと検証フェーズ（出力値ベース、コミュニケーションベース）
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
             bookService.getBook(null);
         });
         assertTrue(exception.getMessage().contains("Book not found"));
         verify(bookDao, times(1)).findById(null);
     }
 
-    // getBooksAllのチE��チE
+    // getBooksAllのテスト
+
     @Test
-    @DisplayName("全書籍を取得できることをテストすめE)
+    @DisplayName("全書籍を取得できることをテストする")
     void testGetBooksAll() {
-        // 準備フェーズ�E�テストフィクスチャのセチE��アチE�E�E�E        when(bookDao.findAll()).thenReturn(testBookList);
+        // 準備フェーズ（テストフィクスチャのセットアップ）
+        when(bookDao.findAll()).thenReturn(testBookList);
 
         // 実行フェーズ
         List<Book> result = bookService.getBooksAll();
 
-        // 検証フェーズ�E��E力値ベ�Eス、コミュニケーションベ�Eス�E�E        assertNotNull(result);
+        // 検証フェーズ（出力値ベース、コミュニケーションベース）
+        assertNotNull(result);
         assertEquals(3, result.size());
         assertEquals("Java入門", result.get(0).getBookName());
         assertEquals("Spring Boot実践", result.get(1).getBookName());
@@ -127,23 +137,27 @@ class BookServiceTest {
     }
 
     @Test
-    @DisplayName("書籍が0件の場合に空のリストが返されることをテストすめE)
+    @DisplayName("書籍が0件の場合に空のリストが返されることをテストする")
     void testGetBooksAllEmpty() {
-        // 準備フェーズ�E�テストフィクスチャのセチE��アチE�E�E�E        when(bookDao.findAll()).thenReturn(new ArrayList<>());
+        // 準備フェーズ（テストフィクスチャのセットアップ）
+        when(bookDao.findAll()).thenReturn(new ArrayList<>());
 
         // 実行フェーズ
         List<Book> result = bookService.getBooksAll();
 
-        // 検証フェーズ�E��E力値ベ�Eス、コミュニケーションベ�Eス�E�E        assertNotNull(result);
+        // 検証フェーズ（出力値ベース、コミュニケーションベース）
+        assertNotNull(result);
         assertEquals(0, result.size());
         verify(bookDao, times(1)).findAll();
     }
 
-    // searchBook(Integer categoryId, String keyword)のチE��チE
+    // searchBook(Integer categoryId, String keyword)のテスト
+
     @Test
-    @DisplayName("カチE��リIDとキーワードで書籍を検索できることをテストすめE)
+    @DisplayName("カテゴリIDとキーワードで書籍を検索できることをテストする")
     void testSearchBookByCategoryAndKeyword() {
-        // 準備フェーズ�E�テストフィクスチャのセチE��アチE�E�E�E        Integer categoryId = 1;
+        // 準備フェーズ（テストフィクスチャのセットアップ）
+        Integer categoryId = 1;
         String keyword = "Java";
         List<Book> searchResults = new ArrayList<>();
         searchResults.add(testBook1);
@@ -153,33 +167,38 @@ class BookServiceTest {
         // 実行フェーズ
         List<Book> result = bookService.searchBook(categoryId, keyword);
 
-        // 検証フェーズ�E��E力値ベ�Eス、コミュニケーションベ�Eス�E�E        assertNotNull(result);
+        // 検証フェーズ（出力値ベース、コミュニケーションベース）
+        assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals("Java入門", result.get(0).getBookName());
         verify(bookDao, times(1)).query(categoryId, "%" + keyword + "%");
     }
 
     @Test
-    @DisplayName("カチE��リIDとキーワード�E検索で結果ぁE件の場合に空のリストが返されることをテストすめE)
+    @DisplayName("カテゴリIDとキーワードの検索で結果が0件の場合に空のリストが返されることをテストする")
     void testSearchBookByCategoryAndKeywordNoResults() {
-        // 準備フェーズ�E�テストフィクスチャのセチE��アチE�E�E�E        Integer categoryId = 1;
-        String keyword = "存在しなぁE��ーワーチE;
+        // 準備フェーズ（テストフィクスチャのセットアップ）
+        Integer categoryId = 1;
+        String keyword = "存在しないキーワード";
         
         when(bookDao.query(categoryId, "%" + keyword + "%")).thenReturn(new ArrayList<>());
 
         // 実行フェーズ
         List<Book> result = bookService.searchBook(categoryId, keyword);
 
-        // 検証フェーズ�E��E力値ベ�Eス、コミュニケーションベ�Eス�E�E        assertNotNull(result);
+        // 検証フェーズ（出力値ベース、コミュニケーションベース）
+        assertNotNull(result);
         assertEquals(0, result.size());
         verify(bookDao, times(1)).query(categoryId, "%" + keyword + "%");
     }
 
-    // searchBook(Integer categoryId)のチE��チE
+    // searchBook(Integer categoryId)のテスト
+
     @Test
-    @DisplayName("カチE��リIDで書籍を検索できることをテストすめE)
+    @DisplayName("カテゴリIDで書籍を検索できることをテストする")
     void testSearchBookByCategoryId() {
-        // 準備フェーズ�E�テストフィクスチャのセチE��アチE�E�E�E        Integer categoryId = 1;
+        // 準備フェーズ（テストフィクスチャのセットアップ）
+        Integer categoryId = 1;
         List<Book> searchResults = new ArrayList<>();
         searchResults.add(testBook1);
         searchResults.add(testBook2);
@@ -189,7 +208,8 @@ class BookServiceTest {
         // 実行フェーズ
         List<Book> result = bookService.searchBook(categoryId);
 
-        // 検証フェーズ�E��E力値ベ�Eス、コミュニケーションベ�Eス�E�E        assertNotNull(result);
+        // 検証フェーズ（出力値ベース、コミュニケーションベース）
+        assertNotNull(result);
         assertEquals(2, result.size());
         assertEquals("Java入門", result.get(0).getBookName());
         assertEquals("Spring Boot実践", result.get(1).getBookName());
@@ -197,25 +217,29 @@ class BookServiceTest {
     }
 
     @Test
-    @DisplayName("カチE��リIDの検索で結果ぁE件の場合に空のリストが返されることをテストすめE)
+    @DisplayName("カテゴリIDの検索で結果が0件の場合に空のリストが返されることをテストする")
     void testSearchBookByCategoryIdNoResults() {
-        // 準備フェーズ�E�テストフィクスチャのセチE��アチE�E�E�E        Integer categoryId = 999;
+        // 準備フェーズ（テストフィクスチャのセットアップ）
+        Integer categoryId = 999;
         
         when(bookDao.queryByCategory(categoryId)).thenReturn(new ArrayList<>());
 
         // 実行フェーズ
         List<Book> result = bookService.searchBook(categoryId);
 
-        // 検証フェーズ�E��E力値ベ�Eス、コミュニケーションベ�Eス�E�E        assertNotNull(result);
+        // 検証フェーズ（出力値ベース、コミュニケーションベース）
+        assertNotNull(result);
         assertEquals(0, result.size());
         verify(bookDao, times(1)).queryByCategory(categoryId);
     }
 
-    // searchBook(String keyword)のチE��チE
+    // searchBook(String keyword)のテスト
+
     @Test
-    @DisplayName("キーワードで書籍を検索できることをテストすめE)
+    @DisplayName("キーワードで書籍を検索できることをテストする")
     void testSearchBookByKeyword() {
-        // 準備フェーズ�E�テストフィクスチャのセチE��アチE�E�E�E        String keyword = "Java";
+        // 準備フェーズ（テストフィクスチャのセットアップ）
+        String keyword = "Java";
         List<Book> searchResults = new ArrayList<>();
         searchResults.add(testBook1);
         
@@ -224,47 +248,54 @@ class BookServiceTest {
         // 実行フェーズ
         List<Book> result = bookService.searchBook(keyword);
 
-        // 検証フェーズ�E��E力値ベ�Eス、コミュニケーションベ�Eス�E�E        assertNotNull(result);
+        // 検証フェーズ（出力値ベース、コミュニケーションベース）
+        assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals("Java入門", result.get(0).getBookName());
         verify(bookDao, times(1)).queryByKeyword("%" + keyword + "%");
     }
 
     @Test
-    @DisplayName("キーワード�E検索で結果ぁE件の場合に空のリストが返されることをテストすめE)
+    @DisplayName("キーワードの検索で結果が0件の場合に空のリストが返されることをテストする")
     void testSearchBookByKeywordNoResults() {
-        // 準備フェーズ�E�テストフィクスチャのセチE��アチE�E�E�E        String keyword = "存在しなぁE��ーワーチE;
+        // 準備フェーズ（テストフィクスチャのセットアップ）
+        String keyword = "存在しないキーワード";
         
         when(bookDao.queryByKeyword("%" + keyword + "%")).thenReturn(new ArrayList<>());
 
         // 実行フェーズ
         List<Book> result = bookService.searchBook(keyword);
 
-        // 検証フェーズ�E��E力値ベ�Eス、コミュニケーションベ�Eス�E�E        assertNotNull(result);
+        // 検証フェーズ（出力値ベース、コミュニケーションベース）
+        assertNotNull(result);
         assertEquals(0, result.size());
         verify(bookDao, times(1)).queryByKeyword("%" + keyword + "%");
     }
 
     @Test
-    @DisplayName("空斁E���Eのキーワードで検索が実行されることをテストすめE)
+    @DisplayName("空文字列のキーワードで検索が実行されることをテストする")
     void testSearchBookByEmptyKeyword() {
-        // 準備フェーズ�E�テストフィクスチャのセチE��アチE�E�E�E        String keyword = "";
+        // 準備フェーズ（テストフィクスチャのセットアップ）
+        String keyword = "";
         
         when(bookDao.queryByKeyword("%" + keyword + "%")).thenReturn(testBookList);
 
         // 実行フェーズ
         List<Book> result = bookService.searchBook(keyword);
 
-        // 検証フェーズ�E��E力値ベ�Eス、コミュニケーションベ�Eス�E�E        assertNotNull(result);
+        // 検証フェーズ（出力値ベース、コミュニケーションベース）
+        assertNotNull(result);
         assertEquals(3, result.size());
         verify(bookDao, times(1)).queryByKeyword("%" + keyword + "%");
     }
 
-    // searchBookWithCriteriaのチE��チE
+    // searchBookWithCriteriaのテスト
+
     @Test
-    @DisplayName("動的クエリでカチE��リIDとキーワードを使って書籍を検索できることをテストすめE)
+    @DisplayName("動的クエリでカテゴリIDとキーワードを使って書籍を検索できることをテストする")
     void testSearchBookWithCriteria() {
-        // 準備フェーズ�E�テストフィクスチャのセチE��アチE�E�E�E        Integer categoryId = 1;
+        // 準備フェーズ（テストフィクスチャのセットアップ）
+        Integer categoryId = 1;
         String keyword = "Java";
         List<Book> searchResults = new ArrayList<>();
         searchResults.add(testBook1);
@@ -274,16 +305,18 @@ class BookServiceTest {
         // 実行フェーズ
         List<Book> result = bookService.searchBookWithCriteria(categoryId, keyword);
 
-        // 検証フェーズ�E��E力値ベ�Eス、コミュニケーションベ�Eス�E�E        assertNotNull(result);
+        // 検証フェーズ（出力値ベース、コミュニケーションベース）
+        assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals("Java入門", result.get(0).getBookName());
         verify(bookDao, times(1)).searchWithCriteria(categoryId, "%" + keyword + "%");
     }
 
     @Test
-    @DisplayName("動的クエリでカチE��リIDのみを指定して検索できることをテストすめE)
+    @DisplayName("動的クエリでカテゴリIDのみを指定して検索できることをテストする")
     void testSearchBookWithCriteriaCategoryOnly() {
-        // 準備フェーズ�E�テストフィクスチャのセチE��アチE�E�E�E        Integer categoryId = 1;
+        // 準備フェーズ（テストフィクスチャのセットアップ）
+        Integer categoryId = 1;
         String keyword = null;
         List<Book> searchResults = new ArrayList<>();
         searchResults.add(testBook1);
@@ -294,15 +327,17 @@ class BookServiceTest {
         // 実行フェーズ
         List<Book> result = bookService.searchBookWithCriteria(categoryId, keyword);
 
-        // 検証フェーズ�E��E力値ベ�Eス、コミュニケーションベ�Eス�E�E        assertNotNull(result);
+        // 検証フェーズ（出力値ベース、コミュニケーションベース）
+        assertNotNull(result);
         assertEquals(2, result.size());
         verify(bookDao, times(1)).searchWithCriteria(categoryId, null);
     }
 
     @Test
-    @DisplayName("動的クエリでキーワードが空斁E���Eの場合にnullとして処琁E��れることをテストすめE)
+    @DisplayName("動的クエリでキーワードが空文字列の場合にnullとして処理されることをテストする")
     void testSearchBookWithCriteriaEmptyKeyword() {
-        // 準備フェーズ�E�テストフィクスチャのセチE��アチE�E�E�E        Integer categoryId = 1;
+        // 準備フェーズ（テストフィクスチャのセットアップ）
+        Integer categoryId = 1;
         String keyword = "";
         List<Book> searchResults = new ArrayList<>();
         searchResults.add(testBook1);
@@ -313,15 +348,17 @@ class BookServiceTest {
         // 実行フェーズ
         List<Book> result = bookService.searchBookWithCriteria(categoryId, keyword);
 
-        // 検証フェーズ�E��E力値ベ�Eス、コミュニケーションベ�Eス�E�E        assertNotNull(result);
+        // 検証フェーズ（出力値ベース、コミュニケーションベース）
+        assertNotNull(result);
         assertEquals(2, result.size());
         verify(bookDao, times(1)).searchWithCriteria(categoryId, null);
     }
 
     @Test
-    @DisplayName("動的クエリで検索条件がnullの場合に検索が実行されることをテストすめE)
+    @DisplayName("動的クエリで検索条件がnullの場合に検索が実行されることをテストする")
     void testSearchBookWithCriteriaNullConditions() {
-        // 準備フェーズ�E�テストフィクスチャのセチE��アチE�E�E�E        Integer categoryId = null;
+        // 準備フェーズ（テストフィクスチャのセットアップ）
+        Integer categoryId = null;
         String keyword = null;
         
         when(bookDao.searchWithCriteria(null, null)).thenReturn(testBookList);
@@ -329,23 +366,26 @@ class BookServiceTest {
         // 実行フェーズ
         List<Book> result = bookService.searchBookWithCriteria(categoryId, keyword);
 
-        // 検証フェーズ�E��E力値ベ�Eス、コミュニケーションベ�Eス�E�E        assertNotNull(result);
+        // 検証フェーズ（出力値ベース、コミュニケーションベース）
+        assertNotNull(result);
         assertEquals(3, result.size());
         verify(bookDao, times(1)).searchWithCriteria(null, null);
     }
 
     @Test
-    @DisplayName("動的クエリで検索結果ぁE件の場合に空のリストが返されることをテストすめE)
+    @DisplayName("動的クエリで検索結果が0件の場合に空のリストが返されることをテストする")
     void testSearchBookWithCriteriaNoResults() {
-        // 準備フェーズ�E�テストフィクスチャのセチE��アチE�E�E�E        Integer categoryId = 1;
-        String keyword = "存在しなぁE��ーワーチE;
+        // 準備フェーズ（テストフィクスチャのセットアップ）
+        Integer categoryId = 1;
+        String keyword = "存在しないキーワード";
         
         when(bookDao.searchWithCriteria(categoryId, "%" + keyword + "%")).thenReturn(new ArrayList<>());
 
         // 実行フェーズ
         List<Book> result = bookService.searchBookWithCriteria(categoryId, keyword);
 
-        // 検証フェーズ�E��E力値ベ�Eス、コミュニケーションベ�Eス�E�E        assertNotNull(result);
+        // 検証フェーズ（出力値ベース、コミュニケーションベース）
+        assertNotNull(result);
         assertEquals(0, result.size());
         verify(bookDao, times(1)).searchWithCriteria(categoryId, "%" + keyword + "%");
     }
