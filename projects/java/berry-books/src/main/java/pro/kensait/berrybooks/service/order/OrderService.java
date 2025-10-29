@@ -17,8 +17,6 @@ import pro.kensait.berrybooks.entity.Stock;
 import pro.kensait.berrybooks.web.cart.CartItem;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 // 注文処理と注文履歴取得を行うサービスクラス
