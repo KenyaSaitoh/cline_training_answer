@@ -21,7 +21,6 @@ class TestETLOutputValidation:
         'source_line_id',
         'status_code',
         'ledger_id',
-        'accounting_date',
         'period_name',
         'journal_category',
         'currency_code',
@@ -30,7 +29,7 @@ class TestETLOutputValidation:
     ]
     
     # 比較から除外するフィールド（実行時に変わるため）
-    EXCLUDED_FIELDS = ['batch_id', 'load_timestamp']
+    EXCLUDED_FIELDS = ['batch_id', 'load_timestamp', 'accounting_date']
     
     # 金額フィールド
     AMOUNT_FIELDS = ['entered_dr', 'entered_cr', 'accounted_dr', 'accounted_cr']

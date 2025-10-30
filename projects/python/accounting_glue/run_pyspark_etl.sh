@@ -89,8 +89,9 @@ run_etl_job() {
     echo ""
 }
 
-# ジョブ実行
-case "${JOB,,}" in
+# ジョブ実行（小文字に変換して比較）
+JOB_LOWER=$(echo "$JOB" | tr '[:upper:]' '[:lower:]')
+case "$JOB_LOWER" in
     sales)
         run_etl_job "Sales ETL" "src/local/pyspark/standalone_sales_etl_job.py"
         ;;

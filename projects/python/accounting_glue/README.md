@@ -13,11 +13,13 @@
 
 ## 前提条件
 
-- **Python 3.11以上**（システムにインストール済み）
+- **Python 3.11**（システムにインストール済み）
 - **Java 11以上**（PySpark版を使用する場合のみ）
 - **Git Bash**（Windows環境の場合）
 
-> **Note**: 
+> **重要**: 
+> - **PySpark版を使用する場合、Python 3.11を推奨します**。Python 3.12ではPySparkに互換性問題があります
+> - Python 3.12を使用している場合は、**Python標準版（PySpark不要）を使用してください**
 > - システムインストール版Python以外（埋め込み版など）を使用する場合は、環境変数`PYTHON311_PATH`を設定してください
 > - Windows環境で埋め込み版Pythonを使用する場合の詳細は [README_WINDOWS_EMBED.md](README_WINDOWS_EMBED.md) を参照
 
@@ -316,31 +318,6 @@ AWS Glue環境での実行は `src/aws_glue/` 配下のスクリプトを使用�
    ```bash
    aws glue start-job-run --job-name sales-etl-job
    ```
-
-## トラブルシューティング
-
-### Python/Javaが見つからない
-
-```bash
-# バージョン確認
-python --version  # 3.11以上が必要
-java -version     # 11以上が必要（PySpark版のみ）
-```
-
-### PySparkが動作しない
-
-→ **Python標準版を使用してください**（機能は同じです）
-```bash
-python src/local/python_native/standalone_sales_etl_job.py --limit 5
-```
-
-### 入力ファイルがない
-
-`test_data/` ディレクトリにCSVファイルが存在するか確認してください。
-
-### メモリ不足
-
-PySparkは各ジョブで約2GBのメモリを使用します。システムメモリを確認してください。
 
 ## ライセンス
 
