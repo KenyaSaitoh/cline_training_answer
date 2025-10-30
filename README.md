@@ -212,7 +212,7 @@ Excelファイル (.xlsx) を検索してZIP展開するタスクです。Excel�
 
 1. 指定ディレクトリを再帰的に検索し、すべての`.xlsx`ファイルを検出
 2. 各Excelファイルを`.zip`形式に変換
-3. タイムスタンプ付きフォルダ（`yyyyMMddHHmmss`形式）に展開
+3. タイムスタンプ付きフォルダ（`yyyyMMdd_HHmmss`形式）に展開
 4. 展開後、一時的な`.zip`ファイルは自動削除
 
 **出力例:**
@@ -220,7 +220,7 @@ Excelファイル (.xlsx) を検索してZIP展開するタスクです。Excel�
 ```
 projects/java/berry-books/spec/
 ├── 設計書.xlsx
-└── 20251029143025/        # タイムスタンプフォルダ
+└── 20251029_143025/        # タイムスタンプフォルダ
     ├── [Content_Types].xml
     ├── _rels/
     ├── docProps/

@@ -1039,7 +1039,7 @@ task exploreExcelFiles doLast {
     excelFiles.each { excelFile ->
         try {
             // タイムスタンプフォルダ名を生成
-            def timestamp = new java.text.SimpleDateFormat("yyyyMMddHHmmss").format(new Date())
+            def timestamp = new java.text.SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date())
             def outputDir = new File(excelFile.parentFile, timestamp)
             outputDir.mkdirs()
             
