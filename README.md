@@ -172,6 +172,54 @@ tail -f -n 50 payara6/glassfish/domains/domain1/logs/server.log
 | `stopHsqldb` | HSQLDB Databaseサーバーを停止 |
 | `setupHsqldb` | プロジェクト固有の初期データをセットアップ（各プロジェクト） |
 
+### ユーティリティタスク
+
+| タスク | 説明 |
+|--------|------|
+| `exploreExcelFiles` | 指定ディレクトリ内のExcelファイル (.xlsx) を再帰的に検索し、ZIP形式で展開 |
+
+#### exploreExcelFilesの使用方法
+
+Excelファイル (.xlsx) を検索してZIP展開するタスクです。Excelファイルの内部構造を確認したい場合に便利です。
+
+**基本的な使い方:**
+
+```bash
+# 指定ディレクトリ内のすべての.xlsxファイルを展開
+./gradlew exploreExcelFiles -PtargetDir=<対象ディレクトリパス>
+```
+
+**実行例:**
+
+```bash
+# berry-booksのspecディレクトリを対象にする場合
+./gradlew exploreExcelFiles -PtargetDir=projects/java/berry-books/spec
+```
+
+**処理内容:**
+
+1. 指定ディレクトリを再帰的に検索し、すべての`.xlsx`ファイルを検出
+2. 各Excelファイルを`.zip`形式に変換
+3. タイムスタンプ付きフォルダ（`yyyyMMddHHmmss`形式）に展開
+4. 展開後、一時的な`.zip`ファイルは自動削除
+
+**出力例:**
+
+```
+projects/java/berry-books/spec/
+├── 設計書.xlsx
+└── 20251029143025/        # タイムスタンプフォルダ
+    ├── [Content_Types].xml
+    ├── _rels/
+    ├── docProps/
+    └── xl/
+        ├── workbook.xml
+        ├── worksheets/
+        └── ...
+```
+
+> **Note**: Excelファイル (.xlsx) は内部的にZIP圧縮されたXMLファイルの集合体です。このタスクでその構造を確認できます。
+
 ## 🗄️ データベース設定
 
 ### HSQLDB接続情報

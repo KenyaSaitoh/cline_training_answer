@@ -55,6 +55,52 @@ Jakarta EE 10とJSF (Jakarta Server Faces) 4.0を使用したオンライン書�
 ./gradlew :projects:java:berry-books:deploy
 ```
 
+## 📊 Excelファイルの展開（仕様書の確認）
+
+このプロジェクトの`spec/`ディレクトリには、設計仕様書がExcel形式 (.xlsx) で格納されています。
+Excelファイルの内部構造（XMLファイル）を確認したい場合は、以下のコマンドで展開できます。
+
+### Excelファイルの展開方法
+
+```bash
+# specディレクトリ内のすべての.xlsxファイルを展開
+./gradlew exploreExcelFiles -PtargetDir=projects/java/berry-books/spec
+```
+
+### 実行結果
+
+実行すると、各Excelファイルと同じ階層にタイムスタンプ付きフォルダが作成され、その中にXML構造が展開されます：
+
+```
+projects/java/berry-books/spec/
+├── berry-books_設計書.xlsx      # 元のExcelファイル
+└── 20251029143025/              # 展開されたフォルダ（タイムスタンプ）
+    ├── [Content_Types].xml
+    ├── _rels/
+    │   └── .rels
+    ├── docProps/
+    │   ├── app.xml
+    │   └── core.xml
+    └── xl/
+        ├── workbook.xml
+        ├── worksheets/
+        │   ├── sheet1.xml
+        │   ├── sheet2.xml
+        │   └── ...
+        ├── styles.xml
+        ├── sharedStrings.xml
+        └── _rels/
+```
+
+### 展開したファイルの活用例
+
+- **worksheets/sheet1.xml**: 各シートのデータ構造を確認
+- **sharedStrings.xml**: セル内のテキストデータを確認
+- **styles.xml**: セルの書式情報を確認
+- **workbook.xml**: ブック全体の構造を確認
+
+> **Note**: Excelファイル (.xlsx) は、内部的にZIP圧縮されたXMLファイルの集合体です。このコマンドでOffice Open XML形式の内部構造を学習できます。
+
 ## 📍 アクセスURL
 
 デプロイ後、以下のURLにアクセス：

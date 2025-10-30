@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 // 在庫情報を表すエンティティクラス
 @Entity
@@ -18,7 +19,8 @@ public class Stock {
     @Column(name = "QUANTITY")
     private Integer quantity;
 
-    // バージョン
+    // バージョン（楽観的ロック用）
+    @Version
     @Column(name = "VERSION")
     private Long version;
 

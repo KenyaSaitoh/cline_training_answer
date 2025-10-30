@@ -1000,3 +1000,93 @@ task initPayaraDomainConfig doLast {
 [installHsqldbDriver, initPayaraDomainConfig, createConnectionPool, createDataSource, 
  pingConnectionPool, setupDataSource, deleteDataSource, deleteConnectionPool,
  undeployAllApps, cleanupAll]*.group = "payara"
+
+// EXCELファイルを探索して展開する
+task exploreExcelFiles doLast {
+    // ディレクトリパスをプロパティから取得（例: -PtargetDir=path/to/dir）
+    def targetDir = project.hasProperty('targetDir') ? project.property('targetDir') : null
+    
+    if (targetDir == null) {
+        throw new GradleException("Please specify target directory with -PtargetDir=<path>")
+    }
+    
+    def dir = new File(targetDir)
+    
+    if (!dir.exists() || !dir.isDirectory()) {
+        throw new GradleException("Target directory does not exist or is not a directory: ${targetDir}")
+    }
+    
+    println "Searching for Excel files (.xlsx) in: ${dir.absolutePath}"
+    println ""
+    
+    def excelFiles = []
+    dir.eachFileRecurse(FileType.FILES) { file ->
+        if (file.name.toLowerCase().endsWith('.xlsx')) {
+            excelFiles << file
+        }
+    }
+    
+    if (excelFiles.isEmpty()) {
+        println "No Excel files (.xlsx) found."
+        return
+    }
+    
+    println "Found ${excelFiles.size()} Excel file(s):"
+    excelFiles.each { println "  - ${it.absolutePath}" }
+    println ""
+    
+    excelFiles.each { excelFile ->
+        try {
+            // タイムスタンプフォルダ名を生成
+            def timestamp = new java.text.SimpleDateFormat("yyyyMMddHHmmss").format(new Date())
+            def outputDir = new File(excelFile.parentFile, timestamp)
+            outputDir.mkdirs()
+            
+            // .xlsx を .zip にリネーム
+            def zipFile = new File(excelFile.parentFile, excelFile.name.replaceAll(/\.xlsx$/, '.zip'))
+            println "Processing: ${excelFile.name}"
+            println "  Renaming to: ${zipFile.name}"
+            
+            java.nio.file.Files.copy(
+                excelFile.toPath(),
+                zipFile.toPath(),
+                java.nio.file.StandardCopyOption.REPLACE_EXISTING
+            )
+            
+            // ZIPファイルを展開
+            println "  Extracting to: ${outputDir.name}/"
+            
+            def zip = new java.util.zip.ZipFile(zipFile)
+            zip.entries().each { entry ->
+                def file = new File(outputDir, entry.name)
+                if (entry.directory) {
+                    file.mkdirs()
+                } else {
+                    file.parentFile.mkdirs()
+                    file.withOutputStream { out ->
+                        out << zip.getInputStream(entry)
+                    }
+                }
+            }
+            zip.close()
+            
+            // 一時的な.zipファイルを削除
+            zipFile.delete()
+            
+            println "  ✓ Extracted successfully to: ${outputDir.absolutePath}"
+            println ""
+            
+        } catch (Exception e) {
+            println "  ✗ Failed to process ${excelFile.name}: ${e.message}"
+            println ""
+        }
+    }
+    
+    println "===================================="
+    println "Excel file exploration completed!"
+    println "===================================="
+}
+
+// タスクをグループ化する
+exploreExcelFiles.group = "utility"
+exploreExcelFiles.description = "Explore Excel files (.xlsx) recursively and extract them as ZIP archives"

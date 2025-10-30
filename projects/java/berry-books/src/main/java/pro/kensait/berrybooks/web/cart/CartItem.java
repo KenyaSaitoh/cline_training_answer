@@ -16,6 +16,8 @@ public class CartItem {
     private Integer count;
     // 削除フラグ
     private boolean remove;
+    // バージョン（楽観的ロック用）
+    private Long version;
 
     // 引数のないコンストラクタ
     public CartItem() {
@@ -79,6 +81,14 @@ public class CartItem {
 
     public void setRemove(boolean remove) {
         this.remove = remove;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
     }
 
     // 小計を計算するメソッド

@@ -138,11 +138,17 @@ public class OrderService implements OrderServiceIF {
         // カートに追加された書籍毎に、在庫の残り個数をチェックする
         for (CartItem cartItem : orderTO.cartItems()) {
 
-            // 書籍IDをキーに在庫テーブルから在庫エンティティを取得する
-            Stock stock = stockDao.findByIdWithLock(cartItem.getBookId());
+            // 楽観的ロック：カート追加時点のVERSION値で在庫エンティティを作成
+            // （悲観的ロックのfindByIdWithLockは使用しない）
+            Stock stock = new Stock();
+            stock.setBookId(cartItem.getBookId());
+            stock.setVersion(cartItem.getVersion());  // カート追加時点のVERSION値を使用
+            
+            // 現在の在庫数を取得（楽観的ロックなし）
+            Stock currentStock = stockDao.findById(cartItem.getBookId());
 
             // 在庫が0未満になる場合は、例外を送出する
-            int remaining = stock.getQuantity() - cartItem.getCount();
+            int remaining = currentStock.getQuantity() - cartItem.getCount();
             if (remaining < 0) {
                 throw new OutOfStockException(
                         cartItem.getBookId(),
@@ -150,9 +156,11 @@ public class OrderService implements OrderServiceIF {
                         "在庫不足");
             }
 
-            // 在庫を減らす
+            // 在庫を減らす（カート追加時点のVERSION値を持つStockエンティティで更新）
             stock.setQuantity(remaining);
-            // OptimisticLockによるバージョンチェックは@Versionアノテーションで自動処理される
+            // JPAの@Versionアノテーションにより、UPDATE時に自動的にバージョンチェックされる
+            // WHERE VERSION = ? 条件が付加され、バージョン不一致の場合はOptimisticLockExceptionがスローされる
+            stockDao.update(stock);
         }
 
         // 新しいOrderTranインスタンスを生成する

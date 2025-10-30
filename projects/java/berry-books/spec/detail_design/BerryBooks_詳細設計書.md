@@ -169,7 +169,7 @@ Berry Booksは、Jakarta EE 10とJSF (Jakarta Server Faces) 4.0を使用した�
 ### 4.1 パッケージ構成
 
 ```
-dev.berry/
+pro.kensait.berrybooks/
 ├── entity/                    # JPAエンティティ（ドメインモデル）
 │   ├── Book.java             # 書籍エンティティ
 │   ├── Category.java         # カテゴリエンティティ
@@ -235,7 +235,7 @@ dev.berry/
 | `Book` | BOOK + STOCK | 書籍情報と在庫（SecondaryTableで結合） |
 | `Category` | CATEGORY | カテゴリ情報 |
 | `Publisher` | PUBLISHER | 出版社情報 |
-| `Stock` | STOCK | 在庫情報（悲観的ロック用） |
+| `Stock` | STOCK | 在庫情報（楽観的ロックを使用、学習用仕様） |
 | `Customer` | CUSTOMER | 顧客情報 |
 | `OrderTran` | ORDER_TRAN | 注文取引（ヘッダー） |
 | `OrderDetail` | ORDER_DETAIL | 注文明細（明細行） |
@@ -248,7 +248,7 @@ dev.berry/
 | `BookDao` | 書籍データアクセス | `findById()`, `findAll()`, `queryByCategory()`, `queryByKeyword()`, `searchWithCriteria()` |
 | `CategoryDao` | カテゴリデータアクセス | `findAll()`, `findById()` |
 | `CustomerDao` | 顧客データアクセス | `findById()`, `findByEmail()`, `register()` |
-| `StockDao` | 在庫データアクセス | `findById()`, `findByIdWithLock()` (悲観的ロック) |
+| `StockDao` | 在庫データアクセス | `findById()`, `update()`, `findByIdWithLock()` (悲観的ロック、未使用) |
 | `OrderTranDao` | 注文取引データアクセス | `findById()`, `findByCustomerId()`, `findOrderHistoryByCustomerId()`, `persist()` |
 | `OrderDetailDao` | 注文明細データアクセス | `findById()`, `findByOrderTranId()`, `persist()` |
 
@@ -261,13 +261,14 @@ dev.berry/
 
 **StockDao:**
 - 在庫情報のアクセスを提供
-- 悲観的ロック（PESSIMISTIC_WRITE）による排他制御をサポート
+- 楽観的ロックによる在庫更新をサポート（学習用仕様）
+- 悲観的ロック（PESSIMISTIC_WRITE）のメソッドもあるが現在は未使用
 - 注文時の在庫減算処理で使用
 
 **OrderTranDao:**
 - 注文取引（ヘッダー）の永続化と検索機能を提供
 - 顧客IDによる注文履歴検索（3パターン実装）
-- DTO投影によるパフォーマンス最適化
+- コンストラクタ式によるパフォーマンス最適化
 - FETCH JOINによる明細の一括取得
 
 **OrderDetailDao:**
@@ -325,8 +326,9 @@ dev.berry/
 - 注文履歴の取得（3パターン実装：エンティティ返却、DTO返却、FETCH JOIN）
 - 注文明細の取得
 - 在庫不足例外のハンドリング
+- 楽観的ロック例外（OptimisticLockException）のハンドリング
 - トランザクション管理（注文確定時）
-- 悲観的ロックによる排他制御
+- 楽観的ロックによる在庫更新（学習用仕様）
 
 #### 4.2.4 Managed Bean層
 
@@ -534,6 +536,36 @@ dev.berry/
 | orderSuccess.xhtml | orderHistory.xhtml | 注文履歴リンク | - |
 | orderHistory.xhtml | orderDetail.xhtml | 明細表示リンク | - |
 
+### 6.4 画面表示仕様
+
+#### 6.4.1 書籍一覧画面（bookSelect.xhtml）の在庫表示ロジック
+
+**在庫数に応じた表示制御:**
+
+書籍一覧画面では、各書籍の在庫数に応じて以下のように表示が切り替わる
+
+|| 在庫状態 | 在庫数条件 | 表示内容 | 操作可否 |
+||---------|----------|---------|---------|
+|| **在庫あり** | `book.quantity > 0` | 「買い物カゴへ」ボタンを表示 | カートへの追加可能 |
+|| **在庫なし** | `book.quantity == 0` | 「入荷待ち」テキストを表示 | カートへの追加不可 |
+
+**表示仕様:**
+
+1. **在庫ありの場合:**
+   - 「買い物カゴへ」ボタンが有効化されて表示される
+   - クリックすると1冊がカートに追加される
+   - ボタンのスタイルクラス：`cart-button`
+
+2. **在庫なしの場合（入荷待ち）:**
+   - 「入荷待ち」というテキストが表示される
+   - ユーザーはカートに追加できない
+   - テキストのスタイルクラス：`out-of-stock`（グレーアウト表示など）
+
+**備考:**
+- 在庫数は`book.quantity`フィールドで管理される（`Book`エンティティの`@SecondaryTable`で`STOCK`テーブルと結合）
+- 画面表示時に`preRenderView`イベントで`BookSearchBean.refreshBookList()`が実行され、最新の在庫情報が取得される
+- 在庫数は画面上の「在庫数」列にも数値として表示される
+
 ---
 
 ## 7. セッション管理
@@ -547,6 +579,20 @@ dev.berry/
 | `BookSearchBean` | `@SessionScoped` | 検索条件、検索結果 | ログイン〜ログアウト |
 | `CartBean` | `@SessionScoped` | カート操作用メソッド | ログイン〜ログアウト |
 | `CartSession` | `@SessionScoped` | カート内容、配送情報、決済方法 | ログイン〜ログアウト |
+
+**備考:**
+
+現在、注文処理で楽観的ロックを使用しており、VERSION値は`CartItem`に保持され、`CartSession`を通じてセッション管理されている。
+
+**楽観的ロック実装における注意事項:**
+
+楽観的ロックを使用する場合、エンティティに含まれるVERSION値を画面表示から更新完了まで保持する必要がある。
+
+**注文処理での実装:**
+1. ユーザーがカートに書籍を追加 → StockエンティティからVERSION値を取得し、CartItemに保存
+2. CartItemがCartSession（セッションスコープ）に保持される
+3. ユーザーが注文確定ボタンをクリック → CartItem内のVERSION値でStock更新実行
+4. 他のユーザーが先に在庫を更新していた場合 → `OptimisticLockException`発生
 
 ### 7.2 CartSessionデータ構造
 
@@ -568,6 +614,7 @@ dev.berry/
 | `price` | `BigDecimal` | 価格（注文数×単価） |
 | `count` | `Integer` | 注文数 |
 | `remove` | `boolean` | 削除フラグ（チェックボックス用） |
+| `version` | `Long` | VERSION値（楽観的ロック用、カート追加時点の値を保持） |
 
 ### 7.4 セッションタイムアウト設定
 
@@ -661,13 +708,21 @@ dev.berry/
       │
       ▼
 ┌─────────────────────────────────────┐
-│ ①在庫チェック＆減算（悲観的ロック）    │
+│ ①在庫チェック＆減算（楽観的ロック）    │
 │   for each CartItem:                │
-│     Stock stock = stockDao.         │
-│       findByIdWithLock(bookId)      │
-│     if (stock.quantity < count)     │
+│     // カート追加時のVERSIONで      │
+│     // Stockエンティティを作成      │
+│     Stock stock = new Stock()       │
+│     stock.setVersion(               │
+│       cartItem.getVersion())        │
+│     Stock current = stockDao.       │
+│       findById(bookId)              │
+│     if (current.quantity < count)   │
 │       throw OutOfStockException     │
-│     stock.quantity -= count         │
+│     stock.setQuantity(remaining)    │
+│     stockDao.update(stock)          │
+│     // バージョン不一致なら          │
+│     // OptimisticLockException      │
 └─────┬───────────────────────────────┘
       │
       ▼
@@ -694,17 +749,37 @@ dev.berry/
 └─────────────────────────────────────┘
 ```
 
-#### 8.3.2 在庫管理（悲観的ロック）
+#### 8.3.2 在庫管理ロック戦略
 
-| ロックタイプ | JPA定数 | SQL効果 |
-|------------|--------|---------|
-| 悲観的書き込みロック | `LockModeType.PESSIMISTIC_WRITE` | `SELECT ... FOR UPDATE` |
+**現在の実装:**
 
-**在庫チェック処理:**
-1. 悲観的ロックで在庫を取得（排他制御）
-2. 在庫数から注文数を減算した残数をチェック
-3. 残数が0未満の場合は`OutOfStockException`をスロー
-4. 残数が0以上の場合は在庫数を更新
+注文処理では**楽観的ロック**を使用している（学習用仕様）。通常、注文処理のような短時間トランザクションでは悲観的ロックが推奨されるが、楽観的ロックの動作を理解する目的で、あえて楽観的ロックを採用している。
+
+カート追加から注文確定までの間に他のユーザーが在庫を更新した場合、在庫があったとしても`OptimisticLockException`が発生し、注文が失敗する。
+
+**楽観的ロックの実装:**
+
+|| 項目 | 内容 |
+||------|------|
+|| **JPA実装** | `@Version`アノテーション（Stockエンティティ） |
+|| **バージョン管理カラム** | `STOCK.VERSION` (BIGINT) |
+|| **VERSION保持** | `CartItem.version`フィールド → `CartSession`で管理 |
+|| **競合検出** | UPDATE実行時（`WHERE VERSION = ?`が自動付加） |
+|| **例外処理** | `OrderBean`で`OptimisticLockException`をキャッチ |
+
+**処理フロー:**
+
+1. **カート追加時**（CartBean）
+   - StockエンティティからVERSION値を取得
+   - CartItemに保存し、CartSession（@SessionScoped）で保持
+
+2. **注文確定時**（OrderService）
+   - CartItem内のVERSION値でStockエンティティを作成
+   - 在庫更新を実行（JPAが自動的にバージョンチェック）
+   - バージョン不一致の場合は`OptimisticLockException`
+
+3. **例外処理**（OrderBean）
+   - 「他のユーザーが同時に注文しました。もう一度お試しください」とエラー表示
 
 ### 8.4 注文履歴取得ロジック
 
@@ -799,7 +874,7 @@ dev.berry/
 - Predicateリストで条件を動的に構築
 - 条件の有無に応じてクエリを組み立て
 
-#### 9.4.3 DTO投影（コンストラクター式）
+#### 9.4.3 コンストラクター式
 
 - `SELECT new パッケージ名.DTO名(...)`形式
 - 必要なフィールドのみを取得
@@ -1169,14 +1244,14 @@ customer.api.base-url = http://localhost:8081/customers
 
 ```
 java.lang.RuntimeException
-    └── dev.berry.service.order.OutOfStockException
+    └── pro.kensait.berrybooks.service.order.OutOfStockException
 ```
 
 ### 14.2 業務例外
 
 #### 14.2.1 OutOfStockException（在庫不足例外）
 
-**パッケージ:** `dev.berry.service.order`
+**パッケージ:** `pro.kensait.berrybooks.service.order`
 
 **継承元:** `RuntimeException`
 
@@ -1259,6 +1334,7 @@ java.lang.RuntimeException
 | 条件 | ロールバック契機 |
 |------|---------------|
 | `OutOfStockException` スロー | 自動ロールバック（RuntimeException） |
+| `OptimisticLockException` スロー | 自動ロールバック（楽観的ロック競合） |
 | `IllegalArgumentException` スロー | 自動ロールバック（RuntimeException） |
 | `PersistenceException` スロー | 自動ロールバック |
 | メソッド正常終了 | コミット |
@@ -1268,7 +1344,10 @@ java.lang.RuntimeException
 | 項目 | 値 | 説明 |
 |------|---|------|
 | **分離レベル** | `READ_COMMITTED` | HSQLDBデフォルト |
-| **ロックタイプ** | 悲観的書き込みロック（在庫更新時） | `PESSIMISTIC_WRITE` |
+
+**備考:**
+- トランザクション分離レベルは`READ_COMMITTED`であり、コミット済みのデータのみを読み取る
+- 在庫更新時のロック戦略（悲観的ロック/楽観的ロック）については、「8.3.2 在庫管理ロック戦略」を参照
 
 ---
 

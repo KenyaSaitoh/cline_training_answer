@@ -6,7 +6,9 @@ import java.math.BigDecimal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.kensait.berrybooks.dao.StockDao;
 import pro.kensait.berrybooks.entity.Book;
+import pro.kensait.berrybooks.entity.Stock;
 import pro.kensait.berrybooks.service.book.BookService;
 import pro.kensait.berrybooks.service.delivery.DeliveryFeeService;
 import pro.kensait.berrybooks.web.customer.CustomerBean;
@@ -26,6 +28,9 @@ public class CartBean implements Serializable {
     private BookService bookService;
 
     @Inject
+    private StockDao stockDao;
+
+    @Inject
     private CartSession cartSession;
 
     @Inject
@@ -39,6 +44,10 @@ public class CartBean implements Serializable {
         logger.info("[ CartBean#addBook ] bookId=" + bookId + ", count=" + count);
 
         Book book = bookService.getBook(bookId);
+        
+        // 楽観的ロック用：Stockエンティティから現在のVERSION値を取得
+        Stock stock = stockDao.findById(bookId);
+        logger.info("[ CartBean#addBook ] Stock version=" + stock.getVersion());
 
         // 選択された書籍がカートに存在している場合は、注文数と金額を加算する
         boolean isExists = false;
@@ -46,6 +55,7 @@ public class CartBean implements Serializable {
             if (bookId.equals(cartItem.getBookId())) {
                 cartItem.setCount(cartItem.getCount() + 1);
                 cartItem.setPrice(cartItem.getPrice().add(book.getPrice()));
+                // VERSION値は最初にカートに入れた時点のものを保持（更新しない）
                 isExists = true;
                 break;
             }
@@ -60,6 +70,8 @@ public class CartBean implements Serializable {
                     book.getPrice(),
                     1,
                     false);
+            // カート追加時点のVERSION値をCartItemに保存
+            cartItem.setVersion(stock.getVersion());
             cartSession.getCartItems().add(cartItem);
         }
 
