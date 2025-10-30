@@ -9,6 +9,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.kensait.berrybooks.common.ErrorMessage;
 import pro.kensait.berrybooks.entity.Customer;
 import pro.kensait.berrybooks.entity.OrderDetail;
 import pro.kensait.berrybooks.entity.OrderTran;
@@ -86,7 +87,7 @@ public class OrderBean implements Serializable {
                     !cartSession.getDeliveryAddress().isBlank() && 
                     !AddressUtil.startsWithValidPrefecture(cartSession.getDeliveryAddress())) {
                 logger.info("[ OrderBean#placeOrderInternal ] 配送先住所入力エラー");
-                errorMessage = "配送先住所は正しい都道府県名で始まる必要があります";
+                errorMessage = ErrorMessage.DELIVERY_ADDRESS_INVALID_PREFECTURE;
                 setFlashErrorMessage(errorMessage);
                 return "orderError?faces-redirect=true";
             }
@@ -99,9 +100,7 @@ public class OrderBean implements Serializable {
 
             // ログイン中の顧客IDを取得
             Customer customer = customerBean.getCustomer();
-            Integer customerId = (customer != null && customer.getCustomerId() != null) 
-                    ? customer.getCustomerId() 
-                    : 1;
+            Integer customerId = customer.getCustomerId();
 
             OrderTO orderTO = new OrderTO(
                     customerId,
@@ -126,18 +125,18 @@ public class OrderBean implements Serializable {
 
         } catch (OutOfStockException e) {
             logger.error("在庫不足エラー", e);
-            errorMessage = "在庫不足: " + e.getBookName();
+            errorMessage = ErrorMessage.OUT_OF_STOCK + e.getBookName();
             setFlashErrorMessage(errorMessage);
             return "orderError?faces-redirect=true";
 
         } catch (OptimisticLockException e) {
             logger.error("楽観的ロックエラー", e);
-            errorMessage = "他のユーザーが同時に注文しました。もう一度お試しください";
+            errorMessage = ErrorMessage.OPTIMISTIC_LOCK_ERROR;
             setFlashErrorMessage(errorMessage);
             return "orderError?faces-redirect=true";
         } catch (Exception e) {
             logger.error("注文エラー", e);
-            errorMessage = "注文処理中にエラーが発生しました: " + e.getMessage();
+            errorMessage = ErrorMessage.ORDER_PROCESSING_ERROR + e.getMessage();
             setFlashErrorMessage(errorMessage);
             return "orderError?faces-redirect=true";
         }
@@ -187,15 +186,11 @@ public class OrderBean implements Serializable {
     // ヘルパー：顧客IDを取得
     private Integer getCustomerId() {
         Customer customer = customerBean.getCustomer();
-        return (customer != null && customer.getCustomerId() != null) 
-                ? customer.getCustomerId() 
-                : 1;
+        return customer.getCustomerId();
     }
 
-    /**
-     * FlashScopeにエラーメッセージを設定
-     * ※リダイレット後もメッセージを保持するため
-     */
+    // FlashScopeにエラーメッセージを設定
+    // ※リダイレット後もメッセージを保持するため
     private void setFlashErrorMessage(String message) {
         FacesContext.getCurrentInstance()
                 .getExternalContext()

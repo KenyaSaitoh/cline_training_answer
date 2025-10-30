@@ -1182,52 +1182,193 @@ customer.api.base-url = http://localhost:8081/customers
 
 ## 13. エラーメッセージ
 
-### 13.1 メッセージプロパティファイル
+### 13.1 エラーメッセージ管理方式
+
+Berry Booksでは、エラーメッセージを以下の2つの方式で管理しています。
+
+#### 13.1.1 メッセージプロパティファイル方式
 
 **ファイル:** `src/main/resources/messages.properties`
 
-| メッセージキー | メッセージ内容 |
-|-------------|-------------|
-| `typeMismatch.int` | 数値を入力してください |
-| `typeMismatch.java.time.LocalDate` | yyyy/M/d形式で入力してください |
-| `error.address.prefecture` | 都道府県名が正しく入力されていません（47都道府県で始まる必要あり） |
-| `error.customer.exists` | すでに指定されたメールアドレスは登録されています |
-| `error.email.not-exist` | メールアドレスが存在しません |
-| `error.password.unmatch` | 指定されたパスワードが間違っているようです |
-| `error.cart.empty` | カートに商品が一つも入っていません |
-| `error.order.outof-stock` | 注文された書籍「{0}」は、指定された個数、在庫に存在しません |
-| `error.order.optimistic-lock` | 別の顧客によって在庫が更新されました |
+Spring FrameworkやBean Validation用のメッセージキーと内容を定義。国際化（i18n）に対応可能。
 
-### 13.2 画面表示メッセージ
+| メッセージキー | メッセージ内容 | 用途 |
+|-------------|-------------|------|
+| `typeMismatch.int` | 数値を入力してください | 型変換エラー（整数型） |
+| `typeMismatch.java.time.LocalDate` | yyyy/M/d形式で入力してください | 型変換エラー（日付型） |
+| `error.address.prefecture` | 都道府県名が正しく入力されていません | 住所検証エラー |
+| `error.customer.exists` | すでに指定されたメールアドレスは登録されています | 顧客登録時の重複エラー |
+| `error.email.not-exist` | メールアドレスが存在しません | ログイン時の検索エラー |
+| `error.password.unmatch` | 指定されたパスワードが間違っているようです | ログイン時の認証エラー |
+| `error.cart.empty` | カートに商品が一つも入っていません | カート空エラー |
+| `error.order.outof-stock` | 注文された書籍「{0}」は、指定された個数、在庫に存在しません | 在庫不足エラー |
+| `error.order.optimistic-lock` | 別の顧客によって在庫が更新されました | 楽観的ロック競合エラー |
+
+#### 13.1.2 ErrorMessage定数クラス方式
+
+**ファイル:** `pro.kensait.berrybooks.common.ErrorMessage`
+
+Javaコード内で直接参照するエラーメッセージを定数として定義。コンパイル時の型安全性を確保。
+
+**共通メッセージ:**
+
+| 定数名 | メッセージ内容 | 用途 |
+|-------|-------------|------|
+| `EMAIL_REQUIRED` | メールアドレスを入力してください | 必須入力チェック |
+| `EMAIL_INVALID` | 有効なメールアドレスを入力してください | メールアドレス形式チェック |
+| `PASSWORD_REQUIRED` | パスワードを入力してください | 必須入力チェック |
+| `GENERAL_ERROR` | エラーが発生しました | 一般エラー |
+
+**顧客登録関連メッセージ:**
+
+| 定数名 | メッセージ内容 | 用途 |
+|-------|-------------|------|
+| `CUSTOMER_NAME_REQUIRED` | 顧客名を入力してください | 必須入力チェック |
+| `CUSTOMER_NAME_MAX_LENGTH` | 顧客名は50文字以内で入力してください | 文字数上限チェック |
+| `EMAIL_MAX_LENGTH` | メールアドレスは100文字以内で入力してください | 文字数上限チェック |
+| `PASSWORD_LENGTH` | パスワードは8文字以上20文字以内で入力してください | パスワード長チェック |
+| `BIRTHDAY_FORMAT` | 生年月日はyyyy-MM-dd形式で入力してください（例：1990-01-15） | 日付形式チェック |
+| `BIRTHDAY_PARSE_ERROR` | 生年月日の形式が正しくありません（例：1990-01-15） | 日付パースエラー |
+| `ADDRESS_MAX_LENGTH` | 住所は200文字以内で入力してください | 文字数上限チェック |
+| `ADDRESS_INVALID_PREFECTURE` | 住所は正しい都道府県名で始まる必要があります | 都道府県名検証エラー |
+| `REGISTRATION_ERROR` | 登録中にエラーが発生しました | 登録処理エラー |
+| `EMAIL_ALREADY_EXISTS` | このメールアドレスは既に登録されています | メールアドレス重複エラー |
+
+**ログイン関連メッセージ:**
+
+| 定数名 | メッセージ内容 | 用途 |
+|-------|-------------|------|
+| `LOGIN_FAILED` | ログインに失敗しました | ログイン失敗 |
+| `LOGIN_INVALID_CREDENTIALS` | メールアドレスまたはパスワードが正しくありません | 認証失敗 |
+
+**カート・注文関連メッセージ:**
+
+| 定数名 | メッセージ内容 | 用途 |
+|-------|-------------|------|
+| `DELIVERY_ADDRESS_REQUIRED` | 配送先住所を入力してください | 必須入力チェック |
+| `DELIVERY_ADDRESS_MAX_LENGTH` | 配送先住所は200文字以内で入力してください | 文字数上限チェック |
+| `DELIVERY_ADDRESS_INVALID_PREFECTURE` | 配送先住所は正しい都道府県名で始まる必要があります | 都道府県名検証エラー |
+| `SETTLEMENT_TYPE_REQUIRED` | 決済方法を選択してください | 必須選択チェック |
+| `OUT_OF_STOCK_MESSAGE` | 在庫不足 | OutOfStockException用の基本メッセージ |
+| `OUT_OF_STOCK` | 在庫不足: | 画面表示用プレフィックス |
+| `OPTIMISTIC_LOCK_ERROR` | 他のユーザーが同時に注文しました。もう一度お試しください | 楽観的ロック競合エラー |
+| `ORDER_PROCESSING_ERROR` | 注文処理中にエラーが発生しました: | 注文処理一般エラー |
+
+**データ検索エラーメッセージ:**
+
+| 定数名 | メッセージ内容 | 用途 |
+|-------|-------------|------|
+| `BOOK_NOT_FOUND` | Book not found: | 書籍が見つからない |
+| `ORDER_TRAN_NOT_FOUND` | OrderTran not found for ID: | 注文取引が見つからない |
+| `ORDER_DETAIL_NOT_FOUND` | OrderDetail not found for PK: | 注文明細が見つからない |
+
+### 13.2 画面表示メッセージとハンドリング
 
 #### 13.2.1 ログイン失敗
 
-| メッセージ種別 | メッセージ |
-|-------------|----------|
-| SEVERITY | ERROR |
-| サマリー | ログインに失敗しました |
-| 詳細 | メールアドレスまたはパスワードが正しくありません |
+| メッセージ種別 | メッセージ | 使用箇所 |
+|-------------|----------|---------|
+| SEVERITY | ERROR | LoginBean.processLogin() |
+| サマリー | ログインに失敗しました | - |
+| 詳細 | メールアドレスまたはパスワードが正しくありません | - |
+| 定数 | `ErrorMessage.LOGIN_FAILED` / `LOGIN_INVALID_CREDENTIALS` | - |
+| 表示方法 | FacesMessage（ERROR） | index.xhtml |
 
-#### 13.2.2 カート空エラー
+**発生条件:**
+- メールアドレスが存在しない
+- パスワードが一致しない
 
-| メッセージ種別 | メッセージ |
-|-------------|----------|
-| SEVERITY | WARN |
-| 内容 | カートに商品が入っていません |
+**処理フロー:**
+1. `CustomerService.authenticate()`がnullを返却
+2. `LoginBean`でFacesMessageを追加
+3. index.xhtmlにメッセージ表示
 
-#### 13.2.3 在庫不足エラー
+#### 13.2.2 メールアドレス重複エラー
 
-| メッセージ種別 | メッセージ |
-|-------------|----------|
-| SEVERITY | ERROR |
-| 内容 | 注文された書籍「{書籍名}」の在庫が不足しています |
+| メッセージ種別 | メッセージ | 使用箇所 |
+|-------------|----------|---------|
+| SEVERITY | ERROR | CustomerBean.register() |
+| 内容 | このメールアドレスは既に登録されています | - |
+| 定数 | `ErrorMessage.EMAIL_ALREADY_EXISTS` | - |
+| 例外クラス | `EmailAlreadyExistsException` | - |
+| 表示方法 | FacesMessage（ERROR） | customerInput.xhtml |
 
-#### 13.2.4 住所検証エラー
+**発生条件:**
+- 新規顧客登録時に既存メールアドレスを入力
 
-| メッセージ種別 | メッセージ |
-|-------------|----------|
-| SEVERITY | ERROR |
-| 内容 | 都道府県名が正しく入力されていません |
+**処理フロー:**
+1. `CustomerService.registerCustomer()`で重複チェック
+2. 既存顧客が存在する場合、`EmailAlreadyExistsException`をスロー
+3. `CustomerBean.register()`でキャッチし、FacesMessageを追加
+4. customerInput.xhtmlにメッセージ表示（入力画面に留まる）
+
+#### 13.2.3 カート空エラー
+
+| メッセージ種別 | メッセージ | 使用箇所 |
+|-------------|----------|---------|
+| SEVERITY | WARN | OrderBean.placeOrder() |
+| 内容 | カートに商品が一つも入っていません | - |
+| 定数 | （messages.properties: `error.cart.empty`） | - |
+| 表示方法 | FacesMessage（WARN） | bookOrder.xhtml |
+
+**発生条件:**
+- カートが空の状態で注文確定ボタンをクリック
+
+**処理フロー:**
+1. `OrderBean.placeOrder()`で`CartSession.getCartItems()`が空をチェック
+2. FacesMessageを追加
+3. 注文処理を中止
+
+#### 13.2.4 在庫不足エラー
+
+| メッセージ種別 | メッセージ | 使用箇所 |
+|-------------|----------|---------|
+| SEVERITY | ERROR | OrderBean.placeOrder() |
+| 内容 | 在庫不足: {書籍名} | orderError.xhtml |
+| 定数 | `ErrorMessage.OUT_OF_STOCK` + bookName | - |
+| 例外クラス | `OutOfStockException` | - |
+| 表示方法 | Flash Scope経由でorderError.xhtmlへ遷移 | - |
+
+**発生条件:**
+- 注文数が現在の在庫数を超える場合
+
+**処理フロー:**
+1. `OrderService.orderBooks()`で在庫数チェック
+2. 在庫不足の場合、`OutOfStockException(bookId, bookName, message)`をスロー
+3. `OrderBean.placeOrder()`でキャッチ
+4. エラーメッセージをFlash Scopeに設定
+5. orderError.xhtmlへリダイレクト
+
+#### 13.2.5 楽観的ロック競合エラー
+
+| メッセージ種別 | メッセージ | 使用箇所 |
+|-------------|----------|---------|
+| SEVERITY | ERROR | OrderBean.placeOrder() |
+| 内容 | 他のユーザーが同時に注文しました。もう一度お試しください | orderError.xhtml |
+| 定数 | `ErrorMessage.OPTIMISTIC_LOCK_ERROR` | - |
+| 例外クラス | `jakarta.persistence.OptimisticLockException` | - |
+| 表示方法 | Flash Scope経由でorderError.xhtmlへ遷移 | - |
+
+**発生条件:**
+- カート追加時点のVERSION値と注文時点のVERSION値が不一致
+- 他のユーザーが先に在庫を更新していた場合
+
+**処理フロー:**
+1. `OrderService.orderBooks()`で`stockDao.update(stock)`を実行
+2. JPA（@Version）が自動的にバージョンチェック
+3. バージョン不一致の場合、JPAが`OptimisticLockException`をスロー
+4. `OrderBean.placeOrder()`でキャッチ
+5. エラーメッセージをFlash Scopeに設定
+6. orderError.xhtmlへリダイレクト
+
+#### 13.2.6 住所検証エラー
+
+| メッセージ種別 | メッセージ | 使用箇所 |
+|-------------|----------|---------|
+| SEVERITY | ERROR | CustomerBean.register() / OrderBean.placeOrder() |
+| 内容 | 住所は正しい都道府県名で始まる必要があります | - |
+| 定数 | `ErrorMessage.ADDRESS_INVALID_PREFECTURE` | - |
+| 表示方法 | FacesMessage（ERROR） | customerInput.xhtml / bookOrder.xhtml |
 
 **検証方式:**
 - **AddressUtilクラス**による手動バリデーション
@@ -1235,6 +1376,29 @@ customer.api.base-url = http://localhost:8081/customers
   - 都道府県：北海道、東京都、京都府、大阪府、〇〇県（43県）
 - 顧客登録時および注文時の配送先住所で実施
 - Bean Validationではなく、サービス層またはManaged Bean層で明示的にチェック
+
+**処理フロー:**
+1. `AddressUtil.startsWithValidPrefecture(address)`でチェック
+2. 検証失敗の場合、FacesMessageを追加
+3. 画面に留まる（遷移しない）
+
+#### 13.2.7 注文処理一般エラー
+
+| メッセージ種別 | メッセージ | 使用箇所 |
+|-------------|----------|---------|
+| SEVERITY | ERROR | OrderBean.placeOrder() |
+| 内容 | 注文処理中にエラーが発生しました: {エラー詳細} | orderError.xhtml |
+| 定数 | `ErrorMessage.ORDER_PROCESSING_ERROR` + e.getMessage() | - |
+| 例外クラス | `Exception` (キャッチオール) | - |
+| 表示方法 | Flash Scope経由でorderError.xhtmlへ遷移 | - |
+
+**発生条件:**
+- 上記以外の予期しないエラー（DB接続エラー、トランザクションエラーなど）
+
+**処理フロー:**
+1. `OrderBean.placeOrder()`の最後の`catch (Exception e)`でキャッチ
+2. エラーメッセージをFlash Scopeに設定
+3. orderError.xhtmlへリダイレクト
 
 ---
 
@@ -1244,10 +1408,16 @@ customer.api.base-url = http://localhost:8081/customers
 
 ```
 java.lang.RuntimeException
-    └── pro.kensait.berrybooks.service.order.OutOfStockException
+    ├── pro.kensait.berrybooks.service.order.OutOfStockException
+    └── pro.kensait.berrybooks.service.customer.EmailAlreadyExistsException
+
+jakarta.persistence.OptimisticLockException
+    └── （JPAが自動的にスロー：楽観的ロック競合時）
 ```
 
 ### 14.2 業務例外
+
+Berry Booksでは、ビジネスロジックレベルのエラーを表現するために、以下の業務例外を定義しています。すべて`RuntimeException`を継承しており、チェック例外ではなく非チェック例外として実装されています。
 
 #### 14.2.1 OutOfStockException（在庫不足例外）
 
@@ -1255,60 +1425,295 @@ java.lang.RuntimeException
 
 **継承元:** `RuntimeException`
 
-**発生条件:** 注文数が在庫数を超えた場合
+**発生条件:** 
+- 注文確定時に注文数が在庫数を超えた場合
+- 在庫数 - 注文数 < 0 となる場合
 
 **フィールド:**
 
-| フィールド名 | 型 | 説明 |
-|------------|---|------|
-| `bookId` | `Integer` | 在庫不足の書籍ID |
-| `bookName` | `String` | 在庫不足の書籍名 |
+| フィールド名 | 型 | 説明 | 用途 |
+|------------|---|------|-----|
+| `bookId` | `Integer` | 在庫不足の書籍ID | エラー原因の特定 |
+| `bookName` | `String` | 在庫不足の書籍名 | エラーメッセージ表示 |
 
-**使用箇所:** OrderService.orderBooks()メソッド内
+**コンストラクタ:**
 
-**例外ハンドリング:** OrderBean.placeOrder()メソッドでキャッチし、orderError.xhtmlへ遷移
+| シグネチャ | 説明 |
+|----------|------|
+| `OutOfStockException()` | デフォルトコンストラクタ |
+| `OutOfStockException(String message)` | メッセージ付きコンストラクタ |
+| `OutOfStockException(String message, Throwable cause)` | メッセージと原因例外付き |
+| `OutOfStockException(Throwable cause)` | 原因例外付き |
+| `OutOfStockException(Integer bookId, String bookName, String message)` | **主要コンストラクタ**（書籍情報とメッセージ） |
+
+**スロー箇所:** 
+- `OrderService.orderBooks()`メソッド内
+- 在庫チェックロジックで在庫不足を検出時
+
+**キャッチ箇所:** 
+- `OrderBean.placeOrder()`メソッド
+- catch節でエラーメッセージを構築し、Flash Scopeに設定
+- orderError.xhtmlへリダイレクト
+
+#### 14.2.2 EmailAlreadyExistsException（メールアドレス重複例外）
+
+**パッケージ:** `pro.kensait.berrybooks.service.customer`
+
+**継承元:** `RuntimeException`
+
+**発生条件:** 
+- 新規顧客登録時に、既に登録済みのメールアドレスを入力した場合
+- `CustomerDao.findByEmail()`で既存顧客が見つかった場合
+
+**フィールド:**
+
+| フィールド名 | 型 | 説明 | 用途 |
+|------------|---|------|-----|
+| `email` | `String` | 重複したメールアドレス | エラー原因の特定 |
+
+**コンストラクタ:**
+
+| シグネチャ | 説明 |
+|----------|------|
+| `EmailAlreadyExistsException()` | デフォルトコンストラクタ |
+| `EmailAlreadyExistsException(String message)` | メッセージ付きコンストラクタ |
+| `EmailAlreadyExistsException(String message, Throwable cause)` | メッセージと原因例外付き |
+| `EmailAlreadyExistsException(Throwable cause)` | 原因例外付き |
+| `EmailAlreadyExistsException(String email, String message)` | **主要コンストラクタ**（メールアドレスとメッセージ） |
+
+**スロー箇所:** 
+- `CustomerService.registerCustomer()`メソッド内
+- メールアドレス重複チェックで既存顧客を検出時
+
+**キャッチ箇所:** 
+- `CustomerBean.register()`メソッド
+- catch節でエラーメッセージを表示
+- 入力画面（customerInput.xhtml）に留まる
 
 ### 14.3 システム例外
 
-| 例外クラス | 発生条件 | ハンドリング方法 |
-|----------|---------|----------------|
-| `IllegalArgumentException` | メールアドレス重複（顧客登録時） | CustomerServiceでスロー、画面でキャッチしてメッセージ表示 |
-| `RuntimeException` | 注文・注文明細が見つからない | ServiceでRuntimeExceptionスロー |
-| `PersistenceException` | DB接続エラー、SQL実行エラー | トランザクションロールバック、画面でエラーメッセージ表示 |
-| `OptimisticLockException` | 楽観的ロック衝突 | トランザクションロールバック、再試行促進メッセージ |
+アプリケーションでは、業務例外以外にJakarta EEやJPAが提供するシステムレベルの例外も適切にハンドリングします。
+
+| 例外クラス | パッケージ | 発生条件 | ハンドリング方法 |
+|----------|---------|---------|----------------|
+| `OptimisticLockException` | `jakarta.persistence` | 楽観的ロック競合（在庫更新時にVERSION不一致） | OrderBean.placeOrder()でキャッチ、トランザクションロールバック、再試行促進メッセージ表示 |
+| `PersistenceException` | `jakarta.persistence` | DB接続エラー、SQL実行エラー、制約違反 | トランザクション自動ロールバック、画面でエラーメッセージ表示 |
+| `RuntimeException` | `java.lang` | データが見つからない（書籍、注文、顧客など） | ServiceでRuntimeExceptionスロー、Managed Beanでキャッチ |
+| `Exception` | `java.lang` | その他の予期しないエラー | OrderBean.placeOrder()の最後のcatch節でキャッチし、一般エラーメッセージ表示 |
+
+#### 14.3.1 OptimisticLockException詳細
+
+**発生メカニズム:**
+1. カート追加時に`Stock`エンティティのVERSION値を取得し、`CartItem`に保存
+2. 注文確定時に、保存されていたVERSION値で`Stock`エンティティを更新
+3. JPAの`@Version`アノテーションにより、UPDATE時に自動的にバージョンチェック
+4. `WHERE BOOK_ID = ? AND VERSION = ?` というSQL条件が自動付加
+5. バージョン不一致の場合、JPAが`OptimisticLockException`をスロー
+
+**ハンドリング:**
+- `OrderBean.placeOrder()`メソッドでキャッチ
+- エラーメッセージ（`ErrorMessage.OPTIMISTIC_LOCK_ERROR`）をFlash Scopeに設定
+- orderError.xhtmlへリダイレクト
+
+#### 14.3.2 データ検索時のエラーハンドリング
+
+Service層では、データが見つからない場合に`RuntimeException`をスローします。
+
+**実装方針:**
+- `OrderTranDao.findById()`などで、データが見つからない場合にRuntimeExceptionをスロー
+- エラーメッセージ（`ErrorMessage.ORDER_TRAN_NOT_FOUND`など）に該当IDを付加
+- 呼び出し元でキャッチして適切にハンドリング
 
 ### 14.4 例外処理フロー
 
+#### 14.4.1 注文処理における例外処理フロー（OutOfStockException）
+
 ```
-┌─────────────────┐
-│  Managed Bean   │
-│  (OrderBean)    │
-└────────┬────────┘
-         │ try {
-         ▼
-┌─────────────────┐
-│    Service      │
-│ (OrderService)  │
-└────────┬────────┘
-         │
-         │ 在庫不足検出
-         │ throw OutOfStockException
-         │
-         ▼
-┌─────────────────┐
-│  Managed Bean   │
-│  } catch (Out   │
-│  OfStockExcep   │
-│  tion e) {      │
-└────────┬────────┘
-         │
-         │ エラー情報設定
-         │
-         ▼
-┌─────────────────┐
-│ orderError.xhtml│
-│ (エラー画面)     │
-└─────────────────┘
+┌─────────────────────────────┐
+│  OrderBean.placeOrder()     │
+│  (Managed Bean層)           │
+└──────────┬──────────────────┘
+           │ try {
+           │ OrderTO作成
+           ▼
+┌─────────────────────────────┐
+│  OrderService.orderBooks()  │
+│  (Service層)                │
+│  @Transactional             │
+└──────────┬──────────────────┘
+           │
+           │ 在庫チェック開始
+           ▼
+┌─────────────────────────────┐
+│  for each CartItem:         │
+│    在庫数 - 注文数を計算     │
+└──────────┬──────────────────┘
+           │
+           ├─ [在庫不足] ──────────────┐
+           │                           │
+           │  throw OutOfStockException│
+           │  (bookId, bookName,       │
+           │   message)                │
+           │                           │
+           └─ [在庫OK] ─────┐          │
+                            │          │
+                            ▼          │
+              ┌─────────────────────┐ │
+              │  在庫減算処理        │ │
+              │  OrderTran永続化    │ │
+              │  OrderDetail永続化  │ │
+              └─────────┬───────────┘ │
+                        │              │
+                        │              │
+           ┌────────────┴──────────────┘
+           │
+           ▼
+┌─────────────────────────────┐
+│  OrderBean.placeOrder()     │
+│  } catch (OutOfStockExcep   │
+│  tion e) {                  │
+└──────────┬──────────────────┘
+           │
+           │ errorMessage = 
+           │ OUT_OF_STOCK + bookName
+           │ setFlashErrorMessage()
+           │
+           ▼
+┌─────────────────────────────┐
+│  orderError.xhtml           │
+│  (エラー画面)                │
+│  Flash Scopeから             │
+│  エラーメッセージ表示        │
+└─────────────────────────────┘
+```
+
+#### 14.4.2 顧客登録における例外処理フロー（EmailAlreadyExistsException）
+
+```
+┌─────────────────────────────┐
+│  CustomerBean.register()    │
+│  (Managed Bean層)           │
+└──────────┬──────────────────┘
+           │ try {
+           │ Customerエンティティ作成
+           │ 住所検証（AddressUtil）
+           ▼
+┌─────────────────────────────┐
+│  CustomerService.           │
+│  registerCustomer()         │
+│  (Service層)                │
+│  @Transactional             │
+└──────────┬──────────────────┘
+           │
+           │ メールアドレス重複チェック
+           ▼
+┌─────────────────────────────┐
+│  CustomerDao.findByEmail()  │
+└──────────┬──────────────────┘
+           │
+           ├─ [重複あり] ──────────────┐
+           │                           │
+           │  throw EmailAlready       │
+           │  ExistsException          │
+           │  (email, message)         │
+           │                           │
+           └─ [重複なし] ───┐          │
+                            │          │
+                            ▼          │
+              ┌─────────────────────┐ │
+              │  customerDao.       │ │
+              │  register(customer) │ │
+              └─────────┬───────────┘ │
+                        │              │
+                        │              │
+           ┌────────────┴──────────────┘
+           │
+           ▼
+┌─────────────────────────────┐
+│  CustomerBean.register()    │
+│  } catch (EmailAlready      │
+│  ExistsException e) {       │
+└──────────┬──────────────────┘
+           │
+           │ addErrorMessage(
+           │   e.getMessage())
+           │ return null;
+           │ ※画面遷移しない
+           ▼
+┌─────────────────────────────┐
+│  customerInput.xhtml        │
+│  (入力画面に留まる)          │
+│  FacesMessageで              │
+│  エラーメッセージ表示        │
+└─────────────────────────────┘
+```
+
+#### 14.4.3 楽観的ロック競合の例外処理フロー（OptimisticLockException）
+
+```
+┌─────────────────────────────┐
+│  OrderBean.placeOrder()     │
+│  (Managed Bean層)           │
+└──────────┬──────────────────┘
+           │ try {
+           ▼
+┌─────────────────────────────┐
+│  OrderService.orderBooks()  │
+│  @Transactional             │
+└──────────┬──────────────────┘
+           │
+           │ カート追加時点のVERSION値を
+           │ CartItemから取得
+           ▼
+┌─────────────────────────────┐
+│  Stock stock = new Stock()  │
+│  stock.setBookId(...)       │
+│  stock.setVersion(          │
+│    cartItem.getVersion())   │
+│  ※カート追加時点のVERSION    │
+└──────────┬──────────────────┘
+           │
+           │ 在庫更新実行
+           ▼
+┌─────────────────────────────┐
+│  stockDao.update(stock)     │
+│  ※JPAが自動的に             │
+│  WHERE VERSION = ? を付加    │
+└──────────┬──────────────────┘
+           │
+           ├─ [VERSION不一致] ─────────┐
+           │                           │
+           │  JPAがOptimisticLock      │
+           │  Exceptionをスロー        │
+           │                           │
+           └─ [VERSION一致] ─┐         │
+                             │         │
+                             ▼         │
+               ┌───────────────────┐   │
+               │  在庫更新成功      │   │
+               │  VERSION自動増分   │   │
+               └─────────┬─────────┘   │
+                         │             │
+           ┌─────────────┴─────────────┘
+           │
+           ▼
+┌─────────────────────────────┐
+│  OrderBean.placeOrder()     │
+│  } catch (OptimisticLock    │
+│  Exception e) {             │
+└──────────┬──────────────────┘
+           │
+           │ errorMessage = 
+           │ OPTIMISTIC_LOCK_ERROR
+           │ setFlashErrorMessage()
+           │
+           ▼
+┌─────────────────────────────┐
+│  orderError.xhtml           │
+│  (エラー画面)                │
+│  「他のユーザーが同時に      │
+│   注文しました」表示        │
+└─────────────────────────────┘
 ```
 
 ---
@@ -1331,13 +1736,42 @@ java.lang.RuntimeException
 
 ### 15.3 ロールバック条件
 
-| 条件 | ロールバック契機 |
-|------|---------------|
-| `OutOfStockException` スロー | 自動ロールバック（RuntimeException） |
-| `OptimisticLockException` スロー | 自動ロールバック（楽観的ロック競合） |
-| `IllegalArgumentException` スロー | 自動ロールバック（RuntimeException） |
-| `PersistenceException` スロー | 自動ロールバック |
-| メソッド正常終了 | コミット |
+Berry Booksでは、`@Transactional`アノテーションによる宣言的トランザクション管理を採用しています。トランザクションのロールバックは以下の条件で自動的に実行されます。
+
+| 条件 | 例外クラス | ロールバック契機 | 影響範囲 |
+|------|----------|---------------|---------|
+| **在庫不足エラー** | `OutOfStockException` | 自動ロールバック（RuntimeException） | 在庫減算、注文登録がすべてロールバック |
+| **楽観的ロック競合** | `OptimisticLockException` | 自動ロールバック（楽観的ロック競合） | 在庫更新、注文登録がすべてロールバック |
+| **メールアドレス重複** | `EmailAlreadyExistsException` | 自動ロールバック（RuntimeException） | 顧客登録がロールバック |
+| **DB接続エラー** | `PersistenceException` | 自動ロールバック | すべてのDB操作がロールバック |
+| **その他の実行時例外** | `RuntimeException` | 自動ロールバック | すべてのDB操作がロールバック |
+| **正常終了** | - | コミット | すべてのDB操作が確定 |
+
+#### 15.3.1 ロールバック動作の詳細
+
+**RuntimeExceptionによる自動ロールバック:**
+- Jakarta Transactions（JTA）では、`RuntimeException`またはその派生例外がスローされると、トランザクションが自動的にロールバックされる
+- `@Transactional`アノテーションのデフォルト動作
+- チェック例外（`Exception`）はデフォルトではロールバックしない
+
+**処理イメージ:**
+- 在庫チェックで在庫不足を検出 → `OutOfStockException`（RuntimeException）をスロー → トランザクション自動ロールバック
+- 在庫減算、注文登録（OrderTran、OrderDetail）を実行
+- 正常終了 → トランザクションコミット
+
+#### 15.3.2 ロールバック時の挙動
+
+1. **データベース状態の復元**
+   - トランザクション開始時点の状態に戻る
+   - すべてのINSERT、UPDATE、DELETEが無効化される
+
+2. **JPA永続化コンテキストのクリア**
+   - エンティティの変更が破棄される
+   - EntityManagerがクリアされる
+
+3. **例外の伝播**
+   - 例外は呼び出し元（Managed Bean）に伝播
+   - 呼び出し元でキャッチして適切なエラーハンドリングを実施
 
 ### 15.4 トランザクション分離レベル
 

@@ -5,6 +5,7 @@ import java.io.Serializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.kensait.berrybooks.common.ErrorMessage;
 import pro.kensait.berrybooks.entity.Customer;
 import pro.kensait.berrybooks.service.customer.CustomerService;
 import pro.kensait.berrybooks.web.customer.CustomerBean;
@@ -31,11 +32,11 @@ public class LoginBean implements Serializable {
     private CustomerBean customerBean;
 
     // ログインフォームの入力値
-    @NotBlank(message = "メールアドレスを入力してください")
-    @Email(message = "有効なメールアドレスを入力してください")
+    @NotBlank(message = ErrorMessage.EMAIL_REQUIRED)
+    @Email(message = ErrorMessage.EMAIL_INVALID)
     private String email;
     
-    @NotBlank(message = "パスワードを入力してください")
+    @NotBlank(message = ErrorMessage.PASSWORD_REQUIRED)
     private String password;
 
     // ログイン済みフラグ
@@ -51,8 +52,8 @@ public class LoginBean implements Serializable {
             if (customer == null) {
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                "ログインに失敗しました",
-                                "メールアドレスまたはパスワードが正しくありません"));
+                                ErrorMessage.LOGIN_FAILED,
+                                ErrorMessage.LOGIN_INVALID_CREDENTIALS));
                 return null;
             }
 
@@ -69,7 +70,7 @@ public class LoginBean implements Serializable {
             logger.error("Login error", e);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "エラーが発生しました", e.getMessage()));
+                            ErrorMessage.GENERAL_ERROR, e.getMessage()));
             return null;
         }
     }

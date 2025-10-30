@@ -53,8 +53,8 @@ public class CartBean implements Serializable {
         boolean isExists = false;
         for (CartItem cartItem : cartSession.getCartItems()) {
             if (bookId.equals(cartItem.getBookId())) {
-                cartItem.setCount(cartItem.getCount() + 1);
-                cartItem.setPrice(cartItem.getPrice().add(book.getPrice()));
+                cartItem.setCount(cartItem.getCount() + count);
+                cartItem.setPrice(cartItem.getPrice().add(book.getPrice().multiply(BigDecimal.valueOf(count))));
                 // VERSION値は最初にカートに入れた時点のものを保持（更新しない）
                 isExists = true;
                 break;
@@ -67,8 +67,8 @@ public class CartBean implements Serializable {
                     book.getBookId(),
                     book.getBookName(),
                     book.getPublisher().getPublisherName(),
-                    book.getPrice(),
-                    1,
+                    book.getPrice().multiply(BigDecimal.valueOf(count)),
+                    count,
                     false);
             // カート追加時点のVERSION値をCartItemに保存
             cartItem.setVersion(stock.getVersion());
@@ -77,7 +77,7 @@ public class CartBean implements Serializable {
 
         // 合計金額を加算する
         BigDecimal totalPrice = cartSession.getTotalPrice();
-        cartSession.setTotalPrice(totalPrice.add(book.getPrice()));
+        cartSession.setTotalPrice(totalPrice.add(book.getPrice().multiply(BigDecimal.valueOf(count))));
 
         return "cartView?faces-redirect=true";
     }

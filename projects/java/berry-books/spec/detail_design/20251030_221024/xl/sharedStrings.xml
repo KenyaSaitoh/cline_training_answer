@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="1476" uniqueCount="1042"><si><t>Version: 1.0</t></si><si><t>作成日: 2025年10月25日</t></si><si><t>システム名: Berry Books オンライン書店システム</t></si><si><t>プロジェクト名: berry-books-mvc</t></si><si><t>目次</t></si><si><t>[システム概要](#1-システム概要)</t></si><si><t>[アーキテクチャ基本方針](#2-アーキテクチャ基本方針)</t></si><si><t>[技術スタック](#3-技術スタック)</t></si><si><t>[コンポーネント構成](#4-コンポーネント構成)</t></si><si><t>[認証・認可方式](#5-認証認可方式)</t></si><si><t>[画面遷移](#6-画面遷移)</t></si><si><t>[セッション管理](#7-セッション管理)</t></si><si><t>[ビジネスロジック](#8-ビジネスロジック)</t></si><si><t>[DBアクセス方式](#9-dbアクセス方式)</t></si><si><t>[他システム接続方式（API連携）](#10-他システム接続方式api連携)</t></si><si><t>[データモデル](#11-データモデル)</t></si><si><t>[定数・設定値](#12-定数設定値)</t></si><si><t>[エラーメッセージ](#13-エラーメッセージ)</t></si><si><t>[例外処理](#14-例外処理)</t></si><si><t>[トランザクション管理](#15-トランザクション管理)</t></si><si><t>[セキュリティ対策](#16-セキュリティ対策)</t></si><si><t>[デプロイメント構成](#17-デプロイメント構成)</t></si><si><t>1. システム概要</t></si><si><t>1.1 システムの目的</t></si><si><t>Berry Booksは、Jakarta EE 10とJSF (Jakarta Server Faces) 4.0を使用したオンライン書店のWebアプリケーションです。</t></si><si><t>ユーザーは書籍の検索、カートへの追加、注文処理などのEC機能を利用できます。</t></si><si><t>1.2 システムの特徴</t></si><si><t>項目</t></si><si><t>内容</t></si><si><t>アプリケーション形態</t></si><si><t>Webアプリケーション（MVC型）</t></si><si><t>ユーザー対象</t></si><si><t>エンドユーザー（一般顧客）</t></si><si><t>主要機能</t></si><si><t>書籍検索、ショッピングカート、注文処理、注文履歴参照</t></si><si><t>開発目的</t></si><si><t>Jakarta EE学習用サンプルアプリケーション</t></si><si><t>1.3 システムの制約</t></si><si><t>制約項目</t></si><si><t>認証方式</t></si><si><t>平文パスワード認証（学習用のため暗号化なし）</t></si><si><t>セキュリティ</t></si><si><t>HTTPS未使用（開発環境）</t></si><si><t>スケーラビリティ</t></si><si><t>単一サーバー構成</t></si><si><t>ペイメント</t></si><si><t>決済システム未連携（受注情報の記録のみ）</t></si><si><t>2. アーキテクチャ基本方針</t></si><si><t>2.1 アーキテクチャパターン</t></si><si><t>MVC (Model-View-Controller) パターンを採用</t></si><si><t>┌─────────────────────────────────────────────┐
+<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="1831" uniqueCount="1254"><si><t>Version: 1.0</t></si><si><t>作成日: 2025年10月25日</t></si><si><t>システム名: Berry Books オンライン書店システム</t></si><si><t>プロジェクト名: berry-books-mvc</t></si><si><t>目次</t></si><si><t>[システム概要](#1-システム概要)</t></si><si><t>[アーキテクチャ基本方針](#2-アーキテクチャ基本方針)</t></si><si><t>[技術スタック](#3-技術スタック)</t></si><si><t>[コンポーネント構成](#4-コンポーネント構成)</t></si><si><t>[認証・認可方式](#5-認証認可方式)</t></si><si><t>[画面遷移](#6-画面遷移)</t></si><si><t>[セッション管理](#7-セッション管理)</t></si><si><t>[ビジネスロジック](#8-ビジネスロジック)</t></si><si><t>[DBアクセス方式](#9-dbアクセス方式)</t></si><si><t>[他システム接続方式（API連携）](#10-他システム接続方式api連携)</t></si><si><t>[データモデル](#11-データモデル)</t></si><si><t>[定数・設定値](#12-定数設定値)</t></si><si><t>[エラーメッセージ](#13-エラーメッセージ)</t></si><si><t>[例外処理](#14-例外処理)</t></si><si><t>[トランザクション管理](#15-トランザクション管理)</t></si><si><t>[セキュリティ対策](#16-セキュリティ対策)</t></si><si><t>[デプロイメント構成](#17-デプロイメント構成)</t></si><si><t>1. システム概要</t></si><si><t>1.1 システムの目的</t></si><si><t>Berry Booksは、Jakarta EE 10とJSF (Jakarta Server Faces) 4.0を使用したオンライン書店のWebアプリケーションです。</t></si><si><t>ユーザーは書籍の検索、カートへの追加、注文処理などのEC機能を利用できます。</t></si><si><t>1.2 システムの特徴</t></si><si><t>項目</t></si><si><t>内容</t></si><si><t>アプリケーション形態</t></si><si><t>Webアプリケーション（MVC型）</t></si><si><t>ユーザー対象</t></si><si><t>エンドユーザー（一般顧客）</t></si><si><t>主要機能</t></si><si><t>書籍検索、ショッピングカート、注文処理、注文履歴参照</t></si><si><t>開発目的</t></si><si><t>Jakarta EE学習用サンプルアプリケーション</t></si><si><t>1.3 システムの制約</t></si><si><t>制約項目</t></si><si><t>認証方式</t></si><si><t>平文パスワード認証（学習用のため暗号化なし）</t></si><si><t>セキュリティ</t></si><si><t>HTTPS未使用（開発環境）</t></si><si><t>スケーラビリティ</t></si><si><t>単一サーバー構成</t></si><si><t>ペイメント</t></si><si><t>決済システム未連携（受注情報の記録のみ）</t></si><si><t>2. アーキテクチャ基本方針</t></si><si><t>2.1 アーキテクチャパターン</t></si><si><t>MVC (Model-View-Controller) パターンを採用</t></si><si><t>┌─────────────────────────────────────────────┐
 │         Presentation Layer (View)          │
 │    JSF Facelets (XHTML) + CSS + JS        │
 └──────────────────┬──────────────────────────┘
@@ -235,8 +235,7 @@
 │ ④明細を含めて再取得＆返却            │
 │   return orderTranDao.              │
 │     findByIdWithDetails(id)         │
-└─────────────────────────────────────┘</t></si><si><t>8.3.2 在庫管理（悲観的ロック）</t></si><si><t>ロックタイプ</t></si><si><t>JPA定数</t></si><si><t>SQL効果</t></si><si><t>悲観的書き込みロック</t></si><si><t>`LockModeType.PESSIMISTIC_WRITE`</t></si><si><t>`SELECT ... FOR UPDATE`</t></si><si><t>在庫チェック処理:</t></si><si><t>悲観的ロックで在庫を取得（排他制御）</t></si><si><t>在庫数から注文数を減算した残数をチェック</t></si><si><t>残数が0未満の場合は`OutOfStockException`をスロー</t></si><si><t>残数が0以上の場合は在庫数を更新</t></si><si><t>8.4 注文履歴取得ロジック</t></si><si><t>8.4.1 注文履歴取得パターン</t></si><si><t>方式</t></si><si><t>メソッド</t></si><si><t>戻り値</t></si><si><t>特徴</t></si><si><t>方式1</t></si><si><t>`getOrderHistory()`</t></si><si><t>`List&lt;OrderTran&gt;`</t></si><si><t>エンティティをそのまま返却</t></si><si><t>方式2</t></si><si><t>`getOrderHistory2()`</t></si><si><t>`List&lt;OrderHistoryTO&gt;`</t></si><si><t>DTOで明細レベルの詳細データ返却</t></si><si><t>方式3</t></si><si><t>`getOrderHistory3()`</t></si><si><t>FETCH JOINで明細を含めて取得</t></si><si><t>8.4.2 方式2の特徴（DTO使用）</t></si><si><t>• コンストラクター式を使用してDTOを直接生成</t></si><si><t>• 必要なフィールドのみを取得（パフォーマンス最適化）</t></si><si><t>• INNER JOINで注文、明細、書籍、出版社を結合</t></si><si><t>• 注文日、注文ID、明細ID、書籍名、出版社名、価格、数量を返却</t></si><si><t>9. DBアクセス方式</t></si><si><t>9.1 JPA設定</t></si><si><t>9.1.1 persistence.xml</t></si><si><t>PersistenceUnit名</t></si><si><t>`bookstorePU`</t></si><si><t>EntityManagerの識別名</t></si><si><t>`JTA`</t></si><si><t>コンテナ管理トランザクション</t></si><si><t>データソース</t></si><si><t>`jdbc/HsqldbDS`</t></si><si><t>JNDI名</t></si><si><t>DBプラットフォーム</t></si><si><t>`HSQLPlatform`</t></si><si><t>HSQLDB用SQLダイアレクト</t></si><si><t>ログレベル</t></si><si><t>`FINE`</t></si><si><t>詳細ログ出力</t></si><si><t>9.2 データソース設定</t></si><si><t>接続プール名</t></si><si><t>`HsqldbPool`</t></si><si><t>データベースURL</t></si><si><t>`jdbc:hsqldb:hsql://localhost:9001/testdb`</t></si><si><t>ドライバークラス</t></si><si><t>`org.hsqldb.jdbcDriver`</t></si><si><t>ユーザー名</t></si><si><t>`SA`</t></si><si><t>パスワード</t></si><si><t>（空文字）</t></si><si><t>9.3 エンティティマッピング戦略</t></si><si><t>9.3.1 主キー生成戦略</t></si><si><t>テーブル</t></si><si><t>主キー</t></si><si><t>生成戦略</t></si><si><t>BOOK</t></si><si><t>BOOK_ID</t></si><si><t>`IDENTITY` (自動採番)</t></si><si><t>CATEGORY_ID</t></si><si><t>PUBLISHER_ID</t></si><si><t>CUSTOMER_ID</t></si><si><t>ORDERTRANID</t></si><si><t>(ORDERTRANID, ORDERDETAILID)</t></si><si><t>複合主キー（アプリで採番）</t></si><si><t>手動設定（BOOKと同じID）</t></si><si><t>9.3.2 リレーションシップマッピング</t></si><si><t>エンティティ1</t></si><si><t>関係</t></si><si><t>エンティティ2</t></si><si><t>マッピング方法</t></si><si><t>Book</t></si><si><t>N:1</t></si><si><t>Category</t></si><si><t>`@ManyToOne` + `@JoinColumn`</t></si><si><t>Publisher</t></si><si><t>1:1</t></si><si><t>Stock</t></si><si><t>`@SecondaryTable`</t></si><si><t>OrderTran</t></si><si><t>1:N</t></si><si><t>OrderDetail</t></si><si><t>`@OneToMany` (mappedBy)</t></si><si><t>`@ManyToOne` (insertable=false, updatable=false)</t></si><si><t>9.3.3 複合主キーマッピング</t></si><si><t>OrderDetailPKクラス:</t></si><si><t>• `orderTranId`と`orderDetailId`の2つのフィールド</t></si><si><t>• `equals()`と`hashCode()`の実装必須</t></si><si><t>OrderDetailエンティティ:</t></si><si><t>• `@IdClass(OrderDetailPK.class)`で複合主キー指定</t></si><si><t>• 両フィールドに`@Id`アノテーション付与</t></si><si><t>9.4 クエリ実装パターン</t></si><si><t>9.4.1 JPQL（静的クエリ）</t></si><si><t>• TypedQueryを使用</t></si><si><t>• パラメータバインディング（`:paramName`形式）</t></si><si><t>• SQLインジェクション対策</t></si><si><t>9.4.2 Criteria API（動的クエリ）</t></si><si><t>• CriteriaBuilder、CriteriaQuery、Rootを使用</t></si><si><t>• Predicateリストで条件を動的に構築</t></si><si><t>• 条件の有無に応じてクエリを組み立て</t></si><si><t>9.4.3 DTO投影（コンストラクター式）</t></si><si><t>• `SELECT new パッケージ名.DTO名(...)`形式</t></si><si><t>• 必要なフィールドのみを取得</t></si><si><t>• パフォーマンス最適化</t></si><si><t>9.5 フェッチ戦略</t></si><si><t>エンティティ</t></si><si><t>リレーション</t></si><si><t>フェッチタイプ</t></si><si><t>理由</t></si><si><t>Book → Category</t></si><si><t>`@ManyToOne`</t></si><si><t>`EAGER`（デフォルト）</t></si><si><t>カテゴリ情報は常に必要</t></si><si><t>Book → Publisher</t></si><si><t>出版社情報は常に必要</t></si><si><t>OrderTran → OrderDetail</t></si><si><t>`@OneToMany`</t></si><si><t>`EAGER`（明示指定）</t></si><si><t>明細は常に必要</t></si><si><t>OrderDetail → Book</t></si><si><t>書籍情報は常に必要</t></si><si><t>10. 他システム接続方式（API連携）</t></si><si><t>10.1 外部システム連携概要</t></si><si><t>現時点では外部システムとのAPI連携は実装していません。</t></si><si><t>10.2 将来の連携候補</t></si><si><t>システム</t></si><si><t>連携内容</t></si><si><t>顧客管理システム</t></si><si><t>顧客情報の同期</t></si><si><t>REST API (berry-books-rest)</t></si><si><t>決済システム</t></si><si><t>クレジットカード決済</t></si><si><t>REST API / WebAPI</t></si><si><t>在庫管理システム</t></si><si><t>リアルタイム在庫連携</t></si><si><t>メッセージング (JMS)</t></si><si><t>配送システム</t></si><si><t>配送状況追跡</t></si><si><t>REST API</t></si><si><t>10.3 設定ファイル</t></si><si><t>[properties]</t></si><si><t># config.properties
-customer.api.base-url = http://localhost:8081/customers</t></si><si><t>11. データモデル</t></si><si><t>11.1 ER図</t></si><si><t>┌──────────────┐
+└─────────────────────────────────────┘</t></si><si><t>8.3.2 在庫管理（悲観的ロック）</t></si><si><t>ロックタイプ</t></si><si><t>JPA定数</t></si><si><t>SQL効果</t></si><si><t>悲観的書き込みロック</t></si><si><t>`LockModeType.PESSIMISTIC_WRITE`</t></si><si><t>`SELECT ... FOR UPDATE`</t></si><si><t>在庫チェック処理:</t></si><si><t>悲観的ロックで在庫を取得（排他制御）</t></si><si><t>在庫数から注文数を減算した残数をチェック</t></si><si><t>残数が0未満の場合は`OutOfStockException`をスロー</t></si><si><t>残数が0以上の場合は在庫数を更新</t></si><si><t>8.4 注文履歴取得ロジック</t></si><si><t>8.4.1 注文履歴取得パターン</t></si><si><t>方式</t></si><si><t>メソッド</t></si><si><t>戻り値</t></si><si><t>特徴</t></si><si><t>方式1</t></si><si><t>`getOrderHistory()`</t></si><si><t>`List&lt;OrderTran&gt;`</t></si><si><t>エンティティをそのまま返却</t></si><si><t>方式2</t></si><si><t>`getOrderHistory2()`</t></si><si><t>`List&lt;OrderHistoryTO&gt;`</t></si><si><t>DTOで明細レベルの詳細データ返却</t></si><si><t>方式3</t></si><si><t>`getOrderHistory3()`</t></si><si><t>FETCH JOINで明細を含めて取得</t></si><si><t>8.4.2 方式2の特徴（DTO使用）</t></si><si><t>• コンストラクター式を使用してDTOを直接生成</t></si><si><t>• 必要なフィールドのみを取得（パフォーマンス最適化）</t></si><si><t>• INNER JOINで注文、明細、書籍、出版社を結合</t></si><si><t>• 注文日、注文ID、明細ID、書籍名、出版社名、価格、数量を返却</t></si><si><t>9. DBアクセス方式</t></si><si><t>9.1 JPA設定</t></si><si><t>9.1.1 persistence.xml</t></si><si><t>PersistenceUnit名</t></si><si><t>`bookstorePU`</t></si><si><t>EntityManagerの識別名</t></si><si><t>`JTA`</t></si><si><t>コンテナ管理トランザクション</t></si><si><t>データソース</t></si><si><t>`jdbc/HsqldbDS`</t></si><si><t>JNDI名</t></si><si><t>DBプラットフォーム</t></si><si><t>`HSQLPlatform`</t></si><si><t>HSQLDB用SQLダイアレクト</t></si><si><t>ログレベル</t></si><si><t>`FINE`</t></si><si><t>詳細ログ出力</t></si><si><t>9.2 データソース設定</t></si><si><t>接続プール名</t></si><si><t>`HsqldbPool`</t></si><si><t>データベースURL</t></si><si><t>`jdbc:hsqldb:hsql://localhost:9001/testdb`</t></si><si><t>ドライバークラス</t></si><si><t>`org.hsqldb.jdbcDriver`</t></si><si><t>ユーザー名</t></si><si><t>`SA`</t></si><si><t>パスワード</t></si><si><t>（空文字）</t></si><si><t>9.3 エンティティマッピング戦略</t></si><si><t>9.3.1 主キー生成戦略</t></si><si><t>テーブル</t></si><si><t>主キー</t></si><si><t>生成戦略</t></si><si><t>BOOK</t></si><si><t>BOOK_ID</t></si><si><t>`IDENTITY` (自動採番)</t></si><si><t>CATEGORY_ID</t></si><si><t>PUBLISHER_ID</t></si><si><t>CUSTOMER_ID</t></si><si><t>ORDERTRANID</t></si><si><t>(ORDERTRANID, ORDERDETAILID)</t></si><si><t>複合主キー（アプリで採番）</t></si><si><t>手動設定（BOOKと同じID）</t></si><si><t>9.3.2 リレーションシップマッピング</t></si><si><t>エンティティ1</t></si><si><t>関係</t></si><si><t>エンティティ2</t></si><si><t>マッピング方法</t></si><si><t>Book</t></si><si><t>N:1</t></si><si><t>Category</t></si><si><t>`@ManyToOne` + `@JoinColumn`</t></si><si><t>Publisher</t></si><si><t>1:1</t></si><si><t>Stock</t></si><si><t>`@SecondaryTable`</t></si><si><t>OrderTran</t></si><si><t>1:N</t></si><si><t>OrderDetail</t></si><si><t>`@OneToMany` (mappedBy)</t></si><si><t>`@ManyToOne` (insertable=false, updatable=false)</t></si><si><t>9.3.3 複合主キーマッピング</t></si><si><t>OrderDetailPKクラス:</t></si><si><t>• `orderTranId`と`orderDetailId`の2つのフィールド</t></si><si><t>• `equals()`と`hashCode()`の実装必須</t></si><si><t>OrderDetailエンティティ:</t></si><si><t>• `@IdClass(OrderDetailPK.class)`で複合主キー指定</t></si><si><t>• 両フィールドに`@Id`アノテーション付与</t></si><si><t>9.4 クエリ実装パターン</t></si><si><t>9.4.1 JPQL（静的クエリ）</t></si><si><t>• TypedQueryを使用</t></si><si><t>• パラメータバインディング（`:paramName`形式）</t></si><si><t>• SQLインジェクション対策</t></si><si><t>9.4.2 Criteria API（動的クエリ）</t></si><si><t>• CriteriaBuilder、CriteriaQuery、Rootを使用</t></si><si><t>• Predicateリストで条件を動的に構築</t></si><si><t>• 条件の有無に応じてクエリを組み立て</t></si><si><t>9.4.3 DTO投影（コンストラクター式）</t></si><si><t>• `SELECT new パッケージ名.DTO名(...)`形式</t></si><si><t>• 必要なフィールドのみを取得</t></si><si><t>• パフォーマンス最適化</t></si><si><t>9.5 フェッチ戦略</t></si><si><t>エンティティ</t></si><si><t>リレーション</t></si><si><t>フェッチタイプ</t></si><si><t>理由</t></si><si><t>Book → Category</t></si><si><t>`@ManyToOne`</t></si><si><t>`EAGER`（デフォルト）</t></si><si><t>カテゴリ情報は常に必要</t></si><si><t>Book → Publisher</t></si><si><t>出版社情報は常に必要</t></si><si><t>OrderTran → OrderDetail</t></si><si><t>`@OneToMany`</t></si><si><t>`EAGER`（明示指定）</t></si><si><t>明細は常に必要</t></si><si><t>OrderDetail → Book</t></si><si><t>書籍情報は常に必要</t></si><si><t>10. 他システム接続方式（API連携）</t></si><si><t>10.1 外部システム連携概要</t></si><si><t>11. データモデル</t></si><si><t>11.1 ER図</t></si><si><t>┌──────────────┐
 │  PUBLISHER   │
 │──────────────│
 │ PUBLISHER_ID │◄──┐
@@ -349,14 +348,199 @@ customer.api.base-url = http://localhost:8081/customers</t></si><si><t>11. デ�
 │         HSQLDB Server 2.7.x             │
 │   Database: testdb                      │
 │   TCP Server Mode (Port 9001)           │
-└─────────────────────────────────────────┘</t></si><si><t>17.2 デプロイメント環境</t></si><si><t>OS</t></si><si><t>Windows 10 / Linux / macOS</t></si><si><t>OpenJDK 21</t></si><si><t>アプリケーションサーバー</t></si><si><t>Payara Server 6.x</t></si><si><t>データベース</t></si><si><t>HSQLDB 2.7.x (TCP Server Mode)</t></si><si><t>Gradle 8.x</t></si><si><t>17.3 デプロイ手順</t></si><si><t>17.3.1 初回セットアップ</t></si><si><t>[powershell]</t></si><si><t>17.3.2 更新デプロイ</t></si><si><t>17.3.3 アンデプロイ</t></si><si><t>17.4 アクセスURL</t></si><si><t>種別</t></si><si><t>URL</t></si><si><t>アプリケーショントップ</t></si><si><t>http://localhost:8080/berry-books-mvc</t></si><si><t>Payara管理コンソール</t></si><si><t>http://localhost:4848</t></si><si><t>17.5 ファイル配置</t></si><si><t>パス</t></si><si><t>WARファイル</t></si><si><t>`projects/berry-books-mvc/build/libs/berry-books-mvc.war`</t></si><si><t>デプロイ先</t></si><si><t>`payara6/glassfish/domains/domain1/applications/berry-books-mvc/`</t></si><si><t>ログファイル</t></si><si><t>`payara6/glassfish/domains/domain1/logs/server.log`</t></si><si><t>HSQLDBデータ</t></si><si><t>`hsqldb/data/testdb.*`</t></si><si><t>付録A: Gradleタスク一覧</t></si><si><t>タスク</t></si><si><t>`war`</t></si><si><t>WARファイルをビルド</t></si><si><t>`deploy`</t></si><si><t>Payara Serverにデプロイ</t></si><si><t>`undeploy`</t></si><si><t>Payara Serverからアンデプロイ</t></si><si><t>`setupHsqldb`</t></si><si><t>データベース初期化（テーブル作成＋データ投入）</t></si><si><t>付録B: 参考文献・リンク</t></si><si><t>Jakarta EE 10 Platform</t></si><si><t>https://jakarta.ee/specifications/platform/10/</t></si><si><t>Jakarta Server Faces 4.0</t></si><si><t>https://jakarta.ee/specifications/faces/4.0/</t></si><si><t>Jakarta Persistence 3.1</t></si><si><t>https://jakarta.ee/specifications/persistence/3.1/</t></si><si><t>Payara Server Documentation</t></si><si><t>https://docs.payara.fish/</t></si><si><t>HSQLDB Documentation</t></si><si><t>http://hsqldb.org/doc/2.0/guide/</t></si><si><t>DeliveryFeeServiceによる配送料金計算</t></si><si><t>基本ルール:</t></si><si><t>1. 購入金額が5000円以上の場合：送料無料</t></si><si><t>2. 購入金額が5000円未満の場合：</t></si><si><t>- 配送先が沖縄県の場合：1700円</t></si><si><t>- 上記以外の場合：800円（標準配送料）</t></si><si><t>都道府県判定:</t></si><si><t>- 配送先住所が「沖縄県」で始まる場合に沖縄県と判定</t></si><si><t>- AddressUtilによる都道府県名の検証を実施</t></si><si><t>- 47都道府県の正確な名称チェック</t></si><si><t>配送料金定数:</t></si><si><t>金額</t></si><si><t>標準配送料</t></si><si><t>800円</t></si><si><t>沖縄県配送料</t></si><si><t>1700円</t></si><si><t>5000円以上</t></si><si><t>cartView.xhtmlへリダイレクト</t><phoneticPr fontId="6"/></si><si><t>送料無料閾値</t><phoneticPr fontId="6"/></si><si><t>住所検証エラー</t></si><si><t>error.address.prefecture</t></si><si><t>エラーメッセージ</t></si><si><t>実施タイミング</t></si><si><t>顧客登録時、注文時の配送先住所入力時</t></si><si><t>検証仕様:</t></si><si><t>- AddressUtilクラスによる手動バリデーション</t></si><si><t>- 47都道府県の正式名称で始まるかをチェック</t></si><si><t>- 都道府県：北海道、東京都、京都府、大阪府、〇〇県（43県）</t></si><si><t>- 顧客登録時および注文時の配送先住所で実施</t></si><si><t>13.2.4 都道府県チェック仕様（13.2.4節）</t><phoneticPr fontId="6"/></si><si><t># 1. データベーステーブルとデータを作成
+└─────────────────────────────────────────┘</t></si><si><t>17.2 デプロイメント環境</t></si><si><t>OS</t></si><si><t>Windows 10 / Linux / macOS</t></si><si><t>OpenJDK 21</t></si><si><t>アプリケーションサーバー</t></si><si><t>Payara Server 6.x</t></si><si><t>データベース</t></si><si><t>HSQLDB 2.7.x (TCP Server Mode)</t></si><si><t>Gradle 8.x</t></si><si><t>17.3 デプロイ手順</t></si><si><t>17.3.1 初回セットアップ</t></si><si><t>[powershell]</t></si><si><t>17.3.2 更新デプロイ</t></si><si><t>17.3.3 アンデプロイ</t></si><si><t>17.4 アクセスURL</t></si><si><t>種別</t></si><si><t>URL</t></si><si><t>アプリケーショントップ</t></si><si><t>http://localhost:8080/berry-books-mvc</t></si><si><t>Payara管理コンソール</t></si><si><t>http://localhost:4848</t></si><si><t>17.5 ファイル配置</t></si><si><t>パス</t></si><si><t>WARファイル</t></si><si><t>`projects/berry-books-mvc/build/libs/berry-books-mvc.war`</t></si><si><t>デプロイ先</t></si><si><t>`payara6/glassfish/domains/domain1/applications/berry-books-mvc/`</t></si><si><t>ログファイル</t></si><si><t>`payara6/glassfish/domains/domain1/logs/server.log`</t></si><si><t>HSQLDBデータ</t></si><si><t>`hsqldb/data/testdb.*`</t></si><si><t>付録A: Gradleタスク一覧</t></si><si><t>タスク</t></si><si><t>`war`</t></si><si><t>WARファイルをビルド</t></si><si><t>`deploy`</t></si><si><t>Payara Serverにデプロイ</t></si><si><t>`undeploy`</t></si><si><t>Payara Serverからアンデプロイ</t></si><si><t>`setupHsqldb`</t></si><si><t>データベース初期化（テーブル作成＋データ投入）</t></si><si><t>付録B: 参考文献・リンク</t></si><si><t>Jakarta EE 10 Platform</t></si><si><t>https://jakarta.ee/specifications/platform/10/</t></si><si><t>Jakarta Server Faces 4.0</t></si><si><t>https://jakarta.ee/specifications/faces/4.0/</t></si><si><t>Jakarta Persistence 3.1</t></si><si><t>https://jakarta.ee/specifications/persistence/3.1/</t></si><si><t>Payara Server Documentation</t></si><si><t>https://docs.payara.fish/</t></si><si><t>HSQLDB Documentation</t></si><si><t>http://hsqldb.org/doc/2.0/guide/</t></si><si><t>DeliveryFeeServiceによる配送料金計算</t></si><si><t>基本ルール:</t></si><si><t>1. 購入金額が5000円以上の場合：送料無料</t></si><si><t>2. 購入金額が5000円未満の場合：</t></si><si><t>- 配送先が沖縄県の場合：1700円</t></si><si><t>- 上記以外の場合：800円（標準配送料）</t></si><si><t>都道府県判定:</t></si><si><t>- 配送先住所が「沖縄県」で始まる場合に沖縄県と判定</t></si><si><t>- AddressUtilによる都道府県名の検証を実施</t></si><si><t>- 47都道府県の正確な名称チェック</t></si><si><t>配送料金定数:</t></si><si><t>金額</t></si><si><t>標準配送料</t></si><si><t>800円</t></si><si><t>沖縄県配送料</t></si><si><t>1700円</t></si><si><t>5000円以上</t></si><si><t>cartView.xhtmlへリダイレクト</t><phoneticPr fontId="5"/></si><si><t>送料無料閾値</t><phoneticPr fontId="5"/></si><si><t>住所検証エラー</t></si><si><t>error.address.prefecture</t></si><si><t>エラーメッセージ</t></si><si><t>実施タイミング</t></si><si><t>顧客登録時、注文時の配送先住所入力時</t></si><si><t>検証仕様:</t></si><si><t>- AddressUtilクラスによる手動バリデーション</t></si><si><t>- 47都道府県の正式名称で始まるかをチェック</t></si><si><t>- 都道府県：北海道、東京都、京都府、大阪府、〇〇県（43県）</t></si><si><t>- 顧客登録時および注文時の配送先住所で実施</t></si><si><t># 1. データベーステーブルとデータを作成
 .\gradlew :projects:java:berry-books-mvc:setupHsqldb
 
 # 2. プロジェクトをビルド
 .\gradlew :projects:java:berry-books-mvc:war
 
 # 3. プロジェクトをデプロイ
-.\gradlew :projects:java:berry-books-mvc:deploy</t><phoneticPr fontId="6"/></si><si><t># アプリケーションを再ビルドして再デプロイ
+.\gradlew :projects:java:berry-books-mvc:deploy</t><phoneticPr fontId="5"/></si><si><t># アプリケーションを再ビルドして再デプロイ
 .\gradlew :projects:java:berry-books-mvc:war
-.\gradlew :projects:java:berry-books-mvc:deploy</t><phoneticPr fontId="6"/></si><si><t># プロジェクトをアンデプロイ
-.\gradlew :projects:java:berry-books-mvc:undeploy</t><phoneticPr fontId="6"/></si><si><t>Berry Books アプリケーション 詳細設計書</t><phoneticPr fontId="6"/></si></sst>
+.\gradlew :projects:java:berry-books-mvc:deploy</t><phoneticPr fontId="5"/></si><si><t># プロジェクトをアンデプロイ
+.\gradlew :projects:java:berry-books-mvc:undeploy</t><phoneticPr fontId="5"/></si><si><t>Berry Books アプリケーション 詳細設計書</t><phoneticPr fontId="5"/></si><si><t>13.1 エラーメッセージ管理方式</t></si><si><t>13.1.1 メッセージプロパティファイル方式</t></si><si><t>typeMismatch.int</t></si><si><t>型変換エラー（整数型）</t></si><si><t>typeMismatch.java.time.LocalDate</t></si><si><t>型変換エラー（日付型）</t></si><si><t>error.customer.exists</t></si><si><t>顧客登録時の重複エラー</t></si><si><t>error.email.not-exist</t></si><si><t>ログイン時の検索エラー</t></si><si><t>error.password.unmatch</t></si><si><t>ログイン時の認証エラー</t></si><si><t>error.cart.empty</t></si><si><t>カート空エラー</t></si><si><t>error.order.outof-stock</t></si><si><t>在庫不足エラー</t></si><si><t>error.order.optimistic-lock</t></si><si><t>楽観的ロック競合エラー</t></si><si><t>13.1.2 ErrorMessage定数クラス方式</t></si><si><t>【共通メッセージ】</t></si><si><t>定数名</t></si><si><t>EMAIL_REQUIRED</t></si><si><t>メールアドレスを入力してください</t></si><si><t>必須入力チェック</t></si><si><t>EMAIL_INVALID</t></si><si><t>有効なメールアドレスを入力してください</t></si><si><t>メールアドレス形式チェック</t></si><si><t>PASSWORD_REQUIRED</t></si><si><t>パスワードを入力してください</t></si><si><t>GENERAL_ERROR</t></si><si><t>エラーが発生しました</t></si><si><t>一般エラー</t></si><si><t>【顧客登録関連メッセージ】</t></si><si><t>CUSTOMER_NAME_REQUIRED</t></si><si><t>顧客名を入力してください</t></si><si><t>CUSTOMER_NAME_MAX_LENGTH</t></si><si><t>顧客名は50文字以内で入力してください</t></si><si><t>文字数上限チェック</t></si><si><t>EMAIL_MAX_LENGTH</t></si><si><t>メールアドレスは100文字以内で入力してください</t></si><si><t>PASSWORD_LENGTH</t></si><si><t>パスワードは8文字以上20文字以内で入力してください</t></si><si><t>パスワード長チェック</t></si><si><t>BIRTHDAY_FORMAT</t></si><si><t>生年月日はyyyy-MM-dd形式で入力してください
+（例：1990-01-15）</t></si><si><t>日付形式チェック</t></si><si><t>BIRTHDAY_PARSE_ERROR</t></si><si><t>生年月日の形式が正しくありません
+（例：1990-01-15）</t></si><si><t>日付パースエラー</t></si><si><t>ADDRESS_MAX_LENGTH</t></si><si><t>住所は200文字以内で入力してください</t></si><si><t>ADDRESS_INVALID_PREFECTURE</t></si><si><t>住所は正しい都道府県名で始まる必要があります</t></si><si><t>都道府県名検証エラー</t></si><si><t>REGISTRATION_ERROR</t></si><si><t>登録中にエラーが発生しました</t></si><si><t>登録処理エラー</t></si><si><t>EMAIL_ALREADY_EXISTS</t></si><si><t>このメールアドレスは既に登録されています</t></si><si><t>メールアドレス重複エラー</t></si><si><t>【ログイン関連メッセージ】</t></si><si><t>LOGIN_FAILED</t></si><si><t>ログイン失敗</t></si><si><t>LOGIN_INVALID_CREDENTIALS</t></si><si><t>認証失敗</t></si><si><t>【カート・注文関連メッセージ】</t></si><si><t>DELIVERY_ADDRESS_REQUIRED</t></si><si><t>配送先住所を入力してください</t></si><si><t>DELIVERY_ADDRESS_MAX_LENGTH</t></si><si><t>配送先住所は200文字以内で入力してください</t></si><si><t>DELIVERY_ADDRESS_INVALID_PREFECTURE</t></si><si><t>配送先住所は正しい都道府県名で始まる必要があります</t></si><si><t>SETTLEMENT_TYPE_REQUIRED</t></si><si><t>決済方法を選択してください</t></si><si><t>必須選択チェック</t></si><si><t>OUT_OF_STOCK_MESSAGE</t></si><si><t>OutOfStockException用の基本メッセージ</t></si><si><t>OUT_OF_STOCK</t></si><si><t xml:space="preserve">在庫不足: </t></si><si><t>画面表示用プレフィックス</t></si><si><t>OPTIMISTIC_LOCK_ERROR</t></si><si><t>他のユーザーが同時に注文しました。
+もう一度お試しください</t></si><si><t>ORDER_PROCESSING_ERROR</t></si><si><t xml:space="preserve">注文処理中にエラーが発生しました: </t></si><si><t>注文処理一般エラー</t></si><si><t>【データ検索エラーメッセージ】</t></si><si><t>BOOK_NOT_FOUND</t></si><si><t xml:space="preserve">Book not found: </t></si><si><t>書籍が見つからない</t></si><si><t>ORDER_TRAN_NOT_FOUND</t></si><si><t xml:space="preserve">OrderTran not found for ID: </t></si><si><t>注文取引が見つからない</t></si><si><t>ORDER_DETAIL_NOT_FOUND</t></si><si><t xml:space="preserve">OrderDetail not found for PK: </t></si><si><t>注文明細が見つからない</t></si><si><t>13.2 画面表示メッセージとハンドリング</t></si><si><t>使用箇所</t></si><si><t>LoginBean.processLogin()</t></si><si><t>定数</t></si><si><t>ErrorMessage.LOGIN_FAILED / LOGIN_INVALID_CREDENTIALS</t></si><si><t>表示方法</t></si><si><t>FacesMessage（ERROR）</t></si><si><t>表示画面</t></si><si><t>発生条件:</t></si><si><t>・メールアドレスが存在しない</t></si><si><t>・パスワードが一致しない</t></si><si><t>1. CustomerService.authenticate()がnullを返却</t></si><si><t>2. LoginBeanでFacesMessageを追加</t></si><si><t>3. index.xhtmlにメッセージ表示</t></si><si><t>13.2.2 メールアドレス重複エラー</t></si><si><t>CustomerBean.register()</t></si><si><t>ErrorMessage.EMAIL_ALREADY_EXISTS</t></si><si><t>EmailAlreadyExistsException</t></si><si><t>・新規顧客登録時に既存メールアドレスを入力</t></si><si><t>1. CustomerService.registerCustomer()で重複チェック</t></si><si><t>2. 既存顧客が存在する場合、EmailAlreadyExistsExceptionをスロー</t></si><si><t>3. CustomerBean.register()でキャッチし、FacesMessageを追加</t></si><si><t>4. customerInput.xhtmlにメッセージ表示（入力画面に留まる）</t></si><si><t>13.2.3 カート空エラー</t></si><si><t>OrderBean.placeOrder()</t></si><si><t>（messages.properties: error.cart.empty）</t></si><si><t>FacesMessage（WARN）</t></si><si><t>・カートが空の状態で注文確定ボタンをクリック</t></si><si><t>1. OrderBean.placeOrder()でCartSession.getCartItems()が空をチェック</t></si><si><t>2. FacesMessageを追加</t></si><si><t>3. 注文処理を中止</t></si><si><t>13.2.4 在庫不足エラー</t></si><si><t>在庫不足: {書籍名}</t></si><si><t>ErrorMessage.OUT_OF_STOCK + bookName</t></si><si><t>OutOfStockException</t></si><si><t>Flash Scope経由でorderError.xhtmlへ遷移</t></si><si><t>・注文数が現在の在庫数を超える場合</t></si><si><t>1. OrderService.orderBooks()で在庫数チェック</t></si><si><t>2. 在庫不足の場合、OutOfStockException(bookId, bookName, message)をスロー</t></si><si><t>3. OrderBean.placeOrder()でキャッチ</t></si><si><t>4. エラーメッセージをFlash Scopeに設定</t></si><si><t>5. orderError.xhtmlへリダイレクト</t></si><si><t>13.2.5 楽観的ロック競合エラー</t></si><si><t>他のユーザーが同時に注文しました。もう一度お試しください</t></si><si><t>ErrorMessage.OPTIMISTIC_LOCK_ERROR</t></si><si><t>jakarta.persistence.OptimisticLockException</t></si><si><t>・カート追加時点のVERSION値と注文時点のVERSION値が不一致</t></si><si><t>・他のユーザーが先に在庫を更新していた場合</t></si><si><t>1. OrderService.orderBooks()でstockDao.update(stock)を実行</t></si><si><t>2. JPA（@Version）が自動的にバージョンチェック</t></si><si><t>3. バージョン不一致の場合、JPAがOptimisticLockExceptionをスロー</t></si><si><t>4. OrderBean.placeOrder()でキャッチ</t></si><si><t>5. エラーメッセージをFlash Scopeに設定</t></si><si><t>6. orderError.xhtmlへリダイレクト</t></si><si><t>13.2.6 住所検証エラー</t></si><si><t>CustomerBean.register() / OrderBean.placeOrder()</t></si><si><t>ErrorMessage.ADDRESS_INVALID_PREFECTURE</t></si><si><t>customerInput.xhtml / bookOrder.xhtml</t></si><si><t>検証方式:</t></si><si><t>・AddressUtilクラスによる手動バリデーション</t></si><si><t>・47都道府県の正式名称で始まるかをチェック</t></si><si><t xml:space="preserve">  - 都道府県：北海道、東京都、京都府、大阪府、〇〇県（43県）</t></si><si><t>・顧客登録時および注文時の配送先住所で実施</t></si><si><t>・Bean Validationではなく、サービス層またはManaged Bean層で明示的にチェック</t></si><si><t>1. AddressUtil.startsWithValidPrefecture(address)でチェック</t></si><si><t>2. 検証失敗の場合、FacesMessageを追加</t></si><si><t>3. 画面に留まる（遷移しない）</t></si><si><t>13.2.7 注文処理一般エラー</t></si><si><t>注文処理中にエラーが発生しました: {エラー詳細}</t></si><si><t>ErrorMessage.ORDER_PROCESSING_ERROR + e.getMessage()</t></si><si><t>Exception (キャッチオール)</t></si><si><t>・上記以外の予期しないエラー（DB接続エラー、トランザクションエラーなど）</t></si><si><t>1. OrderBean.placeOrder()の最後のcatch (Exception e)でキャッチ</t></si><si><t>2. エラーメッセージをFlash Scopeに設定</t></si><si><t>3. orderError.xhtmlへリダイレクト</t></si><si><t>java.lang.RuntimeException
+    ├── pro.kensait.berrybooks.service.order.OutOfStockException
+    └── pro.kensait.berrybooks.service.customer.EmailAlreadyExistsException
+
+jakarta.persistence.OptimisticLockException
+    └── （JPAが自動的にスロー：楽観的ロック競合時）</t></si><si><t>パッケージ: pro.kensait.berrybooks.service.order</t></si><si><t>継承元: RuntimeException</t></si><si><t>・注文確定時に注文数が在庫数を超えた場合</t></si><si><t>・在庫数 - 注文数 &lt; 0 となる場合</t></si><si><t>スロー箇所:</t></si><si><t>・OrderService.orderBooks()メソッド内</t></si><si><t>・在庫チェックロジックで在庫不足を検出時</t></si><si><t>キャッチ箇所:</t></si><si><t>・OrderBean.placeOrder()メソッド</t></si><si><t>・catch節でエラーメッセージを構築し、Flash Scopeに設定</t></si><si><t>・orderError.xhtmlへリダイレクト</t></si><si><t>14.2.2 EmailAlreadyExistsException（メールアドレス重複例外）</t></si><si><t>パッケージ: pro.kensait.berrybooks.service.customer</t></si><si><t>・新規顧客登録時に、既に登録済みのメールアドレスを入力した場合</t></si><si><t>・CustomerDao.findByEmail()で既存顧客が見つかった場合</t></si><si><t>・CustomerService.registerCustomer()メソッド内</t></si><si><t>・メールアドレス重複チェックで既存顧客を検出時</t></si><si><t>・CustomerBean.register()メソッド</t></si><si><t>・catch節でエラーメッセージを表示</t></si><si><t>・入力画面（customerInput.xhtml）に留まる</t></si><si><t>OptimisticLockException</t></si><si><t>楽観的ロック競合
+（在庫更新時にVERSION不一致）</t></si><si><t>PersistenceException</t></si><si><t>DB接続エラー、SQL実行エラー、
+制約違反</t></si><si><t>トランザクション自動ロールバック、
+画面でエラーメッセージ表示</t></si><si><t>RuntimeException</t></si><si><t>データが見つからない
+（書籍、注文、顧客など）</t></si><si><t>ServiceでRuntimeExceptionスロー、
+Managed Beanでキャッチ</t></si><si><t>Exception</t></si><si><t>その他の予期しないエラー</t></si><si><t>14.3.1 OptimisticLockException詳細</t></si><si><t>発生メカニズム:</t></si><si><t>1. カート追加時にStockエンティティのVERSION値を取得し、CartItemに保存</t></si><si><t>2. 注文確定時に、保存されていたVERSION値でStockエンティティを更新</t></si><si><t>3. JPAの@Versionアノテーションにより、UPDATE時に自動的にバージョンチェック</t></si><si><t>4. WHERE BOOK_ID = ? AND VERSION = ? というSQL条件が自動付加</t></si><si><t>5. バージョン不一致の場合、JPAがOptimisticLockExceptionをスロー</t></si><si><t>ハンドリング:</t></si><si><t>・OrderBean.placeOrder()メソッドでキャッチ</t></si><si><t>・エラーメッセージ（ErrorMessage.OPTIMISTIC_LOCK_ERROR）をFlash Scopeに設定</t></si><si><t>14.3.2 データ検索時のエラーハンドリング</t></si><si><t>実装方針:</t></si><si><t>・OrderTranDao.findById()などで、データが見つからない場合にRuntimeExceptionをスロー</t></si><si><t>・エラーメッセージ（ErrorMessage.ORDER_TRAN_NOT_FOUNDなど）に該当IDを付加</t></si><si><t>・呼び出し元でキャッチして適切にハンドリング</t></si><si><t>14.4.1 注文処理における例外処理フロー（OutOfStockException）</t></si><si><t>┌─────────────────────────────┐
+│  OrderBean.placeOrder()     │
+│  (Managed Bean層)           │
+└──────────┬──────────────────┘
+           │ try {
+           │ OrderTO作成
+           ▼
+┌─────────────────────────────┐
+│  OrderService.orderBooks()  │
+│  (Service層)                │
+│  @Transactional             │
+└──────────┬──────────────────┘
+           │
+           │ 在庫チェック開始
+           ▼
+┌─────────────────────────────┐
+│  for each CartItem:         │
+│    在庫数 - 注文数を計算     │
+└──────────┬──────────────────┘
+           │
+           ├─ [在庫不足] ──────────────┐
+           │                           │
+           │  throw OutOfStockException│
+           │  (bookId, bookName,       │
+           │   message)                │
+           │                           │
+           └─ [在庫OK] ─────┐          │
+                            │          │
+                            ▼          │
+              ┌─────────────────────┐ │
+              │  在庫減算処理        │ │
+              │  OrderTran永続化    │ │
+              │  OrderDetail永続化  │ │
+              └─────────┬───────────┘ │
+                        │              │
+                        │              │
+           ┌────────────┴──────────────┘
+           │
+           ▼
+┌─────────────────────────────┐
+│  OrderBean.placeOrder()     │
+│  } catch (OutOfStockExcep   │
+│  tion e) {                  │
+└──────────┬──────────────────┘
+           │
+           │ errorMessage = 
+           │ OUT_OF_STOCK + bookName
+           │ setFlashErrorMessage()
+           │
+           ▼
+┌─────────────────────────────┐
+│  orderError.xhtml           │
+│  (エラー画面)                │
+│  Flash Scopeから             │
+│  エラーメッセージ表示        │
+└─────────────────────────────┘</t></si><si><t>14.4.2 顧客登録における例外処理フロー（EmailAlreadyExistsException）</t></si><si><t>┌─────────────────────────────┐
+│  CustomerBean.register()    │
+│  (Managed Bean層)           │
+└──────────┬──────────────────┘
+           │ try {
+           │ Customerエンティティ作成
+           │ 住所検証（AddressUtil）
+           ▼
+┌─────────────────────────────┐
+│  CustomerService.           │
+│  registerCustomer()         │
+│  (Service層)                │
+│  @Transactional             │
+└──────────┬──────────────────┘
+           │
+           │ メールアドレス重複チェック
+           ▼
+┌─────────────────────────────┐
+│  CustomerDao.findByEmail()  │
+└──────────┬──────────────────┘
+           │
+           ├─ [重複あり] ──────────────┐
+           │                           │
+           │  throw EmailAlready       │
+           │  ExistsException          │
+           │  (email, message)         │
+           │                           │
+           └─ [重複なし] ───┐          │
+                            │          │
+                            ▼          │
+              ┌─────────────────────┐ │
+              │  customerDao.       │ │
+              │  register(customer) │ │
+              └─────────┬───────────┘ │
+                        │              │
+                        │              │
+           ┌────────────┴──────────────┘
+           │
+           ▼
+┌─────────────────────────────┐
+│  CustomerBean.register()    │
+│  } catch (EmailAlready      │
+│  ExistsException e) {       │
+└──────────┬──────────────────┘
+           │
+           │ addErrorMessage(
+           │   e.getMessage())
+           │ return null;
+           │ ※画面遷移しない
+           ▼
+┌─────────────────────────────┐
+│  customerInput.xhtml        │
+│  (入力画面に留まる)          │
+│  FacesMessageで              │
+│  エラーメッセージ表示        │
+└─────────────────────────────┘</t></si><si><t>14.4.3 楽観的ロック競合の例外処理フロー（OptimisticLockException）</t></si><si><t>┌─────────────────────────────┐
+│  OrderBean.placeOrder()     │
+│  (Managed Bean層)           │
+└──────────┬──────────────────┘
+           │ try {
+           ▼
+┌─────────────────────────────┐
+│  OrderService.orderBooks()  │
+│  @Transactional             │
+└──────────┬──────────────────┘
+           │
+           │ カート追加時点のVERSION値を
+           │ CartItemから取得
+           ▼
+┌─────────────────────────────┐
+│  Stock stock = new Stock()  │
+│  stock.setBookId(...)       │
+│  stock.setVersion(          │
+│    cartItem.getVersion())   │
+│  ※カート追加時点のVERSION    │
+└──────────┬──────────────────┘
+           │
+           │ 在庫更新実行
+           ▼
+┌─────────────────────────────┐
+│  stockDao.update(stock)     │
+│  ※JPAが自動的に             │
+│  WHERE VERSION = ? を付加    │
+└──────────┬──────────────────┘
+           │
+           ├─ [VERSION不一致] ─────────┐
+           │                           │
+           │  JPAがOptimisticLock      │
+           │  Exceptionをスロー        │
+           │                           │
+           └─ [VERSION一致] ─┐         │
+                             │         │
+                             ▼         │
+               ┌───────────────────┐   │
+               │  在庫更新成功      │   │
+               │  VERSION自動増分   │   │
+               └─────────┬─────────┘   │
+                         │             │
+           ┌─────────────┴─────────────┘
+           │
+           ▼
+┌─────────────────────────────┐
+│  OrderBean.placeOrder()     │
+│  } catch (OptimisticLock    │
+│  Exception e) {             │
+└──────────┬──────────────────┘
+           │
+           │ errorMessage = 
+           │ OPTIMISTIC_LOCK_ERROR
+           │ setFlashErrorMessage()
+           │
+           ▼
+┌─────────────────────────────┐
+│  orderError.xhtml           │
+│  (エラー画面)                │
+│  「他のユーザーが同時に      │
+│   注文しました」表示        │
+└─────────────────────────────┘</t></si><si><t>アプリケーションでは、業務例外以外にJakarta EEやJPAが提供するシステムレベルの例外も適切にハンドリングする</t><phoneticPr fontId="5"/></si><si><t>トランザクションロールバック、再試行促進メッセージ表示</t><phoneticPr fontId="5"/></si><si><t>プロパティ名</t><rPh sb="5" eb="6"><t>メイ</t></rPh><phoneticPr fontId="5"/></si><si><t>Service層では、データが見つからない場合にRuntimeExceptionをスローする。</t><phoneticPr fontId="5"/></si><si><t>Berry Booksでは、ビジネスロジックレベルのエラーを表現するために、以下の業務例外を定義している。</t><phoneticPr fontId="5"/></si><si><t>すべてRuntimeExceptionを継承しており、チェック例外ではなく非チェック例外として実装する。</t><phoneticPr fontId="5"/></si><si><t>一般エラーメッセージ表示</t><phoneticPr fontId="5"/></si><si><t>定数名</t><phoneticPr fontId="5"/></si><si><t>13.2.4 都道府県チェック仕様</t><phoneticPr fontId="5"/></si><si><t>現時点では外部システムとのシステム間連携はない。</t><rPh sb="17" eb="18"><t>カン</t></rPh><phoneticPr fontId="5"/></si></sst>

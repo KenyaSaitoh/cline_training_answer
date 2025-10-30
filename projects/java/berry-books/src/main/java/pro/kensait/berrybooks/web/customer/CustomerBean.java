@@ -7,9 +7,6 @@ import java.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.kensait.berrybooks.entity.Customer;
-import pro.kensait.berrybooks.service.customer.CustomerService;
-import pro.kensait.berrybooks.util.AddressUtil;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -19,6 +16,11 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import pro.kensait.berrybooks.common.ErrorMessage;
+import pro.kensait.berrybooks.entity.Customer;
+import pro.kensait.berrybooks.service.customer.CustomerService;
+import pro.kensait.berrybooks.service.customer.EmailAlreadyExistsException;
+import pro.kensait.berrybooks.util.AddressUtil;
 
 // 顧客登録画面のバッキングBean
 @Named
@@ -35,30 +37,28 @@ public class CustomerBean implements Serializable {
     private Customer customer;
 
     // 登録フォームの入力値
-    @NotBlank(message = "顧客名を入力してください")
-    @Size(max = 50, message = "顧客名は50文字以内で入力してください")
+    @NotBlank(message = ErrorMessage.CUSTOMER_NAME_REQUIRED)
+    @Size(max = 50, message = ErrorMessage.CUSTOMER_NAME_MAX_LENGTH)
     private String customerName;
     
-    @NotBlank(message = "メールアドレスを入力してください")
-    @Email(message = "有効なメールアドレスを入力してください")
-    @Size(max = 100, message = "メールアドレスは100文字以内で入力してください")
+    @NotBlank(message = ErrorMessage.EMAIL_REQUIRED)
+    @Email(message = ErrorMessage.EMAIL_INVALID)
+    @Size(max = 100, message = ErrorMessage.EMAIL_MAX_LENGTH)
     private String email;
     
-    @NotBlank(message = "パスワードを入力してください")
-    @Size(min = 8, max = 20, message = "パスワードは8文字以上20文字以内で入力してください")
+    @NotBlank(message = ErrorMessage.PASSWORD_REQUIRED)
+    @Size(min = 8, max = 20, message = ErrorMessage.PASSWORD_LENGTH)
     private String password;
     
     @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$|^$", 
-             message = "生年月日はyyyy-MM-dd形式で入力してください（例：1990-01-15）")
+             message = ErrorMessage.BIRTHDAY_FORMAT)
     private String birthday; // yyyy-MM-dd形式の文字列
     
-    @Size(max = 200, message = "住所は200文字以内で入力してください")
+    @Size(max = 200, message = ErrorMessage.ADDRESS_MAX_LENGTH)
     private String address;
 
-    /**
-     * 顧客登録処理
-     * ※基本的なバリデーションはBean Validationで自動的に実行される
-     */
+    // 顧客登録処理
+    // ※基本的なバリデーションはBean Validationで自動的に実行される
     public String register() {
         logger.info("[ CustomerBean#register ]");
 
@@ -66,7 +66,7 @@ public class CustomerBean implements Serializable {
             // 住所に対する入力チェック（正しい都道府県名で始まっているか）
             if (address != null && !address.isBlank() && !AddressUtil.startsWithValidPrefecture(address)) {
                 logger.info("[ CustomerBean#register ] 住所入力エラー");
-                addErrorMessage("住所は正しい都道府県名で始まる必要があります");
+                addErrorMessage(ErrorMessage.ADDRESS_INVALID_PREFECTURE);
                 return null;
             }
 
@@ -74,7 +74,7 @@ public class CustomerBean implements Serializable {
             Customer newCustomer = new Customer();
             newCustomer.setCustomerName(customerName);
             newCustomer.setEmail(email);
-            newCustomer.setPassword(password); // TODO: パスワードエンコーディング
+            newCustomer.setPassword(password);
             
             // 生年月日のパース（@Patternで形式チェック済み）
             if (birthday != null && !birthday.isEmpty()) {
@@ -84,7 +84,7 @@ public class CustomerBean implements Serializable {
                     newCustomer.setBirthday(birthDate);
                 } catch (Exception e) {
                     logger.warn("Birthday parse error: " + birthday, e);
-                    addErrorMessage("生年月日の形式が正しくありません（例：1990-01-15）");
+                    addErrorMessage(ErrorMessage.BIRTHDAY_PARSE_ERROR);
                     return null;
                 }
             }
@@ -99,20 +99,18 @@ public class CustomerBean implements Serializable {
             // 登録完了ページへ遷移
             return "customerOutput?faces-redirect=true";
 
-        } catch (IllegalArgumentException e) {
-            logger.error("Registration error", e);
+        } catch (EmailAlreadyExistsException e) {
+            logger.error("Email already exists: " + e.getEmail(), e);
             addErrorMessage(e.getMessage());
             return null;
         } catch (Exception e) {
             logger.error("Registration error", e);
-            addErrorMessage("登録中にエラーが発生しました");
+            addErrorMessage(ErrorMessage.REGISTRATION_ERROR);
             return null;
         }
     }
 
-    /**
-     * エラーメッセージを追加
-     */
+    // エラーメッセージを追加
     private void addErrorMessage(String message) {
         FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_ERROR, message, null));

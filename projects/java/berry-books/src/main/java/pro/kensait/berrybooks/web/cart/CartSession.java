@@ -10,6 +10,7 @@ import jakarta.inject.Named;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import pro.kensait.berrybooks.common.ErrorMessage;
 
 // ショッピングカートのセッション情報を管理するクラス
 @Named
@@ -27,12 +28,12 @@ public class CartSession implements Serializable {
     private BigDecimal deliveryPrice = BigDecimal.ZERO;
     
     // 配送先住所
-    @NotBlank(message = "配送先住所を入力してください")
-    @Size(max = 200, message = "配送先住所は200文字以内で入力してください")
+    @NotBlank(message = ErrorMessage.DELIVERY_ADDRESS_REQUIRED)
+    @Size(max = 200, message = ErrorMessage.DELIVERY_ADDRESS_MAX_LENGTH)
     private String deliveryAddress;
     
     // 決済方法
-    @NotNull(message = "決済方法を選択してください")
+    @NotNull(message = ErrorMessage.SETTLEMENT_TYPE_REQUIRED)
     private Integer settlementType;
 
     // 引数の無いコンストラクタ
@@ -49,9 +50,7 @@ public class CartSession implements Serializable {
         this.settlementType = settlementType;
     }
 
-    /**
-     * 合計金額を再計算する
-     */
+    // 合計金額を再計算する
     public void recalculateTotalPrice() {
         totalPrice = BigDecimal.ZERO;
         for (CartItem item : cartItems) {
