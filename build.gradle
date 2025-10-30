@@ -1010,7 +1010,8 @@ task exploreExcelFiles doLast {
         throw new GradleException("Please specify target directory with -PtargetDir=<path>")
     }
     
-    def dir = new File(targetDir)
+    // プロジェクトルートからの相対パスとして解決
+    def dir = project.file(targetDir)
     
     if (!dir.exists() || !dir.isDirectory()) {
         throw new GradleException("Target directory does not exist or is not a directory: ${targetDir}")
@@ -1078,6 +1079,8 @@ task exploreExcelFiles doLast {
             
         } catch (Exception e) {
             println "  ✗ Failed to process ${excelFile.name}: ${e.message}"
+            println "     Error details:"
+            e.printStackTrace()
             println ""
         }
     }
