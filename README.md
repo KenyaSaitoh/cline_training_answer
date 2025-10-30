@@ -48,7 +48,19 @@ jee_micro_vsc/
 ./gradlew installHsqldbDriver
 ```
 
-### ② 研修開催につき初回に1回だけ実行
+### ② MAC固有の作業（初回のみ実行）
+
+```bash
+# 実行権限を付与
+chmod +x gradlew
+chmod +x payara6/bin/*
+chmod +x tomee8/bin/*
+chmod +x projects/python/accounting_glue/*.sh
+```
+
+> **Note**: このステップはmacOS/Linuxのみ必要です。Windowsでは不要です。
+
+### ③ 研修開催につき初回に1回だけ実行
 
 ```bash
 # 1. Payara Serverのdomain.xmlを初期化（クリーンな状態にリセット）
@@ -70,7 +82,7 @@ jee_micro_vsc/
 #   4. createDataSource（新しいデータソースを作成）
 ```
 
-### ③ 研修開催につき最後に1回だけ実行（CleanUp）
+### ④ 研修開催につき最後に1回だけ実行（CleanUp）
 
 ```bash
 # すべてのアプリケーションをアンデプロイし、データソースを削除
@@ -81,7 +93,7 @@ jee_micro_vsc/
 ./gradlew stopHsqldb
 ```
 
-### ④ プロジェクトを開始するときに1回だけ実行
+### ⑤ プロジェクトを開始するときに1回だけ実行
 
 ```bash
 # プロジェクトのデータベーステーブルとデータを作成
@@ -95,7 +107,7 @@ jee_micro_vsc/
 ./gradlew :projects:java:berry-books:deploy
 ```
 
-### ⑤ プロジェクトを終了するときに1回だけ実行（CleanUp）
+### ⑥ プロジェクトを終了するときに1回だけ実行（CleanUp）
 
 ```bash
 # プロジェクトをアンデプロイ
@@ -103,7 +115,7 @@ jee_micro_vsc/
 ./gradlew :projects:java:berry-books:undeploy
 ```
 
-### ⑥ アプリケーション作成・更新のたびに実行
+### ⑦ アプリケーション作成・更新のたびに実行
 
 ```bash
 # アプリケーションを再ビルドして再デプロイ
