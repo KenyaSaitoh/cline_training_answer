@@ -1067,8 +1067,6 @@ customer.api.base-url = http://localhost:8081/customers
 **外部キー:**
 - `FK_CUSTOMER_ID`: CUSTOMER(CUSTOMER_ID)
 
-**備考:** `OrderTran`エンティティは`getSettlementTypeName()`メソッドで`SettlementType` Enumを使用して決済方法の表示名を取得可能
-
 #### 11.2.7 ORDER_DETAIL（注文明細）
 
 | カラム名 | 型 | NULL | デフォルト | 制約 | 説明 |
@@ -1161,8 +1159,6 @@ customer.api.base-url = http://localhost:8081/customers
 - `getDisplayNameByCode(Integer code)`: コードから表示名を取得（nullセーフ）
 
 **データベース保存形式:** INTEGER型（1, 2, 3）
-
-**備考:** データベースには引き続きINTEGER型で保存されるが、アプリケーション層ではEnumを使用することで型安全性と可読性を向上
 
 ### 12.2 配送料金計算ロジック定数
 
