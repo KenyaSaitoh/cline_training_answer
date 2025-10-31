@@ -12,13 +12,15 @@ Servlet/JSP、JSF、CDI、JAX-RSを段階的に学習できます。
 ```
 jee_micro_vsc/
 ├── projects/
-│   ├── java/                    # Jakarta EE (Java) プロジェクト
-│   │   ├── berry-books/         # JSF MVCオンライン書店
-│   │   ├── berry-books-rest/    # JAX-RS REST API
-│   │   ├── jsf_person_rdb/      # JSF + JPA CRUD
-│   │   └── struts_person_rdb/   # Struts 1.3 + EJB
-│   ├── python/                  # Pythonプロジェクト（今後追加予定）
-│   └── react/                   # Reactプロジェクト（今後追加予定）
+│   ├── java/                           # Jakarta EE (Java) プロジェクト
+│   │   ├── berry-books/               # Berry Books Webアプリケーション
+│   │   ├── berry-books-rest/           # Berry Books REST API
+│   │   ├── jsf_person_rdb/             # Person管理（JSF + JPA CRUD）
+│   │   ├── struts_person_rdb/          # Person管理（Struts 1.3 + EJB）
+│   ├── python/                         # Pythonプロジェクト
+│   │   ├── accounting_glue/            # ERP会計統合ETL
+│   └── react/                          # Reactプロジェクト
+│       ├── berry-books-frontend/       # Berry Books 管理者画面
 │
 ├── payara6/                     # Payara Server 6
 ├── hsqldb/                      # HSQLDB Database Server
