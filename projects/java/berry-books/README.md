@@ -293,30 +293,44 @@ projects/berry-books/
 ## 📦 パッケージ構成
 
 ```
-dev.berry/
-├── view/                # JSF Managed Bean
-│   ├── BookSearchBean.java
-│   ├── CartBean.java
-│   └── OrderBean.java
+pro.kensait.berrybooks/
+├── common/              # 共通ユーティリティ・定数
+│   ├── MessageUtil.java      # メッセージ取得ユーティリティ
+│   └── SettlementType.java   # 決済方法のEnum（定数化）
+├── util/                # ユーティリティ
+│   └── AddressUtil.java      # 住所関連ユーティリティ
+├── web/                 # JSF Managed Bean
+│   ├── book/
+│   │   └── BookSearchBean.java
+│   ├── cart/
+│   │   └── CartBean.java
+│   ├── order/
+│   │   └── OrderBean.java
+│   ├── customer/
+│   │   └── CustomerBean.java
+│   └── login/
+│       └── LoginBean.java
 ├── service/             # ビジネスロジック（CDI Bean）
 │   ├── book/
 │   ├── category/
+│   ├── customer/
+│   ├── delivery/
 │   └── order/
 ├── dao/                 # データアクセス層
 │   ├── BookDao.java
 │   ├── CategoryDao.java
+│   ├── CustomerDao.java
 │   ├── StockDao.java
 │   ├── OrderTranDao.java
 │   └── OrderDetailDao.java
-├── entity/              # JPAエンティティ
-│   ├── Book.java
-│   ├── Category.java
-│   ├── Publisher.java
-│   ├── Stock.java
-│   ├── OrderTran.java
-│   └── OrderDetail.java
-└── web/cart/            # セッション管理用
-    └── CartItem.java
+└── entity/              # JPAエンティティ
+    ├── Book.java
+    ├── Category.java
+    ├── Publisher.java
+    ├── Stock.java
+    ├── Customer.java
+    ├── OrderTran.java
+    └── OrderDetail.java
 ```
 
 ## 🎯 主な機能
