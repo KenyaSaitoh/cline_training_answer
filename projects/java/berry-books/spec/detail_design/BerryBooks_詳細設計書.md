@@ -723,6 +723,7 @@ pro.kensait.berrybooks/
 │       cartItem.getVersion())        │
 │     Stock current = stockDao.       │
 │       findById(bookId)              │
+│     // 在庫チェック                 │
 │     if (current.quantity < count)   │
 │       throw OutOfStockException     │
 │     stock.setQuantity(remaining)    │
@@ -786,6 +787,46 @@ pro.kensait.berrybooks/
 
 3. **例外処理**（OrderBean）
    - 「他のユーザーが同時に注文しました。もう一度お試しください」とエラー表示
+
+#### 8.3.3 在庫チェックロジック詳細
+
+**チェックタイミング:** 注文確定時（OrderService.orderBooks()内）
+
+**チェック条件:**
+- 現在の在庫数 < 注文数 の場合に在庫不足と判定
+- カート内の全商品に対してループ処理で順次チェック
+
+**処理フロー:**
+
+1. **在庫情報取得**
+   - StockDaoから書籍IDで在庫情報を取得
+   - `Stock current = stockDao.findById(bookId)`
+
+2. **在庫数の比較**
+   - 在庫数（`current.quantity`）と注文数（`count`）を比較
+   - 条件式：`if (current.quantity < count)`
+
+3. **在庫不足時の処理**
+   - `OutOfStockException`をスロー
+   - 例外には書籍ID、書籍名、エラーメッセージを含める
+   - トランザクションは自動的にロールバック
+
+4. **在庫充分時の処理**
+   - 在庫減算処理に進む
+   - 残り在庫数を計算：`remaining = current.quantity - count`
+   - Stockエンティティを更新
+
+**実装上の注意点:**
+
+- 在庫チェックは必ずトランザクション内で実行
+- チェックと更新の間に他のトランザクションが介入する可能性を考慮
+- 楽観的ロック（VERSION）により、他のユーザーによる更新を検出
+- 在庫不足時は以降の処理（注文登録）を実行せず、即座に例外をスロー
+
+**エラーメッセージ:**
+
+- メッセージキー：`error.out-of-stock`
+- 表示例：「在庫不足: Java SEディープダイブ」
 
 ### 8.4 注文履歴取得ロジック
 
@@ -1363,7 +1404,7 @@ Berry Booksでは、ビジネスロジックレベルのエラーを表現する
 
 **スロー箇所:** 
 - `OrderService.orderBooks()`メソッド内
-- 在庫チェックロジックで在庫不足を検出時
+- 在庫チェックロジックで在庫不足を検出時（注文数 > 在庫数の場合）
 
 **キャッチ箇所:** 
 - `OrderBean.placeOrder()`メソッド
