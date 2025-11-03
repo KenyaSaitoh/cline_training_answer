@@ -101,11 +101,16 @@ projects/java/berry-books/spec/
 
 > **Note**: Excelファイル (.xlsx) は、内部的にZIP圧縮されたXMLファイルの集合体です。このコマンドでOffice Open XML形式の内部構造を学習できます。
 
-## 📍 アクセスURL
+## 📍 アプリケーションへのログイン
 
 デプロイ後、以下のURLにアクセス：
 
 - **トップページ**: http://localhost:8080/berry-books
+
+### ログイン情報
+
+- **メールアドレス**: alice@gmail.com
+- **パスワード**: password
 
 ## 🧪 テスト
 
@@ -293,44 +298,30 @@ projects/berry-books/
 ## 📦 パッケージ構成
 
 ```
-pro.kensait.berrybooks/
-├── common/              # 共通ユーティリティ・定数
-│   ├── MessageUtil.java      # メッセージ取得ユーティリティ
-│   └── SettlementType.java   # 決済方法のEnum（定数化）
-├── util/                # ユーティリティ
-│   └── AddressUtil.java      # 住所関連ユーティリティ
-├── web/                 # JSF Managed Bean
-│   ├── book/
-│   │   └── BookSearchBean.java
-│   ├── cart/
-│   │   └── CartBean.java
-│   ├── order/
-│   │   └── OrderBean.java
-│   ├── customer/
-│   │   └── CustomerBean.java
-│   └── login/
-│       └── LoginBean.java
+dev.berry/
+├── view/                # JSF Managed Bean
+│   ├── BookSearchBean.java
+│   ├── CartBean.java
+│   └── OrderBean.java
 ├── service/             # ビジネスロジック（CDI Bean）
 │   ├── book/
 │   ├── category/
-│   ├── customer/
-│   ├── delivery/
 │   └── order/
 ├── dao/                 # データアクセス層
 │   ├── BookDao.java
 │   ├── CategoryDao.java
-│   ├── CustomerDao.java
 │   ├── StockDao.java
 │   ├── OrderTranDao.java
 │   └── OrderDetailDao.java
-└── entity/              # JPAエンティティ
-    ├── Book.java
-    ├── Category.java
-    ├── Publisher.java
-    ├── Stock.java
-    ├── Customer.java
-    ├── OrderTran.java
-    └── OrderDetail.java
+├── entity/              # JPAエンティティ
+│   ├── Book.java
+│   ├── Category.java
+│   ├── Publisher.java
+│   ├── Stock.java
+│   ├── OrderTran.java
+│   └── OrderDetail.java
+└── web/cart/            # セッション管理用
+    └── CartItem.java
 ```
 
 ## 🎯 主な機能

@@ -13,22 +13,27 @@ Servlet/JSP、JSF、CDI、JAX-RSを段階的に学習できます。
 jee_micro_vsc/
 ├── projects/
 │   ├── java/                           # Jakarta EE (Java) プロジェクト
-│   │   ├── berry-books/               # Berry Books Webアプリケーション
-│   │   ├── berry-books-rest/           # Berry Books REST API
-│   │   ├── jsf_person_rdb/             # Person管理（JSF + JPA CRUD）
-│   │   ├── struts_person_rdb/          # Person管理（Struts 1.3 + EJB）
+│   │   ├── berry-books-1/              # Berry Books Webアプリケーション1【研修用】
+│   │   ├── berry-books-2/              # Berry Books Webアプリケーション2【研修用】
+│   │   ├── berry-books-fn/             # Berry Books Webアプリケーション【完成版】
+│   │   ├── berry-books-rest/           # Berry Books REST API【完成版】
+│   │   ├── jsf_person/                 # Person管理（JSF + JPA CRUD）【完成版】
+│   │   ├── struts_person/              # Person管理（Struts 1.3 + EJB）【完成版】
+│   │   └── struts-to-jsf-person/       # StrutsからJakarta EEへの移行プロジェクト【研修用】
 │   ├── python/                         # Pythonプロジェクト
-│   │   ├── accounting_glue/            # ERP会計統合ETL
+│   │   ├── accounting_glue/            # ERP会計統合ETL【研修用】
+│   │   └── accounting_glue_fn/         # ERP会計統合ETL【完成版】
 │   └── react/                          # Reactプロジェクト
-│       ├── berry-books-frontend/       # Berry Books 管理者画面
+│       ├── berry-books-frontend/       # Berry Books 管理者画面【研修用】
+│       └── berry-books-frontend-fn/    # Berry Books 管理者画面【完成版】
 │
-├── payara6/                     # Payara Server 6
-├── hsqldb/                      # HSQLDB Database Server
-├── tomee8/                      # Apache TomEE 8 (Struts用)
+├── payara6/                            # Payara Server 6
+├── hsqldb/                             # HSQLDB Database Server
+├── tomee8/                             # Apache TomEE 8 (Struts用)
 │
-├── build.gradle                 # Javaプロジェクト用ビルド設定
-├── settings.gradle              # Gradleマルチプロジェクト設定
-└── env-conf.gradle              # 環境設定
+├── build.gradle                        # Javaプロジェクト用ビルド設定
+├── settings.gradle                     # Gradleマルチプロジェクト設定
+└── env-conf.gradle                     # 環境設定
 ```
 
 ## 🚀 セットアップとコマンド実行ガイド
@@ -101,12 +106,18 @@ chmod +x projects/python/accounting_glue/*.sh
 # プロジェクトのデータベーステーブルとデータを作成
 # 例：berry-booksの場合
 ./gradlew :projects:java:berry-books:setupHsqldb
+# 例：berry-books-restの場合
+./gradlew :projects:java:berry-books-rest:setupHsqldb
 
 # プロジェクトをビルド
 ./gradlew :projects:java:berry-books:war
+# または
+./gradlew :projects:java:berry-books-rest:war
 
 # プロジェクトをデプロイ
 ./gradlew :projects:java:berry-books:deploy
+# または
+./gradlew :projects:java:berry-books-rest:deploy
 ```
 
 ### ⑥ プロジェクトを終了するときに1回だけ実行（CleanUp）
@@ -115,6 +126,8 @@ chmod +x projects/python/accounting_glue/*.sh
 # プロジェクトをアンデプロイ
 # 例：berry-booksの場合
 ./gradlew :projects:java:berry-books:undeploy
+# 例：berry-books-restの場合
+./gradlew :projects:java:berry-books-rest:undeploy
 ```
 
 ### ⑦ アプリケーション作成・更新のたびに実行
@@ -124,14 +137,23 @@ chmod +x projects/python/accounting_glue/*.sh
 # 例：berry-booksの場合
 ./gradlew :projects:java:berry-books:war
 ./gradlew :projects:java:berry-books:deploy
+# 例：berry-books-restの場合
+./gradlew :projects:java:berry-books-rest:war
+./gradlew :projects:java:berry-books-rest:deploy
 ```
 
-## 🌐 アプリケーションへのアクセス
+## 🌐 アプリケーションへのログイン
 
 プロジェクトごとのアクセスURL例：
 ```
 http://localhost:8080/berry-books
+http://localhost:8080/berry-books-rest
 ```
+
+### ログイン情報
+
+- **メールアドレス**: alice@gmail.com
+- **パスワード**: password
 
 ## 📊 ログをリアルタイム監視（別のターミナル）
 
@@ -374,6 +396,7 @@ Payara Serverのドメインステータスを確認：
 
 アプリケーションをアンデプロイしてから再デプロイ：
 ```bash
+# berry-booksの場合
 ./gradlew :projects:java:berry-books:undeploy
 ./gradlew :projects:java:berry-books:deploy
 ```

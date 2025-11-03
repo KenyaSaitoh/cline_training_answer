@@ -29,7 +29,7 @@ class TestETLOutputValidation:
     ]
     
     # 比較から除外するフィールド（実行時に変わるため）
-    EXCLUDED_FIELDS = ['batch_id', 'load_timestamp', 'accounting_date']
+    EXCLUDED_FIELDS = ['batch_id', 'load_timestamp', 'accounting_date', 'event_timestamp']
     
     # 金額フィールド
     AMOUNT_FIELDS = ['entered_dr', 'entered_cr', 'accounted_dr', 'accounted_cr']
@@ -134,8 +134,12 @@ class TestETLOutputValidation:
             
             actual_record = actual_index[key]
             
-            # 主要フィールドの検証
+            # 主要フィールドの検証（除外フィールドはスキップ）
             for field in self.CRITICAL_FIELDS:
+                # 実行時に変動するフィールドは検証から除外
+                if field in self.EXCLUDED_FIELDS:
+                    continue
+                
                 expected_value = expected_record.get(field, '').strip()
                 actual_value = actual_record.get(field, '').strip()
                 
