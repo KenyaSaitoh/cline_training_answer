@@ -8,7 +8,7 @@
 
 CREATE TABLE hr_payroll_export (
   export_id            BIGINT IDENTITY PRIMARY KEY, -- エクスポートID（主キー）
-  batch_id             VARCHAR(40) NOT NULL,                                -- バッチID（取込単位の識別子）
+  batch_id             VARCHAR(40) NOT NULL,                                -- バッチID（取込単位の識別者）
   
   payroll_id           VARCHAR(30) NOT NULL,                                -- 給与ID（例: PAY202501_001）
   employee_id          VARCHAR(30) NOT NULL,                                -- 社員ID（hr_employee_org_exportとのジョインキー）
@@ -79,4 +79,3 @@ COMMENT ON COLUMN hr_payroll_export.bonus                  IS '賞与（0の場�
 COMMENT ON COLUMN hr_payroll_export.reversal_flag          IS '逆仕訳フラグ（True: 取消仕訳、False: 通常仕訳）';
 COMMENT ON COLUMN hr_payroll_export.gross_pay              IS '総支給額（基本給＋手当＋賞与）';
 COMMENT ON COLUMN hr_payroll_export.net_pay                IS '手取額（総支給額－総控除額）';
-
