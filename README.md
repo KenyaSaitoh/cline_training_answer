@@ -12,20 +12,15 @@ Servlet/JSP、JSF、CDI、JAX-RSを段階的に学習できます。
 ```
 jee_micro_vsc/
 ├── projects/
-│   ├── java/                           # Jakarta EE (Java) プロジェクト
-│   │   ├── berry-books-1/              # Berry Books Webアプリケーション1【研修用】
-│   │   ├── berry-books-2/              # Berry Books Webアプリケーション2【研修用】
-│   │   ├── berry-books-fn/             # Berry Books Webアプリケーション【完成版】
+│   ├── java/                            # Jakarta EE (Java) プロジェクト
+│   │   ├── berry-books/                # Berry Books Webアプリケーション【完成版】
 │   │   ├── berry-books-rest/           # Berry Books REST API【完成版】
 │   │   ├── jsf_person/                 # Person管理（JSF + JPA CRUD）【完成版】
-│   │   ├── struts_person/              # Person管理（Struts 1.3 + EJB）【完成版】
-│   │   └── struts-to-jsf-person/       # StrutsからJakarta EEへの移行プロジェクト【研修用】
-│   ├── python/                         # Pythonプロジェクト
-│   │   ├── accounting_glue/            # ERP会計統合ETL【研修用】
-│   │   └── accounting_glue_fn/         # ERP会計統合ETL【完成版】
-│   └── react/                          # Reactプロジェクト
-│       ├── berry-books-frontend/       # Berry Books 管理者画面【研修用】
-│       └── berry-books-frontend-fn/    # Berry Books 管理者画面【完成版】
+│   │   └── struts_person/              # Person管理（Struts 1.3 + EJB）【完成版】
+│   ├── python/                          # Pythonプロジェクト
+│   │   └── accounting_glue/            # ERP会計統合ETL【完成版】
+│   └── react/                           # Reactプロジェクト
+│        └── berry-books-frontend/       # Berry Books 管理者画面【完成版】
 │
 ├── payara6/                            # Payara Server 6
 ├── hsqldb/                             # HSQLDB Database Server
@@ -104,10 +99,8 @@ chmod +x projects/python/accounting_glue/*.sh
 
 ```bash
 # プロジェクトのデータベーステーブルとデータを作成
-# 例：berry-booksの場合
+# 例：berry-books、berry-books-rest共通
 ./gradlew :projects:java:berry-books:setupHsqldb
-# 例：berry-books-restの場合
-./gradlew :projects:java:berry-books-rest:setupHsqldb
 
 # プロジェクトをビルド
 ./gradlew :projects:java:berry-books:war
